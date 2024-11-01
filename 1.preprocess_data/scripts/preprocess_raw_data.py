@@ -63,8 +63,13 @@ df.insert(0, "Well", df["file_name"].apply(lambda x: x.split("F")[0].split("W")[
 df.insert(0, "FOV", df["file_name"].apply(lambda x: x.split("T")[0].split("F")[-1]))
 df.drop("file_path", axis=1, inplace=True)
 df.drop("file_name", axis=1, inplace=True)
-# sort by plate, well, and FOV
-df.sort_values(by=["Plate", "Well", "FOV"], inplace=True)
+# split the plate into time and date
+df.insert(2, "Date_Time", df["Plate"].apply(lambda x: x.strip("_").replace("T", "")))
+# format the time into YYYY-MM-DD HH:MM:SS
+df["Date_Time"] = pd.to_datetime(df["Date_Time"], format="%Y%m%d%H%M%S")
+
+# sort by Date, Time, Plate, Well, FOV
+df.sort_values(by=["Date_Time", "Plate", "Well", "FOV"], inplace=True)
 df.head()
 
 
@@ -74,3 +79,5 @@ df.head()
 print(f"There are {len(df['Well'].unique())} wells.")
 print(f"There are {len(df['FOV'].unique())} fields of view.")
 print(f"There are {len(df['Plate'].unique())} plates.")
+print("The times are:\n")
+print(df["Date_Time"].unique())

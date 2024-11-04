@@ -164,3 +164,7 @@ cython_debug/
 
 # data folder
 data/*
+Wave1_data/2.illumination_correction/illum_directory/*
+Wave1_data/2.illumination_correction/logs/*
+Wave1_data/3.cellprofiling/analysis_output/*
+

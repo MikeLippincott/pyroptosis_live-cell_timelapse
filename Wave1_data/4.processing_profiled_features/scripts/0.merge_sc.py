@@ -7,6 +7,7 @@
 
 
 import pathlib
+import pprint
 import sys
 
 import pandas as pd
@@ -17,8 +18,9 @@ import sc_extraction_utils as sc_utils
 from parsl.config import Config
 from parsl.executors import HighThroughputExecutor
 
+
 # ## Set paths and variables
-#
+# 
 # All paths must be string but we use pathlib to show which variables are paths
 
 # In[2]:
@@ -99,7 +101,7 @@ for sqlite in sqlite_file_paths:
 
 
 # ## Convert SQLite file and merge single cells into parquet file
-#
+# 
 # This was not run to completion as we use the nbconverted python file for full run.
 
 # In[5]:
@@ -143,3 +145,4 @@ for sqlite_file, info in dict_of_runs.items():
 
 
 df1.head()
+

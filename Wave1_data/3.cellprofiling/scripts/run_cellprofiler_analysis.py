@@ -9,11 +9,13 @@
 
 
 import pathlib
+import pprint
 import sys
 import time
 
 sys.path.append("../../../utils/")
 import cp_parallel
+
 
 # ## Set paths and variables
 
@@ -63,7 +65,7 @@ print("Number of directories to process: ", len(dict_of_runs))
 
 
 # ## Run analysis pipeline on each plate in parallel
-#
+# 
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
 # In[4]:
@@ -92,3 +94,4 @@ minutes, seconds = divmod(rem, 60)
 print(
     "Total time taken: {:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
 )
+

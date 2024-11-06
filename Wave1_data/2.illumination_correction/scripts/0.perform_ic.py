@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # # Run CellProfiler `illum.cppipe` (IC) pipeline
-#
+# 
 # In this notebook, we run the CellProfiler IC pipeline to calculate the illumination (illum) correction functions for all images per channel (5), apply the functions, and save images into a new directory.
 
 # ## Import libraries
@@ -18,6 +18,7 @@ sys.path.append("../../../utils")
 import cp_parallel
 import cp_utils as cp_utils
 import tqdm
+
 
 # ## Set paths
 
@@ -98,3 +99,4 @@ minutes, seconds = divmod(rem, 60)
 print(
     "Total time taken: {:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
 )
+

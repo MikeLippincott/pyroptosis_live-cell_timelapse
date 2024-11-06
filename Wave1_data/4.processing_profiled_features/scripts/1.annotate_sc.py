@@ -10,6 +10,7 @@
 
 import json
 import pathlib
+import sys
 
 import lancedb
 import matplotlib.pyplot as plt
@@ -18,6 +19,7 @@ import pandas as pd
 import seaborn as sns
 from pycytominer import annotate
 from pycytominer.cyto_utils import output
+
 
 # ## Set paths and variables
 
@@ -122,3 +124,4 @@ for data_run, info in dict_of_inputs.items():
     print(f"{data_run} has been annotated")
     print(f"With the input shape of {single_cell_df.shape}")
     print(f"Output shape of {annotated_df.shape}")
+

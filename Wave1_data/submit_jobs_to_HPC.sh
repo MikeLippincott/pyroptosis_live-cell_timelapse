@@ -10,6 +10,8 @@
 # this script submits the jobs to the cluster to run the pipeline
 # note that the jobs are submitted in the order of the pipeline
 # we have to wait for the previous job to finish before submitting the next job
+module purge
+module load anaconda
 conda init bash
 
 cd 2.illumination_correction || exit
@@ -35,5 +37,10 @@ sbatch run_processing.sh --dependency=afterok:$job2 --ntasks=8 --time=00:60:00 -
 source process_cellprofiling.sh
 
 cd .. || exit
+
+# move the slurm outputs to this dir
+mv 2.illumination_correction/slurm* .
+mv 3.cellprofiling/slurm* .
+mv 4.processing_profiled_features/slurm* .
 
 echo "All done"

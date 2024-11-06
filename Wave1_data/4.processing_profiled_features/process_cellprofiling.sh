@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # activate  cellprofiler environment
+conda init bash
 conda activate cellprofiler_timelapse_env
 
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb

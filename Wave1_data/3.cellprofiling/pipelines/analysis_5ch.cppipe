@@ -2,7 +2,7 @@ CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
 DateRevision:426
 GitHash:
-ModuleCount:17
+ModuleCount:16
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Module notes are provided by Jenna Tomkinson.', '', 'Images module is left blank since we are giving the path to the images in the CLI command.', '', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -139,7 +139,7 @@ ImageMath:[module_num:6|svn_version:'Unknown'|variable_revision_number:5|show_wi
 
 IdentifySecondaryObjects:[module_num:7|svn_version:'Unknown'|variable_revision_number:10|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input objects:Nuclei
-    Name the objects to be identified:IdentifySecondaryObjects
+    Name the objects to be identified:Cells
     Select the method to identify the secondary objects:Propagation
     Select the input image:Whole_Cell
     Number of pixels by which to expand the primary objects:10
@@ -168,7 +168,7 @@ IdentifySecondaryObjects:[module_num:7|svn_version:'Unknown'|variable_revision_n
     Thresholding method:Minimum Cross-Entropy
 
 IdentifyTertiaryObjects:[module_num:8|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select the larger identified objects:IdentifySecondaryObjects
+    Select the larger identified objects:Cells
     Select the smaller identified objects:Nuclei
     Name the tertiary objects to be identified:Cytoplasm
     Shrink smaller object prior to subtraction?:Yes
@@ -176,25 +176,18 @@ IdentifyTertiaryObjects:[module_num:8|svn_version:'Unknown'|variable_revision_nu
 MeasureGranularity:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:BF, CL488, CL561, DNA, GSDM, Whole_Cell
     Measure within objects?:Yes
-    Select objects to measure:Cytoplasm, IdentifySecondaryObjects, Nuclei
+    Select objects to measure:Cells, Cytoplasm, Nuclei
     Subsampling factor for granularity measurements:0.25
     Subsampling factor for background reduction:0.25
     Radius of structuring element:10
     Range of the granular spectrum:16
 
-MeasureImageIntensity:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensity:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:BF, CL488, CL561, DNA, GSDM, Whole_Cell
-    Measure the intensity only from areas enclosed by objects?:No
-    Select input object sets:
-    Calculate custom percentiles:No
-    Specify percentiles to measure:10,90
+    Select objects to measure:Cells, Cytoplasm, Nuclei
 
-MeasureObjectIntensity:[module_num:11|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select images to measure:BF, CL488, CL561, DNA, GSDM, Whole_Cell
-    Select objects to measure:Cytoplasm, IdentifySecondaryObjects, Nuclei
-
-MeasureObjectIntensityDistribution:[module_num:12|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select images to measure:BF, CL488, CL561, DNA, GSDM, Whole_Cell
+MeasureObjectIntensityDistribution:[module_num:11|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:BF, CL488, CL561, DNA, GSDM
     Hidden:3
     Hidden:1
     Hidden:0
@@ -203,7 +196,7 @@ MeasureObjectIntensityDistribution:[module_num:12|svn_version:'Unknown'|variable
     Select objects to measure:Cytoplasm
     Object to use as center?:These objects
     Select objects to use as centers:None
-    Select objects to measure:IdentifySecondaryObjects
+    Select objects to measure:Cells
     Object to use as center?:These objects
     Select objects to use as centers:None
     Select objects to measure:Nuclei
@@ -213,7 +206,7 @@ MeasureObjectIntensityDistribution:[module_num:12|svn_version:'Unknown'|variable
     Number of bins:4
     Maximum radius:100
 
-MeasureObjectNeighbors:[module_num:13|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectNeighbors:[module_num:12|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select objects to measure:Cytoplasm
     Select neighboring objects to measure:Cytoplasm
     Method to determine neighbors:Adjacent
@@ -226,7 +219,7 @@ MeasureObjectNeighbors:[module_num:13|svn_version:'Unknown'|variable_revision_nu
     Name the output image:PercentTouching
     Select colormap:Oranges
 
-MeasureObjectOverlap:[module_num:14|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectOverlap:[module_num:13|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the objects to be used as the ground truth basis for calculating the amount of overlap:Cytoplasm
     Select the objects to be tested for overlap against the ground truth:Cytoplasm
     Calculate earth mover's distance?:No
@@ -235,20 +228,20 @@ MeasureObjectOverlap:[module_num:14|svn_version:'Unknown'|variable_revision_numb
     Maximum distance:250
     Penalize missing pixels:No
 
-MeasureObjectSizeShape:[module_num:15|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select object sets to measure:Cytoplasm, IdentifySecondaryObjects, Nuclei
+MeasureObjectSizeShape:[module_num:14|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select object sets to measure:Cells, Cytoplasm, Nuclei
     Calculate the Zernike features?:Yes
     Calculate the advanced features?:No
 
-MeasureTexture:[module_num:16|svn_version:'Unknown'|variable_revision_number:7|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureTexture:[module_num:15|svn_version:'Unknown'|variable_revision_number:7|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:BF, CL488, CL561, DNA, GSDM, Whole_Cell
-    Select objects to measure:Cytoplasm, IdentifySecondaryObjects, Nuclei
+    Select objects to measure:Cells, Cytoplasm, Nuclei
     Enter how many gray levels to measure the texture at:256
     Hidden:1
     Measure whole images or objects?:Both
     Texture scale to measure:3
 
-ExportToDatabase:[module_num:17|svn_version:'Unknown'|variable_revision_number:28|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToDatabase:[module_num:16|svn_version:'Unknown'|variable_revision_number:28|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Database type:SQLite
     Database name:DefaultDB
     Add a prefix to table names?:No
@@ -259,7 +252,7 @@ ExportToDatabase:[module_num:17|svn_version:'Unknown'|variable_revision_number:2
     Username:
     Password:
     Name the SQLite database file:pyroptosis_timelapse.sqlite
-    Calculate the per-image mean values of object measurements?:Yes
+    Calculate the per-image mean values of object measurements?:No
     Calculate the per-image median values of object measurements?:No
     Calculate the per-image standard deviation values of object measurements?:No
     Calculate the per-well mean values of object measurements?:No

@@ -33,7 +33,7 @@ dependencies:
 - conda-forge::wxpython=4.2.0
 - conda-forge::sentry-sdk=0.18.0
 - conda-forge::optuna
-- pytoch
+- pytorch
 - conda-forge::optuna-dashboard
 - conda-forge::lancedb
 - cudatoolkit

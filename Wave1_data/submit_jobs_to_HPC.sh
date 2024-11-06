@@ -6,7 +6,6 @@
 #SBATCH --account=amc-general
 #SBATCH --time=06:00:00
 #SBATCH --output=parent-%j.out
-#SBATCH --dependency=afterok:job1:job2:job3
 
 # this script submits the jobs to the cluster to run the pipeline
 # note that the jobs are submitted in the order of the pipeline
@@ -21,7 +20,7 @@ if [ -e "./illum_directory" ]; then
     rm -r ./illum_directory
 fi
 
-job1=$(sbatch run_ic.sh --ntasks=8 --time=00:60:00 --partition=amilan --qos=normal --account=amc-general --output=ic-%j.out | cut -f 4 -d " ")
+job1=$(sbatch run_ic.sh --ntasks=64 --time=00:60:00 --partition=amilan --qos=normal --account=amc-general --output=ic-%j.out | cut -f 4 -d " ")
 
 cd ../3.cellprofiling || exit
 if [ -e "./analysis_output" ]; then
@@ -39,8 +38,5 @@ job3=$(sbatch process_cellprofiling.sh --dependency=afterok:$job2 --ntasks=8 --t
 cd .. || exit
 
 # move the slurm outputs to this dir
-mv 2.illumination_correction/slurm* .
-mv 3.cellprofiling/slurm* .
-mv 4.processing_profiled_features/slurm* .
 
 echo "All done"

@@ -1,0 +1,43 @@
+usage: conda [-h] [--no-plugins] [-V] COMMAND ...
+conda: error: argument COMMAND: invalid choice: 'deactivate' (choose from 'clean', 'compare', 'config', 'create', 'info', 'init', 'install', 'list', 'notices', 'package', 'remove', 'uninstall', 'rename', 'run', 'search', 'update', 'upgrade', 'build', 'content-trust', 'convert', 'debug', 'develop', 'doctor', 'index', 'inspect', 'metapackage', 'render', 'skeleton', 'pack', 'repo', 'token', 'verify', 'server', 'env')
+no change     /curc/sw/anaconda3/2023.09/condabin/conda
+no change     /curc/sw/anaconda3/2023.09/bin/conda
+no change     /curc/sw/anaconda3/2023.09/bin/conda-env
+no change     /curc/sw/anaconda3/2023.09/bin/activate
+no change     /curc/sw/anaconda3/2023.09/bin/deactivate
+no change     /curc/sw/anaconda3/2023.09/etc/profile.d/conda.sh
+no change     /curc/sw/anaconda3/2023.09/etc/fish/conf.d/conda.fish
+no change     /curc/sw/anaconda3/2023.09/shell/condabin/Conda.psm1
+no change     /curc/sw/anaconda3/2023.09/shell/condabin/conda-hook.ps1
+no change     /curc/sw/anaconda3/2023.09/lib/python3.11/site-packages/xontrib/conda.xsh
+no change     /curc/sw/anaconda3/2023.09/etc/profile.d/conda.csh
+no change     /home/mlippincott@xsede.org/.bashrc
+No action taken.
+[NbConvertApp] Converting notebook notebooks/0.merge_sc.ipynb to script
+[NbConvertApp] Writing 4919 bytes to scripts/0.merge_sc.py
+[NbConvertApp] Converting notebook notebooks/1.annotate_sc.ipynb to script
+[NbConvertApp] Writing 3941 bytes to scripts/1.annotate_sc.py
+[NbConvertApp] Converting notebook notebooks/2.combine_sc.ipynb to script
+[NbConvertApp] Writing 959 bytes to scripts/2.combine_sc.py
+[NbConvertApp] Converting notebook notebooks/3.normalize_sc_across_time.ipynb to script
+[NbConvertApp] Writing 2298 bytes to scripts/3.normalize_sc_across_time.py
+[NbConvertApp] Converting notebook notebooks/3.normalize_sc_against_first_time.ipynb to script
+[NbConvertApp] Writing 2338 bytes to scripts/3.normalize_sc_against_first_time.py
+[NbConvertApp] Converting notebook notebooks/3.normalize_sc_within_time.ipynb to script
+[NbConvertApp] Writing 2979 bytes to scripts/3.normalize_sc_within_time.py
+[NbConvertApp] Converting notebook notebooks/4.feature_select_sc.ipynb to script
+[NbConvertApp] Writing 3382 bytes to scripts/4.feature_select_sc.py
+Traceback (most recent call last):
+  File "0.merge_sc.py", line 147, in <module>
+    df1.head()
+NameError: name 'df1' is not defined
+Processing 0 files
+Traceback (most recent call last):
+  File "2.combine_sc.py", line 44, in <module>
+    df = pd.concat([pd.read_parquet(file) for file in files])
+  File "/projects/mlippincott@xsede.org/software/anaconda/envs/cellprofiler_timelapse_env/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 372, in concat
+    op = _Concatenator(
+  File "/projects/mlippincott@xsede.org/software/anaconda/envs/cellprofiler_timelapse_env/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 429, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+Cellprofiling processing completed.

@@ -80,7 +80,7 @@ start = time.time()
 cp_parallel.run_cellprofiler_parallel(
     plate_info_dictionary=dict_of_runs,
     run_name=run_name,
-    plugins_dir=plugins_dir,
+    #plugins_dir=plugins_dir,
 )
 
 

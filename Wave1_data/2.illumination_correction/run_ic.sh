@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This script runs Illumination Correction on the raw image data.
+module load anaconda
 conda init bash
 conda activate cellprofiler_timelapse_env
 

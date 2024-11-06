@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # activate  cellprofiler environment
+module load anaconda
 conda init bash
 conda activate cellprofiler_timelapse_env
 

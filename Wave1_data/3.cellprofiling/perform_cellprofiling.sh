@@ -1,11 +1,13 @@
 #!/bin/bash
-#SBATCH --nodes=1
-#SBATCH --ntasks=8
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=50
 #SBATCH --partition=amilan
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
-#SBATCH --time=06:00:00
+#SBATCH --time=8:00:00
 #SBATCH --output=../cp-%j.out
+
+# 50 cores at 3.75 GB of ram per core puts us under the max ram for this node :D
 
 # activate  cellprofiler environment
 module load anaconda

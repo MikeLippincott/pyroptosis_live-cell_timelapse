@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --nodes=1
-#SBATCH --ntasks=8
+#SBATCH --nodes=2
+#SBATCH --ntasks=60
 #SBATCH --partition=amilan
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
@@ -18,7 +18,7 @@ cd scripts/ || exit
 
 python 0.merge_sc.py
 python 1.annotate_sc.py
-python 2.combine_sc.py
+# python 2.combine_sc.py
 # python 3.normalize_sc_across_time.py
 # python 3.normalize_sc_within_time.py
 # python 4.feature_select_sc.py

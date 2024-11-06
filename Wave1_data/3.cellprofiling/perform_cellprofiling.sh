@@ -5,7 +5,7 @@
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=06:00:00
-#SBATCH --output=cp-%j.out
+#SBATCH --output=../cp-%j.out
 
 # activate  cellprofiler environment
 module load anaconda

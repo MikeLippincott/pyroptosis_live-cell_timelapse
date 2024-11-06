@@ -33,7 +33,7 @@ if [ -e "./data" ]; then
     rm -r ./data
 fi
 
-job3=$(sbatch process_cellprofiling.sh --dependency=afterok:$job2 | cut -f 4 -d " ")
+job3=$(sbatch process_cellprofiling.sh --dependency=afterok:$job1:$job2 | cut -f 4 -d " ")
 
 cd .. || exit
 

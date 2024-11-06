@@ -2,14 +2,15 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --partition=amilan
-#SBATCH --qos=long
+#SBATCH --qos=normal
 #SBATCH --account=amc-general
-#SBATCH --time=7-00:00:00
-#SBATCH --output=sample-%j.out
+#SBATCH --time=06:00:00
+#SBATCH --output=parent-%j.out
 
 # this script submits the jobs to the cluster to run the pipeline
 # note that the jobs are submitted in the order of the pipeline
 # we have to wait for the previous job to finish before submitting the next job
+conda init bash
 
 cd 2.illumination_correction || exit
 # check if output folder exists

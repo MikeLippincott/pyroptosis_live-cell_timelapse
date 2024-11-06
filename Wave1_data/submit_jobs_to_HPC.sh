@@ -27,14 +27,14 @@ cd ../3.cellprofiling || exit
 if [ -e "./analysis_output" ]; then
     rm -r ./analysis_output
 fi
-job2=$(sbatch perform_cellprofiling.sh --dependency=afterok:$job1)
+job2=$(sbatch --dependency=afterok:$job1 perform_cellprofiling.sh )
 job2=${job2##*}
 cd ../4.processing_profiled_features || exit
 if [ -e "./data" ]; then
     rm -r ./data
 fi
 
-job3=$(sbatch process_cellprofiling.sh --dependency=afterok:$job1:$job2 | cut -f 4 -d " ")
+job3=$(sbatch --dependency=afterok:$job1:$job2 process_cellprofiling.sh )
 
 cd .. || exit
 

@@ -20,20 +20,20 @@ if [ -e "./illum_directory" ]; then
     rm -r ./illum_directory
 fi
 
-job1=$(sbatch run_ic.sh --ntasks=64 --time=00:60:00 --partition=amilan --qos=normal --account=amc-general --output=ic-%j.out | cut -f 4 -d " ")
+job1=$(sbatch run_ic.sh | cut -f 4 -d " ")
 
 cd ../3.cellprofiling || exit
 if [ -e "./analysis_output" ]; then
     rm -r ./analysis_output
 fi
-job2=$(sbatch perform_cellprofiling.sh --dependency=afterok:$job1 --ntasks=8 --time=00:60:00 --partition=amilan --qos=normal --account=amc-general --output=cp-%j.out | cut -f 4 -d " ")
+job2=$(sbatch perform_cellprofiling.sh --dependency=afterok:$job1 | cut -f 4 -d " ")
 
 cd ../4.processing_profiled_features || exit
 if [ -e "./data" ]; then
     rm -r ./data
 fi
 
-job3=$(sbatch process_cellprofiling.sh --dependency=afterok:$job2 --ntasks=8 --time=00:60:00 --partition=amilan --qos=normal --account=amc-general --output=process_cp-%j.out | cut -f 4 -d " ")
+job3=$(sbatch process_cellprofiling.sh --dependency=afterok:$job2 | cut -f 4 -d " ")
 
 cd .. || exit
 

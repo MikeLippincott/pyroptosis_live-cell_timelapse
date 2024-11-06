@@ -170,3 +170,7 @@ Wave1_data/3.cellprofiling/analysis_output/*
 Wave1_data/4.processing_profiled_features/notebooks/runinfo/*
 Wave1_data/4.processing_profiled_features/scripts/runinfo/*
 Wave1_data/4.processing_profiled_features/data/*
+# slurm logs
+*.out
+*.err
+*.log

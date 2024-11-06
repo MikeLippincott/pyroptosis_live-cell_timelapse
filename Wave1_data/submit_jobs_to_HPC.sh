@@ -20,14 +20,15 @@ if [ -e "./illum_directory" ]; then
     rm -r ./illum_directory
 fi
 
-job1=$(sbatch run_ic.sh | cut -f 4 -d " ")
+job1=$(sbatch run_ic.sh)
+job1=${job1##*}
 
 cd ../3.cellprofiling || exit
 if [ -e "./analysis_output" ]; then
     rm -r ./analysis_output
 fi
-job2=$(sbatch perform_cellprofiling.sh --dependency=afterok:$job1 | cut -f 4 -d " ")
-
+job2=$(sbatch perform_cellprofiling.sh --dependency=afterok:$job1)
+job2=${job2##*}
 cd ../4.processing_profiled_features || exit
 if [ -e "./data" ]; then
     rm -r ./data

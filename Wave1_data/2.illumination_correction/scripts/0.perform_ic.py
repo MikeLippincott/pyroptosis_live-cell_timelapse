@@ -56,7 +56,7 @@ import random
 import numpy as np
 
 random.seed(0)
-DMSO_sample = raw_directories[5:6]
+DMSO_sample = raw_directories[5:20]
 raw_directories = random.sample(raw_directories, 2)
 raw_directories = DMSO_sample + raw_directories
 #####################################

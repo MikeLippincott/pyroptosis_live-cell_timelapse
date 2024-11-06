@@ -10,14 +10,14 @@ if [ -e "./illum_directory" ]; then
     rm -r ./illum_directory
 fi
 
-source run_illum.sh
+source run_ic.sh
 
 cd ../3.cellprofiling || exit
 if [ -e "./analysis_output" ]; then
     rm -r ./analysis_output
 fi
 
-source run_cellprofiling.sh
+source perform_cellprofiling.sh
 
 cd ../4.processing_pofiled_features || exit
 if [ -e "./data" ]; then

@@ -167,7 +167,6 @@ data/*
 Wave1_data/2.illumination_correction/illum_directory/*
 Wave1_data/2.illumination_correction/logs/*
 Wave1_data/3.cellprofiling/analysis_output/*
-Wave1_data/4.processing_pofiled_features/notebooks/runinfo/*
-Wave1_data/4.processing_pofiled_features/scripts/runinfo/*
-Wave1_data/4.processing_pofiled_features/data/*
-
+Wave1_data/4.processing_profiled_features/notebooks/runinfo/*
+Wave1_data/4.processing_profiled_features/scripts/runinfo/*
+Wave1_data/4.processing_profiled_features/data/*

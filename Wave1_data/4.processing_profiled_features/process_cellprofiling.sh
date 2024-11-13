@@ -1,10 +1,9 @@
 #!/bin/bash
-#SBATCH --nodes=2
-#SBATCH --ntasks=60
-#SBATCH --partition=amilan
-#SBATCH --qos=normal
+#SBATCH --nodes=1
+#SBATCH --partition=amem
+#SBATCH --qos=long
 #SBATCH --account=amc-general
-#SBATCH --time=06:00:00
+#SBATCH --time=24:00:00
 #SBATCH --output=../pcp-%j.out
 
 # activate  cellprofiler environment
@@ -16,12 +15,13 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 cd scripts/ || exit
 
-python 0.merge_sc.py
-python 1.annotate_sc.py
-# python 2.combine_sc.py
-# python 3.normalize_sc_across_time.py
-# python 3.normalize_sc_within_time.py
-# python 4.feature_select_sc.py
+# python 0.merge_sc.py
+# python 1.annotate_sc.py
+python 2.combine_sc.py
+python 3.normalize_sc_across_time.py
+python 3.normalize_sc_within_time.py
+python 3.normalize_sc_against_first_time.py
+python 4.feature_select_sc.py
 
 cd ../ || exit
 

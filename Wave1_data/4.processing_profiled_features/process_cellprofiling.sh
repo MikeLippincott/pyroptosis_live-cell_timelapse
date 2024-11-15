@@ -1,7 +1,8 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --partition=amem
-#SBATCH --qos=long
+#SBATCH --mem=750G
+#SBATCH --qos=mem
 #SBATCH --account=amc-general
 #SBATCH --time=24:00:00
 #SBATCH --output=../pcp-%j.out
@@ -17,10 +18,10 @@ cd scripts/ || exit
 
 # python 0.merge_sc.py
 # python 1.annotate_sc.py
-python 2.combine_sc.py
-python 3.normalize_sc_across_time.py
-python 3.normalize_sc_within_time.py
-python 3.normalize_sc_against_first_time.py
+#python 2.combine_sc.py
+#python 3.normalize_sc_across_time.py
+#python 3.normalize_sc_within_time.py
+#python 3.normalize_sc_against_first_time.py
 python 4.feature_select_sc.py
 
 cd ../ || exit

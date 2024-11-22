@@ -27,7 +27,7 @@ Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_win
     Metadata file name:None
     Does cached metadata exist?:No
 
-NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['This pipeline assigns names to 2 channels specifically:', '', '01 = DNA/Hoechst staining', '05 = AnnexinV staining']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Assign a name to:Images matching rules
     Select the image type:Grayscale image
     Name to assign these images:DNA
@@ -72,7 +72,7 @@ NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|sho
     Set intensity range from:Image metadata
     Maximum intensity:255.0
 
-Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Given this timelapse data, we group by Well and FOV.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Do you want to group your images?:Yes
     grouping metadata count:2
     Metadata category:Well
@@ -174,7 +174,7 @@ IdentifyTertiaryObjects:[module_num:8|svn_version:'Unknown'|variable_revision_nu
     Shrink smaller object prior to subtraction?:Yes
 
 MeasureGranularity:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select images to measure:BF, CL488, CL561, DNA, GSDM, Whole_Cell
+    Select images to measure:BF, CL488, CL561, DNA, GSDM
     Measure within objects?:Yes
     Select objects to measure:Cells, Cytoplasm, Nuclei
     Subsampling factor for granularity measurements:0.25
@@ -183,7 +183,7 @@ MeasureGranularity:[module_num:9|svn_version:'Unknown'|variable_revision_number:
     Range of the granular spectrum:16
 
 MeasureObjectIntensity:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select images to measure:BF, CL488, CL561, DNA, GSDM, Whole_Cell
+    Select images to measure:BF, CL488, CL561, DNA, GSDM
     Select objects to measure:Cells, Cytoplasm, Nuclei
 
 MeasureObjectIntensityDistribution:[module_num:11|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -234,7 +234,7 @@ MeasureObjectSizeShape:[module_num:14|svn_version:'Unknown'|variable_revision_nu
     Calculate the advanced features?:No
 
 MeasureTexture:[module_num:15|svn_version:'Unknown'|variable_revision_number:7|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select images to measure:BF, CL488, CL561, DNA, GSDM, Whole_Cell
+    Select images to measure:BF, CL488, CL561, DNA, GSDM
     Select objects to measure:Cells, Cytoplasm, Nuclei
     Enter how many gray levels to measure the texture at:256
     Hidden:1

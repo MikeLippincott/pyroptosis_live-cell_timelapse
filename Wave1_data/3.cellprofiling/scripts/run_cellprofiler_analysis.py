@@ -48,10 +48,6 @@ raw_directories = list(images_dir.rglob("*"))
 raw_directories = [x for x in raw_directories if x.is_dir()]
 # filter for directories with images
 raw_directories = [x for x in raw_directories if len(list(x.glob("*.tiff"))) > 0]
-# #####################################
-# # for testing purposes
-# raw_directories = raw_directories[:2]
-# #####################################
 
 for dir in raw_directories:
     dict_of_runs[dir.name] = {
@@ -72,7 +68,7 @@ print("Number of directories to process: ", len(dict_of_runs))
 start = time.time()
 
 
-# In[5]:
+# In[ ]:
 
 
 cp_parallel.run_cellprofiler_parallel(
@@ -82,7 +78,7 @@ cp_parallel.run_cellprofiler_parallel(
 )
 
 
-# In[6]:
+# In[ ]:
 
 
 end = time.time()

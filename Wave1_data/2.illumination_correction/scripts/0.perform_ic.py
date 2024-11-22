@@ -47,18 +47,7 @@ raw_directories = [x for x in raw_directories if x.is_dir()]
 # filter for directories with images
 raw_directories = [x for x in raw_directories if len(list(x.glob("*.tif"))) > 0]
 raw_directories = sorted(raw_directories)
-# #####################################
-# # for testing purposes
-# # get 5 random directories with images
-# import random
 
-# import numpy as np
-
-# random.seed(0)
-# DMSO_sample = raw_directories[5:20]
-# raw_directories = random.sample(raw_directories, 2)
-# raw_directories = DMSO_sample + raw_directories
-# #####################################
 for dir in raw_directories:
     well_FOV = dir.name
     plate = str(dir).split("/")[-2]

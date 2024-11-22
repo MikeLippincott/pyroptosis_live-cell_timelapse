@@ -2,7 +2,7 @@ CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
 DateRevision:426
 GitHash:
-ModuleCount:17
+ModuleCount:16
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Images module is blank in the GUI since we are adding the image path in CLI.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -27,7 +27,7 @@ Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_win
     Metadata file name:None
     Does cached metadata exist?:No
 
-NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['This pipeline is meant for correction with 4 channels specifically:', '', 'DAPI', 'GFP', 'RFP', 'CY5', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['This pipeline is meant for correction with 5 channels specifically:', '', 'DAPI', '488', '561', 'GFP', 'Brightfield', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Assign a name to:Images matching rules
     Select the image type:Grayscale image
     Name to assign these images:DNA
@@ -77,26 +77,7 @@ Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_windo
     grouping metadata count:1
     Metadata category:Well
 
-MeasureImageQuality:[module_num:5|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Only calculate the blur and saturation image quality metrics as we are using these to flag images for poor quality. Blur is set as default.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Calculate metrics for which images?:All loaded images
-    Image count:1
-    Scale count:1
-    Threshold count:1
-    Select the images to measure:
-    Include the image rescaling value?:Yes
-    Calculate blur metrics?:Yes
-    Spatial scale for blur measurements:20
-    Calculate saturation metrics?:Yes
-    Calculate intensity metrics?:No
-    Calculate thresholds?:No
-    Use all thresholding methods?:No
-    Select a thresholding method:Otsu
-    Typical fraction of the image covered by objects:0.1
-    Two-class or three-class thresholding?:Two classes
-    Minimize the weighted variance or the entropy?:Weighted variance
-    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
-
-CorrectIlluminationCalculate:[module_num:6|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Since for all seeding densities, Schwann cells do not take up a ton of space in the images, we use Background in the IC calculations.', '', 'Block size 50 seems to work best for the DAPI channel (nuclei), as well as using the Fit Polynomial smoothing method as it seemed to not over correct as compared to the other methods.', '', 'We use the each method for calculating IC functions as this seemed to produce the best results over creating one from all images in a channel.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CorrectIlluminationCalculate:[module_num:5|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:DNA
     Name the output image:IllumDNA
     Select how the illumination function is calculated:Background
@@ -121,7 +102,7 @@ CorrectIlluminationCalculate:[module_num:6|svn_version:'Unknown'|variable_revisi
     Maximum number of iterations:40
     Residual value for convergence:0.001
 
-CorrectIlluminationCalculate:[module_num:7|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Since for all seeding densities, Schwann cells do not take up a ton of space in the images, we use Background in the IC calculations.', '', 'Block size 15 seems to work best for the CY5 channel (mitochondria), as well as using the Fit Polynomial smoothing method as it seemed to not over correct as compared to the other methods.', '', 'We use the each method for calculating IC functions as this seemed to produce the best results over creating one from all images in a channel.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CorrectIlluminationCalculate:[module_num:6|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:CL488
     Name the output image:IllumCL488
     Select how the illumination function is calculated:Background
@@ -146,7 +127,7 @@ CorrectIlluminationCalculate:[module_num:7|svn_version:'Unknown'|variable_revisi
     Maximum number of iterations:40
     Residual value for convergence:0.001
 
-CorrectIlluminationCalculate:[module_num:8|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CorrectIlluminationCalculate:[module_num:7|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:CL561
     Name the output image:IllumCL561
     Select how the illumination function is calculated:Background
@@ -171,7 +152,7 @@ CorrectIlluminationCalculate:[module_num:8|svn_version:'Unknown'|variable_revisi
     Maximum number of iterations:40
     Residual value for convergence:0.001
 
-CorrectIlluminationCalculate:[module_num:9|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CorrectIlluminationCalculate:[module_num:8|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:GSDM
     Name the output image:IllumGSDM
     Select how the illumination function is calculated:Background
@@ -196,7 +177,7 @@ CorrectIlluminationCalculate:[module_num:9|svn_version:'Unknown'|variable_revisi
     Maximum number of iterations:40
     Residual value for convergence:0.001
 
-CorrectIlluminationCalculate:[module_num:10|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CorrectIlluminationCalculate:[module_num:9|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:BF
     Name the output image:IllumBF
     Select how the illumination function is calculated:Background
@@ -221,7 +202,7 @@ CorrectIlluminationCalculate:[module_num:10|svn_version:'Unknown'|variable_revis
     Maximum number of iterations:40
     Residual value for convergence:0.001
 
-CorrectIlluminationApply:[module_num:11|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['Apply illumination correction functions to all channels']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CorrectIlluminationApply:[module_num:10|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['Apply illumination correction functions to all channels']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:DNA
     Name the output image:CorrDNA
     Select the illumination function:IllumDNA
@@ -245,7 +226,7 @@ CorrectIlluminationApply:[module_num:11|svn_version:'Unknown'|variable_revision_
     Set output image values less than 0 equal to 0?:Yes
     Set output image values greater than 1 equal to 1?:Yes
 
-SaveImages:[module_num:12|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:['Save DAPI images as same bit-depth']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:11|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:['Save DAPI images as same bit-depth']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:CorrDNA
     Select method for constructing file names:From image filename
@@ -265,7 +246,7 @@ SaveImages:[module_num:12|svn_version:'Unknown'|variable_revision_number:16|show
     How to save the series:T (Time)
     Save with lossless compression?:Yes
 
-SaveImages:[module_num:13|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:['Save CY5 images as the same bit-depth']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:12|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:['Save CL488 images as the same bit-depth']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:CorrCL488
     Select method for constructing file names:From image filename
@@ -285,7 +266,7 @@ SaveImages:[module_num:13|svn_version:'Unknown'|variable_revision_number:16|show
     How to save the series:T (Time)
     Save with lossless compression?:Yes
 
-SaveImages:[module_num:14|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:13|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:CorrCL561
     Select method for constructing file names:From image filename
@@ -305,7 +286,7 @@ SaveImages:[module_num:14|svn_version:'Unknown'|variable_revision_number:16|show
     How to save the series:T (Time)
     Save with lossless compression?:Yes
 
-SaveImages:[module_num:15|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:14|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:CorrBF
     Select method for constructing file names:From image filename
@@ -325,7 +306,7 @@ SaveImages:[module_num:15|svn_version:'Unknown'|variable_revision_number:16|show
     How to save the series:T (Time)
     Save with lossless compression?:Yes
 
-SaveImages:[module_num:16|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:15|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:CorrGSDM
     Select method for constructing file names:From image filename
@@ -345,7 +326,7 @@ SaveImages:[module_num:16|svn_version:'Unknown'|variable_revision_number:16|show
     How to save the series:T (Time)
     Save with lossless compression?:Yes
 
-ExportToSpreadsheet:[module_num:17|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToSpreadsheet:[module_num:16|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No

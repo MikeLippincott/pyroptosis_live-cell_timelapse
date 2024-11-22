@@ -9,7 +9,7 @@
 
 # 50 cores at 3.75 GB of ram per core puts us under the max ram for this node :D
 
-# activate  cellprofiler environment
+# activate cellprofiler environment
 module load anaconda
 conda init bash
 conda activate cellprofiler_timelapse_env

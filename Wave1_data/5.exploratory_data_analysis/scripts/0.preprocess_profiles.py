@@ -84,6 +84,11 @@ for dataset in input_data_dict:
     time_mapping = {
         time: i for i, time in enumerate(data["Metadata_Plate"].sort_values().unique())
     }
+    # check if the new columns exist, if so drop them
+    if "Metadata_treatment_serum" in data.columns:
+        data.drop(columns=["Metadata_treatment_serum"], inplace=True)
+    if "Metadata_Time" in data.columns:
+        data.drop(columns=["Metadata_Time"], inplace=True)
     # Combine all new columns at once to avoid fragmentation
     new_columns = pd.DataFrame(
         {
@@ -98,6 +103,7 @@ for dataset in input_data_dict:
     if data_subset:
         data.to_parquet(subset_data_output_file_path)
     else:
+        # over write the current parquet file
         data.to_parquet(input_data_dict[dataset]["input_file_path"])
 
     print(f"Preprocessed data for {dataset} has the shape: {data.shape}")

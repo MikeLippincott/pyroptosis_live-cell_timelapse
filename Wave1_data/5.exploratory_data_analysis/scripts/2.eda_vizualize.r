@@ -38,9 +38,9 @@ width <- 8
 height <- 8
 options(repr.plot.width = width, repr.plot.height = height)
 scree_plot <- (
-    ggplot(scree_data, aes(x = `Principal Component`, y = `Explained Variance`))
-    + geom_line()
-    + geom_bar(stat = "identity", fill = "steelblue")
+    ggplot(scree_data, aes(x = `Principal Component`, y = `Explained Variance`)) 
+    + geom_line() 
+    + geom_bar(stat = "identity", fill = "steelblue") 
     + labs(x = "Principal Component", y = "Variance Explained")
     + theme_bw()
     + theme(
@@ -64,7 +64,7 @@ height <- 10
 options(repr.plot.width=width, repr.plot.height=height)
 
 umap_plot <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
     + geom_point(aes(color=Metadata_treatment), size=0.5)
     # move the legend to the bottom
     + guides(
@@ -121,7 +121,7 @@ dev.off()
 umap_data$Metadata_Time <- as.numeric(as.character(umap_data$Metadata_Time))
 
 umap_all_time_plot <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
     + geom_point(aes(color=Metadata_Time), size=0.5)
     # move the legend to the bottom
     + guides(
@@ -148,7 +148,7 @@ umap_all_time_plot
 dev.off()
 
 umap_all_time_plot_facet <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
     + geom_point(aes(color=Metadata_Time), size=0.5)
     # move the legend to the bottom
     + guides(
@@ -182,7 +182,7 @@ height <- 10
 options(repr.plot.width=width, repr.plot.height=height)
 
 pca_plot <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
     + geom_point(aes(color=Metadata_treatment), size=0.5)
     # move the legend to the bottom
     + guides(
@@ -237,7 +237,7 @@ dev.off()
 pca_data$Metadata_Time <- as.numeric(as.character(pca_data$Metadata_Time))
 
 pca_all_time_plot <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
     + geom_point(aes(color=Metadata_Time), size=0.5)
     # move the legend to the bottom
     + guides(
@@ -265,7 +265,7 @@ pca_all_time_plot
 dev.off()
 
 pca_all_time_plot_facet <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
     + geom_point(aes(color=Metadata_Time), size=0.5)
     # move the legend to the bottom
     + guides(
@@ -307,7 +307,7 @@ width <- 15
 height <- 7
 options(repr.plot.width=width, repr.plot.height=height)
 umap_serum_plot <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
     + geom_point(aes(color=Metadata_serum), size=0.5)
     # move the legend to the bottom
     + guides(
@@ -335,7 +335,7 @@ dev.off()
 umap_serum_plot
 
 umap_over_time_serum_plot <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
     + geom_point(aes(color=Metadata_serum), size=0.5)
     # move the legend to the bottom
     + guides(
@@ -363,7 +363,7 @@ umap_over_time_serum_plot
 dev.off()
 
 umap_time_serum_plot <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
     + geom_point(aes(color=Metadata_Time), size=0.5)
     # move the legend to the bottom
     + guides(
@@ -392,7 +392,7 @@ umap_time_serum_plot
 dev.off()
 
 pca_serum_plot <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
     + geom_point(aes(color=Metadata_serum), size=0.5)
     # move the legend to the bottom
     + guides(
@@ -419,7 +419,7 @@ pca_serum_plot
 dev.off()
 
 pca_over_time_serum_plot <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
     + geom_point(aes(color=Metadata_serum), size=0.5)
     # move the legend to the bottom
     + guides(
@@ -447,7 +447,7 @@ pca_over_time_serum_plot
 dev.off()
 
 pca_time_serum_plot <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
     + geom_point(aes(color=Metadata_Time), size=0.5)
     # move the legend to the bottom
     + guides(

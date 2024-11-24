@@ -1,4 +1,4 @@
-name: pyroptosis_timnelapse_env
+name: pyroptosis_timelapse_env
 channels:
   - conda-forge
   - anaconda

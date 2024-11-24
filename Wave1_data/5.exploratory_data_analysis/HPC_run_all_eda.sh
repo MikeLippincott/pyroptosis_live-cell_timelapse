@@ -8,8 +8,11 @@
 #SBATCH --time=24:00:00
 #SBATCH --output=sample-%j.out
 
+module load anaconda
+conda init bash
+
 # activate the conda environment
-conda activate pyroptosis_timnelapse_env
+conda activate pyroptosis_timelapse_env
 
 # convert the notebooks to scripts
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb

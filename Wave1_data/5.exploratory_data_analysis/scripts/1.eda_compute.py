@@ -29,37 +29,37 @@ output_data_dir.mkdir(parents=True, exist_ok=True)
 data_subset = False
 
 
-# In[3]:
+# In[ ]:
 
 
 input_data_dict = {
     "first_time": {
         "input_file_path_subset": pathlib.Path(
             "../data/first_time/live_cell_pyroptosis_wave1_sc_first_time_norm_fs_subset_testing_data.parquet"
-        ).resolve(strict=True),
+        ).resolve(),
         "input_file_path": pathlib.Path(
             "../../4.processing_profiled_features/data/feature_selected_data/live_cell_pyroptosis_wave1_sc_first_time_norm_fs.parquet"
-        ).resolve(strict=True),
+        ).resolve(),
         "output_data_dir": pathlib.Path("../data/first_time").resolve(),
         "figure_dir": pathlib.Path("../figures/first_time").resolve(),
     },
     "pan_time": {
         "input_file_path_subset": pathlib.Path(
             "../data/pan_time/live_cell_pyroptosis_wave1_sc_pan_time_norm_fs_subset_testing_data.parquet"
-        ).resolve(strict=True),
+        ).resolve(),
         "input_file_path": pathlib.Path(
             "../../4.processing_profiled_features/data/feature_selected_data/live_cell_pyroptosis_wave1_sc_pan_time_norm_fs.parquet"
-        ).resolve(strict=True),
+        ).resolve(),
         "output_data_dir": pathlib.Path("../data/pan_time").resolve(),
         "figure_dir": pathlib.Path("../figures/pan_time").resolve(),
     },
     "within_time": {
         "input_file_path_subset": pathlib.Path(
             "../data/within_time/live_cell_pyroptosis_wave1_sc_within_time_norm_fs_subset_testing_data.parquet"
-        ).resolve(strict=True),
+        ).resolve(),
         "input_file_path": pathlib.Path(
             "../../4.processing_profiled_features/data/feature_selected_data/live_cell_pyroptosis_wave1_sc_within_time_norm_fs.parquet"
-        ).resolve(strict=True),
+        ).resolve(),
         "output_data_dir": pathlib.Path("../data/within_time").resolve(),
         "figure_dir": pathlib.Path("../figures/within_time").resolve(),
     },
@@ -67,7 +67,7 @@ input_data_dict = {
 pprint(input_data_dict)
 
 
-# In[4]:
+# In[ ]:
 
 
 random_state = 0
@@ -79,7 +79,12 @@ scree_pca = PCA(n_components=max_pca_components)
 pca_reducer = PCA(n_components=2, random_state=random_state)
 
 for data_set_name in input_data_dict.keys():
-    data_df = pd.read_parquet(input_data_dict[data_set_name]["input_file_path_subset"])
+    if data_subset:
+        data_df = pd.read_parquet(
+            input_data_dict[data_set_name]["input_file_path_subset"]
+        )
+    else:
+        data_df = pd.read_parquet(input_data_dict[data_set_name]["input_file_path"])
     # set the UMAP parameters
     # separate the data into features and labels
     metadata_columns = data_df.columns[data_df.columns.str.contains("Metadata")]

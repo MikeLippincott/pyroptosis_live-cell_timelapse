@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
-#SBATCH --mem=200G
-#SBATCH --partition=amilan
-#SBATCH --qos=normal
+#SBATCH --mem=600G
+#SBATCH --partition=amem
+#SBATCH --qos=mem
 #SBATCH --account=amc-general
 #SBATCH --time=24:00:00
 #SBATCH --output=sample-%j.out

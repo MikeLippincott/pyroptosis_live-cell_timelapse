@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --nstasks=1
+#SBATCH --ntasks=1
 #SBATCH --partition=amilan
 #SBATCH --qos=long
 #SBATCH --account=amc-general
-#SBATCH --time=96:00:00
+#SBATCH --time=60:00:00
 #SBATCH --output=../pcp-%j.out
 
 jid0=$(sbatch 0.merge_sc.sh | awk '{print $4}')

@@ -10,6 +10,7 @@
 
 import json
 import pathlib
+import sys
 
 import lancedb
 import matplotlib.pyplot as plt
@@ -18,6 +19,7 @@ import pandas as pd
 import seaborn as sns
 from pycytominer import annotate
 from pycytominer.cyto_utils import output
+
 
 # ## Set paths and variables
 
@@ -112,6 +114,26 @@ for data_run, info in dict_of_inputs.items():
     # rename metadata columns
     annotated_df.rename(columns=columns_to_rename, inplace=True)
 
+    time_mapping = {
+        time: i
+        for i, time in enumerate(annotated_df["Metadata_Plate"].sort_values().unique())
+    }
+    # check if the new columns exist, if so drop them
+    if "Metadata_treatment_serum" in annotated_df.columns:
+        annotated_df.drop(columns=["Metadata_treatment_serum"], inplace=True)
+    if "Metadata_Time" in annotated_df.columns:
+        annotated_df.drop(columns=["Metadata_Time"], inplace=True)
+    # Combine all new columns at once to avoid fragmentation
+    new_columns = pd.DataFrame(
+        {
+            "Metadata_treatment_serum": annotated_df["Metadata_treatment"]
+            + " "
+            + annotated_df["Metadata_serum"],
+            "Metadata_Time": annotated_df["Metadata_Plate"].map(time_mapping),
+        }
+    )
+    annotated_df = pd.concat([annotated_df, new_columns], axis=1)
+
     # save annotated df as parquet file
     output(
         df=annotated_df,
@@ -122,3 +144,4 @@ for data_run, info in dict_of_inputs.items():
     print(f"{data_run} has been annotated")
     print(f"With the input shape of {single_cell_df.shape}")
     print(f"Output shape of {annotated_df.shape}")
+

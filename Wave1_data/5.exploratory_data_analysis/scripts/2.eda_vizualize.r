@@ -30,17 +30,31 @@ if (!dir.exists(figure_path)) {
   dir.create(figure_path)
 }
 
+print(dim(umap_data))
+print(dim(pca_data))
+print(dim(scree_data))
+
 head(umap_data,1)
 head(pca_data,1)
 head(scree_data,1)
+
+print(dim(umap_data))
+print(dim(pca_data))
+
+# randomly mix the order of the rows to prevent plotting bias and artifacts
+umap_data <- umap_data[sample(nrow(umap_data)),]
+pca_data <- pca_data[sample(nrow(pca_data)),]
+
+print(dim(umap_data))
+print(dim(pca_data))
 
 width <- 8
 height <- 8
 options(repr.plot.width = width, repr.plot.height = height)
 scree_plot <- (
-    ggplot(scree_data, aes(x = `Principal Component`, y = `Explained Variance`)) 
-    + geom_line() 
-    + geom_bar(stat = "identity", fill = "steelblue") 
+    ggplot(scree_data, aes(x = `Principal Component`, y = `Explained Variance`))
+    + geom_line()
+    + geom_bar(stat = "identity", fill = "steelblue")
     + labs(x = "Principal Component", y = "Variance Explained")
     + theme_bw()
     + theme(
@@ -64,8 +78,8 @@ height <- 10
 options(repr.plot.width=width, repr.plot.height=height)
 
 umap_plot <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
-    + geom_point(aes(color=Metadata_treatment), size=0.5)
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    + geom_point(aes(color=Metadata_treatment), size=0.2)
     # move the legend to the bottom
     + guides(
         color = guide_legend(nrow = 12, title = "Treatment", override.aes = list(size = 2)),
@@ -121,8 +135,8 @@ dev.off()
 umap_data$Metadata_Time <- as.numeric(as.character(umap_data$Metadata_Time))
 
 umap_all_time_plot <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
-    + geom_point(aes(color=Metadata_Time), size=0.5)
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    + geom_point(aes(color=Metadata_Time), size=0.2)
     # move the legend to the bottom
     + guides(
         # make the legend a continuous color scale
@@ -148,8 +162,8 @@ umap_all_time_plot
 dev.off()
 
 umap_all_time_plot_facet <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
-    + geom_point(aes(color=Metadata_Time), size=0.5)
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    + geom_point(aes(color=Metadata_Time), size=0.2)
     # move the legend to the bottom
     + guides(
         # make the legend a continuous color scale
@@ -182,8 +196,8 @@ height <- 10
 options(repr.plot.width=width, repr.plot.height=height)
 
 pca_plot <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
-    + geom_point(aes(color=Metadata_treatment), size=0.5)
+    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    + geom_point(aes(color=Metadata_treatment), size=0.2)
     # move the legend to the bottom
     + guides(
         color = guide_legend(nrow = 12, title = "Treatment", override.aes = list(size = 2)),
@@ -237,8 +251,8 @@ dev.off()
 pca_data$Metadata_Time <- as.numeric(as.character(pca_data$Metadata_Time))
 
 pca_all_time_plot <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
-    + geom_point(aes(color=Metadata_Time), size=0.5)
+    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    + geom_point(aes(color=Metadata_Time), size=0.2)
     # move the legend to the bottom
     + guides(
         # make the legend a continuous color scale
@@ -265,8 +279,8 @@ pca_all_time_plot
 dev.off()
 
 pca_all_time_plot_facet <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
-    + geom_point(aes(color=Metadata_Time), size=0.5)
+    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    + geom_point(aes(color=Metadata_Time), size=0.2)
     # move the legend to the bottom
     + guides(
         # make the legend a continuous color scale
@@ -307,8 +321,8 @@ width <- 15
 height <- 7
 options(repr.plot.width=width, repr.plot.height=height)
 umap_serum_plot <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
-    + geom_point(aes(color=Metadata_serum), size=0.5)
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    + geom_point(aes(color=Metadata_serum), size=0.2)
     # move the legend to the bottom
     + guides(
         color = guide_legend(nrow = 1, title = "Serum", override.aes = list(size = 2)),
@@ -335,8 +349,8 @@ dev.off()
 umap_serum_plot
 
 umap_over_time_serum_plot <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
-    + geom_point(aes(color=Metadata_serum), size=0.5)
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    + geom_point(aes(color=Metadata_serum), size=0.2)
     # move the legend to the bottom
     + guides(
         color = guide_legend(nrow = 1, title = "Serum", override.aes = list(size = 2)),
@@ -363,8 +377,8 @@ umap_over_time_serum_plot
 dev.off()
 
 umap_time_serum_plot <- (
-    ggplot(umap_data, aes(x=UMAP0, y=UMAP1)) 
-    + geom_point(aes(color=Metadata_Time), size=0.5)
+    ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
+    + geom_point(aes(color=Metadata_Time), size=0.2)
     # move the legend to the bottom
     + guides(
         # make the legend a continuous color scale
@@ -392,8 +406,8 @@ umap_time_serum_plot
 dev.off()
 
 pca_serum_plot <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
-    + geom_point(aes(color=Metadata_serum), size=0.5)
+    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    + geom_point(aes(color=Metadata_serum), size=0.2)
     # move the legend to the bottom
     + guides(
         color = guide_legend(nrow = 1, title = "Serum", override.aes = list(size = 2)),
@@ -419,8 +433,8 @@ pca_serum_plot
 dev.off()
 
 pca_over_time_serum_plot <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
-    + geom_point(aes(color=Metadata_serum), size=0.5)
+    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    + geom_point(aes(color=Metadata_serum), size=0.2)
     # move the legend to the bottom
     + guides(
         color = guide_legend(nrow = 1, title = "Serum", override.aes = list(size = 2)),
@@ -447,8 +461,8 @@ pca_over_time_serum_plot
 dev.off()
 
 pca_time_serum_plot <- (
-    ggplot(pca_data, aes(x=PCA0, y=PCA1)) 
-    + geom_point(aes(color=Metadata_Time), size=0.5)
+    ggplot(pca_data, aes(x=PCA0, y=PCA1))
+    + geom_point(aes(color=Metadata_Time), size=0.2)
     # move the legend to the bottom
     + guides(
         # make the legend a continuous color scale
@@ -476,7 +490,7 @@ pca_time_serum_plot
 dev.off()
 
 width <- 10
-height <- 5
+height <- 10
 options(repr.plot.width = width, repr.plot.height = height)
 umap_serum_plot
 umap_over_time_serum_plot

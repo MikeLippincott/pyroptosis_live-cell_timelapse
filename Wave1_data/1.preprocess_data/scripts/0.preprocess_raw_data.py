@@ -17,7 +17,7 @@ import tqdm
 # In[2]:
 
 
-# absolute path to the raw data directory only works on this machine
+# absolute path to the raw data directory (only works on this machine)
 path_to_raw_data = pathlib.Path(
     "/home/lippincm/Desktop/18TB/Saguaro_pyroptosis_wave1/"
 ).resolve(strict=True)

@@ -552,7 +552,7 @@ df[(df["well"] == "W0322")]
 # In[12]:
 
 
-# get all files in the 20241026T164425_ dir
+# get all files in the 20241025T045229_ dir
 files = glob.glob(str(pathlib.Path("../../../data/raw/20241025T045229_") / "*"))
 files = [pathlib.Path(x).stem for x in files if pathlib.Path(x).is_file()]
 df = pd.DataFrame(files, columns=["file_name"])

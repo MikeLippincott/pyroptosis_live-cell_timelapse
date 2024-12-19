@@ -13,7 +13,7 @@ import pandas as pd
 # In[2]:
 
 
-# absolute path to the raw data directory only works on this machine
+# path the the platemaps
 path_to_plate_map = pathlib.Path("../../../data/raw/platemaps/").resolve()
 path_to_plate_map.mkdir(parents=True, exist_ok=True)
 path_to_plate_map = path_to_plate_map / "wave1_plate_map.csv"
@@ -22,8 +22,9 @@ path_to_plate_map = path_to_plate_map / "wave1_plate_map.csv"
 # In[3]:
 
 
+# map the wells to a given treatment for metadata purposes
 dict_platemap = {
-    "C04": "CTL (complete medium only)",
+    "C04": "Media",
     "D04": "LPS 10 ug/ml",
     "E04": "LPS 1 ug/ml",
     "F04": "LPS 0.1 ug/ml",
@@ -47,7 +48,7 @@ dict_platemap = {
     "L05": "Ab1-42 10 uM",
     "M05": "Ab1-42 2 uM",
     "N05": "Ab1-42 0.4 uM",
-    "C06": "CTL (complete medium only)",
+    "C06": "Media",
     "D06": "LPS 10 ug/ml",
     "E06": "LPS 1 ug/ml",
     "F06": "LPS 0.1 ug/ml",
@@ -71,7 +72,7 @@ dict_platemap = {
     "L07": "Ab1-42 10 uM",
     "M07": "Ab1-42 2 uM",
     "N07": "Ab1-42 0.4 uM",
-    "C08": "CTL (complete medium only)",
+    "C08": "Media",
     "D08": "LPS 10 ug/ml",
     "E08": "LPS 1 ug/ml",
     "F08": "LPS 0.1 ug/ml",
@@ -95,7 +96,7 @@ dict_platemap = {
     "L09": "Ab1-42 10 uM",
     "M09": "Ab1-42 2 uM",
     "N09": "Ab1-42 0.4 uM",
-    "C10": "CTL (complete medium only)",
+    "C10": "Media",
     "D10": "LPS 10 ug/ml",
     "E10": "LPS 1 ug/ml",
     "F10": "LPS 0.1 ug/ml",
@@ -125,9 +126,6 @@ platemap_df = pd.DataFrame.from_dict(
 )
 platemap_df.reset_index(inplace=True)
 platemap_df.rename(columns={"index": "well"}, inplace=True)
-platemap_df["treatment"] = platemap_df["treatment"].str.replace(
-    "CTL (complete medium only)", "Media"
-)
 platemap_df.head()
 
 
@@ -138,7 +136,6 @@ platemap_df.head()
 platemap_df[["treatment1", "treatment2"]] = platemap_df["treatment"].str.split(
     " \+ ", expand=True
 )
-# platemap_df[['treatment1', 'treatment2']] = platemap_df["treatment"].str.split("+",n=1, expand=True)
 platemap_df[["treatment1", "treatment1_dose"]] = platemap_df["treatment1"].str.split(
     " ", n=1, expand=True
 )

@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.DS_Store
 
 # C extensions
 *.so
@@ -177,3 +178,4 @@ Wave1_data/4.processing_profiled_features/data/*
 Wave1_data/5.exploratory_data_analysis/scripts/Rplots.pdf
 Wave1_data/5.exploratory_data_analysis/data/*
 Wave1_data/5.exploratory_data_analysis/figures/*
+

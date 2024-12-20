@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.DS_Store
 
 # C extensions
 *.so
@@ -161,12 +162,19 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+
+# data folder
 data/*
 Wave1_data/2.illumination_correction/illum_directory/*
+Wave1_data/2.illumination_correction/logs/*
 Wave1_data/3.cellprofiling/analysis_output/*
-Wave1_data/4.processing_profiled_features/data/*
 Wave1_data/4.processing_profiled_features/notebooks/runinfo/*
 Wave1_data/4.processing_profiled_features/scripts/runinfo/*
-Wave1_data/5.exploratory_data_analysis/data/*
-Wave1_data/5.exploratory_data_analysis/figures/
+Wave1_data/4.processing_profiled_features/data/*
+# slurm logs
+*.out
+*.err
+*.log
 Wave1_data/5.exploratory_data_analysis/scripts/Rplots.pdf
+Wave1_data/5.exploratory_data_analysis/data/*
+Wave1_data/5.exploratory_data_analysis/figures/*

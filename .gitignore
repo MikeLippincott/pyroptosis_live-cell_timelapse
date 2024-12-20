@@ -171,11 +171,11 @@ Wave1_data/3.cellprofiling/analysis_output/*
 Wave1_data/4.processing_profiled_features/notebooks/runinfo/*
 Wave1_data/4.processing_profiled_features/scripts/runinfo/*
 Wave1_data/4.processing_profiled_features/data/*
-
-Wave1_data/5.exploratory_data_analysis/data/*
-Wave1_data/5.exploratory_data_analysis/figures/*
-
 # slurm logs
 *.out
 *.err
 *.log
+Wave1_data/5.exploratory_data_analysis/scripts/Rplots.pdf
+Wave1_data/5.exploratory_data_analysis/data/*
+Wave1_data/5.exploratory_data_analysis/figures/*
+

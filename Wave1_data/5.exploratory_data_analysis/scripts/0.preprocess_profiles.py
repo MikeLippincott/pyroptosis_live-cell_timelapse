@@ -3,7 +3,7 @@
 
 # This notebook preprocesses the data to have correct time and treatment metadata.
 
-# In[1]:
+# In[ ]:
 
 
 import pathlib
@@ -11,7 +11,6 @@ from pprint import pprint
 
 import pandas as pd
 import pyarrow.parquet as pq
-
 
 # In[ ]:
 
@@ -107,4 +106,3 @@ for dataset in input_data_dict:
         data.to_parquet(input_data_dict[dataset]["input_file_path"])
 
     print(f"Preprocessed data for {dataset} has the shape: {data.shape}")
-

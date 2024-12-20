@@ -8,8 +8,8 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 cd scripts || exit
 
 # run the scripts
-# python 0.preprocess_profiles.py
-# python 1.eda_compute.py
+python 0.preprocess_profiles.py
+python 1.eda_compute.py
 
 conda deactivate
 conda activate pyroptosis_timelapse_R

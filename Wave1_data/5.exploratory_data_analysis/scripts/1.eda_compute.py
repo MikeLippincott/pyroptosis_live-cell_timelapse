@@ -3,7 +3,7 @@
 
 # This notebook explores the data at hand to understand the distribution and shape, as well as perform some pca and UMAP analysis to understand the data better.
 
-# In[1]:
+# In[ ]:
 
 
 import pathlib
@@ -16,7 +16,6 @@ import pyarrow.parquet as pq
 import seaborn as sns
 import umap
 from sklearn.decomposition import PCA
-
 
 # In[ ]:
 
@@ -133,4 +132,3 @@ for data_set_name in input_data_dict.keys():
     pca_embedding_df.to_parquet(pca_embeddings_file_path)
     print(f"PCA embedding shape: {pca_embedding_df.shape}")
     pca_embedding_df.head()
-

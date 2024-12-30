@@ -2,7 +2,7 @@ CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
 DateRevision:426
 GitHash:
-ModuleCount:16
+ModuleCount:15
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Images module is blank in the GUI since we are adding the image path in CLI.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -325,27 +325,3 @@ SaveImages:[module_num:15|svn_version:'Unknown'|variable_revision_number:16|show
     Base image folder:Elsewhere...|
     How to save the series:T (Time)
     Save with lossless compression?:Yes
-
-ExportToSpreadsheet:[module_num:16|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select the column delimiter:Comma (",")
-    Add image metadata columns to your object data file?:No
-    Add image file and folder names to your object data file?:No
-    Select the measurements to export:No
-    Calculate the per-image mean values for object measurements?:No
-    Calculate the per-image median values for object measurements?:No
-    Calculate the per-image standard deviation values for object measurements?:No
-    Output file location:Default Output Folder|
-    Create a GenePattern GCT file?:No
-    Select source of sample row name:Metadata
-    Select the image to use as the identifier:None
-    Select the metadata to use as the identifier:None
-    Export all measurement types?:Yes
-    Press button to select measurements:
-    Representation of Nan/Inf:NaN
-    Add a prefix to file names?:Yes
-    Filename prefix:IC_QC_Run
-    Overwrite existing files without warning?:No
-    Data to export:Image
-    Combine these object measurements with those of the previous object?:No
-    File name:DATA.csv
-    Use the object name for the file name?:Yes

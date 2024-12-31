@@ -46,15 +46,6 @@ while [ $(squeue -u $USER | wc -l) -gt 2 ]; do
     sleep 1s
 done
 
-for job_id in $(cat job_ids.txt); do
-    job_id=$(echo $job_id | awk '{print $1}')
-    job_status=$(sacct -j $job_id -o state | tail -n 1)
-    if [ $job_status != "COMPLETED" ]; then
-        echo "Job $job_id did not complete successfully"
-        exit 1
-    fi
-done
-
 conda deactivate
 
 echo "All illumination correction jobs submitted!"

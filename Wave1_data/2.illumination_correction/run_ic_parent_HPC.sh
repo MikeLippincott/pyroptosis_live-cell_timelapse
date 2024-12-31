@@ -3,8 +3,8 @@
 #SBATCH --partition=amilan
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
-#SBATCH --time=1:00:00
-#SBATCH --output=../ic_parent-%j.out
+#SBATCH --time=10:00:00
+#SBATCH --output=ic_parent-%j.out
 
 # This script runs Illumination Correction on the raw image data.
 module load anaconda

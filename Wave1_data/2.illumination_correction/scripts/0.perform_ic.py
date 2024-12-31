@@ -2,12 +2,12 @@
 # coding: utf-8
 
 # # Run CellProfiler `illum.cppipe` (IC) pipeline
-# 
+#
 # In this notebook, we run the CellProfiler IC pipeline to calculate the illumination (illum) correction functions for all images per channel (5), apply the functions, and save images into a new directory.
 
 # ## Import libraries
 
-# In[ ]:
+# In[1]:
 
 
 import argparse
@@ -30,7 +30,7 @@ except NameError:
 
 # ## Set paths
 
-# In[ ]:
+# In[2]:
 
 
 if not in_notebook:
@@ -48,7 +48,7 @@ if not in_notebook:
     input_dir = pathlib.Path(args.input_dir).resolve(strict=True)
 else:
     print("Running in a notebook")
-    input_dir = pathlib.Path("../examples/raw_z_input/").resolve(strict=True)
+    input_dir = pathlib.Path("../../../data/test_dir/").resolve(strict=True)
 
 run_name = "illumination_correction"
 # path to folder for IC images
@@ -61,25 +61,24 @@ illum_directory.mkdir(exist_ok=True, parents=True)
 
 # 5 FOVs per well, 96 wells per plate, 1 plate at 18 time points = 8640 image sets
 
-# In[ ]:
+# In[3]:
 
 
 path_to_pipeline = pathlib.Path("../pipelines/illum_5ch.cppipe").resolve(strict=True)
 # get all directories with raw images
 dict_of_runs = {}
-input_directories = list(input_dir.rglob("*"))
-input_directories = [x for x in input_directories if x.is_dir()]
-# filter for directories with images
-raw_directories = [x for x in input_directories if len(list(x.glob("*.tif"))) > 0]
+raw_directories = list(input_dir.glob("*"))
+raw_directories = [x for x in raw_directories if x.is_dir()]
 raw_directories = sorted(raw_directories)
+
 
 for dir in raw_directories:
     well_FOV = dir.name
-    plate = str(dir).split("/")[-2]
-    plate_well_FOV = plate + well_FOV
-    dict_of_runs[plate_well_FOV] = {
-        "path_to_images": dir,
-        "path_to_output": illum_directory / plate_well_FOV,
+    print(dir.name)
+    print(dir)
+    dict_of_runs[well_FOV] = {
+        "path_to_images": str(dir),
+        "path_to_output": illum_directory / well_FOV,
         "path_to_pipeline": path_to_pipeline,
     }
 print(f"Added {len(dict_of_runs.keys())} to the list of runs")
@@ -88,13 +87,13 @@ print(f"Added {len(dict_of_runs.keys())} to the list of runs")
 # ## Run `illum.cppipe` pipeline and calculate + save IC images
 # This last cell does not get run as we run this pipeline in the command line.
 
-# In[ ]:
+# In[4]:
 
 
 start = time.time()
 
 
-# In[ ]:
+# In[5]:
 
 
 cp_parallel.run_cellprofiler_parallel(
@@ -102,7 +101,7 @@ cp_parallel.run_cellprofiler_parallel(
 )
 
 
-# In[ ]:
+# In[6]:
 
 
 end = time.time()
@@ -112,4 +111,3 @@ minutes, seconds = divmod(rem, 60)
 print(
     "Total time taken: {:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
 )
-

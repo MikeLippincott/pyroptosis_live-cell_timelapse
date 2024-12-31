@@ -42,7 +42,7 @@ for FOV_dir in "${FOV_dirs[@]}"; do
 done
 
 # check that all jobs run successfully
-while [ $(squeue -u $USER | wc -l) -gt 1 ]; do
+while [ $(squeue -u $USER | wc -l) -gt 2 ]; do
     sleep 1s
 done
 

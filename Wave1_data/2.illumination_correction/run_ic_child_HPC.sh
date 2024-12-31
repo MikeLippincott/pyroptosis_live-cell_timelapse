@@ -5,7 +5,7 @@
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=1:00:00
-#SBATCH --output=../ic-%j.out
+#SBATCH --output=ic_child-%j.out
 
 # This script runs Illumination Correction on the raw image data.
 module load anaconda

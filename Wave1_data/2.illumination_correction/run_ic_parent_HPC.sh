@@ -18,7 +18,7 @@ cd scripts/ || exit
 # get a list of all dirs in the raw data folder
 # data_dir="../../../data/raw/"
 data_dir="../../../data/test_dir"
-mapfile -t FOV_dirs < <(ls -d $data_dir*/)
+mapfile -t FOV_dirs < <(ls -d $data_dir/*)
 cd ../ || exit
 
 echo length of plate_dirs: ${#FOV_dirs[@]}
@@ -32,12 +32,13 @@ for FOV_dir in "${FOV_dirs[@]}"; do
         sleep 1s
         number_of_jobs=$(squeue -u $USER | wc -l)
     done
+    job_id=$(sbatch run_ic_child_HPC.sh "$FOV_dir")
 	echo " '$job_id' '$FOV_dir' "
-        echo " '$job_id' " >> job_ids.txt
-        job_id=$(sbatch run_ic_child_HPC.sh "$dir")
-        # append the job id to the file
-        job_id=$(echo $job_id | awk '{print $4}')
-        let jobs_submitted_counter++
+    echo " '$job_id' " >> job_ids.txt
+
+    # append the job id to the file
+    job_id=$(echo $job_id | awk '{print $4}')
+    let jobs_submitted_counter++
 done
 
 # check that all jobs run successfully

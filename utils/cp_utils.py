@@ -53,7 +53,7 @@ def run_cellprofiler(
     sqlite_name: Optional[None | str] = None,
     hardcode_sqlite_name: Optional[str | None] = None,
     analysis_run: Optional[bool | False] = False,
-    rename_sqlite_file: Optional[bool | False] = False,
+    rename_sqlite_file_bool: Optional[bool | False] = False,
 ):
     """Run CellProfiler on data using LoadData CSV. It can be used for both a illumination correction pipeline and analysis pipeline.
 
@@ -108,7 +108,7 @@ def run_cellprofiler(
                 check=True,
             )
             print(
-                f"The CellProfiler run has been completed with log. Please check log file for any errors."
+                "The CellProfiler run has been completed with log. Please check log file for any errors."
             )
 
     if analysis_run:
@@ -123,7 +123,7 @@ def run_cellprofiler(
 
         # a log file is created for each plate or data set name that holds all outputs and errors
         with open(
-            pathlib.Path(f"logs/cellprofiler_output.log"),
+            pathlib.Path("logs/cellprofiler_output.log"),
             "w",
         ) as cellprofiler_output_file:
             # run CellProfiler for an analysis run
@@ -145,7 +145,7 @@ def run_cellprofiler(
                 check=True,
             )
 
-        if rename_sqlite_file:
+        if rename_sqlite_file_bool:
             # rename the outputted .sqlite file to the specified sqlite name if running one analysis pipeline
             rename_sqlite_file(
                 sqlite_dir_path=pathlib.Path(path_to_output),

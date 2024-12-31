@@ -16,8 +16,8 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 cd scripts/ || exit
 
 # get a list of all dirs in the raw data folder
-# data_dir="../../../data/raw/"
-data_dir="../../../data/test_dir"
+data_dir="../../../data/raw"
+# data_dir="../../../data/test_dir"
 mapfile -t FOV_dirs < <(ls -d $data_dir/*)
 cd ../ || exit
 

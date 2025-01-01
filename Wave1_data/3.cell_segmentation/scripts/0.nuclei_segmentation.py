@@ -1,150 +1,240 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# This notebook focuses on trying to find a way to segment cells within organoids properly.
+# The end goals is to segment cell and extract morphology features from cellprofiler.
+# These masks must be imported into cellprofiler to extract features.
+
+# In[1]:
 
 
 import argparse
-import os
 import pathlib
 
 import matplotlib.pyplot as plt
+
+# Import dependencies
 import numpy as np
-import pandas as pd
-import seaborn as sns
 import skimage
 import tifffile
-import torch
-import tqdm
-from stardist.models import StarDist2D
+from cellpose import models
+from csbdeep.utils import normalize
+from PIL import Image
+from stardist.plot import render_label
 
 # check if in a jupyter notebook
-
 try:
     cfg = get_ipython().config
     in_notebook = True
 except NameError:
     in_notebook = False
 
-print(f"Running in notebook: {in_notebook}")
-
-os.environ["OMP_NUM_THREADS"] = "8"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+print(in_notebook)
 
 
-# check gpu
-import tensorflow as tf
-
-gpu_devices = tf.config.experimental.list_physical_devices("GPU")
-if not gpu_devices:
-    print("No GPU found")
-else:
-    print("GPU found")
-
-
-# tensorflow clear gpu memory
-def clear_gpu_memory():
-    from numba import cuda
-
-    cuda.select_device(0)
-    cuda.close()
-
-
-clear_gpu_memory()
-
-
-# In[ ]:
+# In[2]:
 
 
 if not in_notebook:
-    print("Running as script")
     # set up arg parser
     parser = argparse.ArgumentParser(description="Segment the nuclei of a tiff image")
 
     parser.add_argument(
-        "--input_dir_main",
+        "--input_dir",
         type=str,
         help="Path to the input directory containing the tiff images",
     )
 
-    args = parser.parse_args()
-    input_dir_main = pathlib.Path(args.input_dir_main).resolve(strict=True)
-else:
-    print("Running in a notebook")
-    input_dir_main = pathlib.Path(
-        "../../2.illumination_correction/illum_directory/W0052_F0001/"
-    ).resolve(strict=True)
+    parser.add_argument(
+        "--clip_limit",
+        type=float,
+        help="Clip limit for the adaptive histogram equalization",
+    )
+    parser.add_argument(
+        "--optimize_segmentation",
+        type=bool,
+        help="Optimize the segmentation parameters",
+    )
 
+    args = parser.parse_args()
+    clip_limit = args.clip_limit
+    input_dir = pathlib.Path(args.input_dir).resolve(strict=True)
+    optimize_segmentation = args.optimize_segmentation
+
+else:
+    input_dir = pathlib.Path(
+        "../../2.illumination_correction/illum_directory/W0078_F0001"
+    ).resolve(strict=True)
+    clip_limit = 0.6
+    optimize_segmentation = True
+
+
+figures_dir = pathlib.Path("../figures").resolve()
+figures_dir.mkdir(exist_ok=True, parents=True)
+
+
+# ## Set up images, paths and functions
 
 # In[3]:
 
 
-file_extensions = {".tif", ".tiff"}
-# get all the tiff files
-tiff_files = list(input_dir_main.glob("*"))
-tiff_files = [f for f in tiff_files if f.suffix in file_extensions]
-tiff_files = sorted(tiff_files)
-
-tiff_files = [f for f in tiff_files if "C4" in f.name]
-
-print(f"Found {len(tiff_files)} tiff files in the input directory")
+image_extensions = {".tif", ".tiff"}
+files = sorted(input_dir.glob("*"))
+files = [str(x) for x in files if x.suffix in image_extensions]
 
 
 # In[4]:
 
 
-model = StarDist2D.from_pretrained("2D_versatile_fluo")
+image_dict = {
+    "nuclei_file_paths": [],
+    "nuclei": [],
+}
 
 
 # In[5]:
 
 
-image_dims = tifffile.imread(tiff_files[0]).shape
-timelapse_raw = np.zeros(
-    (len(tiff_files), image_dims[0], image_dims[1]), dtype=np.uint16
-)
-timelapse_raw_visualize = np.zeros(
-    (len(tiff_files), image_dims[0], image_dims[1]), dtype=np.uint16
-)
-stardist_labels = np.zeros(
-    (len(tiff_files), image_dims[0], image_dims[1]), dtype=np.uint16
-)
+# split files by channel
+for file in files:
+    if "C4" in file.split("/")[-1]:
+        image_dict["nuclei_file_paths"].append(file)
+        image_dict["nuclei"].append(tifffile.imread(file).astype(np.float32))
+nuclei_image_list = [np.array(nuclei) for nuclei in image_dict["nuclei"]]
+
+nuclei = np.array(nuclei_image_list).astype(np.int16)
+
+nuclei = skimage.exposure.equalize_adapthist(nuclei, clip_limit=clip_limit)
+
+print(nuclei.shape)
 
 
 # In[6]:
 
 
-# import stardist
-for image_index, image_file_path in tqdm.tqdm(enumerate(tiff_files)):
-    image = tifffile.imread(image_file_path)
-    timelapse_raw_visualize[image_index, :, :] = image
-    image = normalize(image, gamma=1.0)
-    timelapse_raw[image_index, :, :] = image
+original_nuclei_image = nuclei.copy()
 
-    segmented_image, _ = model.predict_instances(image)
-    stardist_labels[image_index, :, :] = segmented_image
-# concat all the images into one array
-print(stardist_labels.shape)
 
+# ## Cellpose
 
 # In[7]:
 
 
-detections = np.zeros((len(tiff_files), image_dims[0], image_dims[1]), dtype=np.uint16)
-edges = np.zeros((len(tiff_files), image_dims[0], image_dims[1]), dtype=np.uint16)
-for frame_index, frame in enumerate(stardist_labels):
-    detections[frame_index, :, :], edges[frame_index, :, :] = labels_to_contours(frame)
-print(detections.shape, edges.shape)
+if optimize_segmentation:
+    # model_type='cyto' or 'nuclei' or 'cyto2' or 'cyto3'
+    model_name = "nuclei"
+    model = models.Cellpose(model_type=model_name, gpu=True)
+
+    channels = [[1, 0]]
+
+    masks_all_dict = {"masks": [], "imgs": [], "diameter": []}
+    # get masks for all the images
+    # save to a dict for later use
+    img = nuclei[1, :, :]
+    img = normalize(img)
+    for diameter in range(5, 150, 5):
+        masks, flows, styles, diams = model.eval(
+            img, channels=channels, diameter=diameter
+        )
+        masks_all_dict["masks"].append(masks)
+        masks_all_dict["imgs"].append(img)
+        masks_all_dict["diameter"].append(diameter)
+    print(len(masks_all_dict))
+    masks_all = masks_all_dict["masks"]
+    imgs = masks_all_dict["imgs"]
+    diameters = masks_all_dict["diameter"]
+
+    masks_all = np.array(masks_all)
+    imgs = np.array(imgs)
+
+    if in_notebook:
+        for diameter in range(len(diameters)):
+            plt.figure(figsize=(20, 10))
+            plt.title(f"Diameter: {diameters[diameter]}")
+            plt.axis("off")
+            plt.subplot(1, 2, 1)
+            plt.imshow(imgs[diameter], cmap="gray")
+            plt.title("Nuclei")
+            plt.axis("off")
+
+            plt.subplot(122)
+            plt.imshow(render_label(masks_all[diameter]))
+            plt.title("Cell masks")
+            plt.axis("off")
+            plt.show()
+
+    # get the number of unique masks for each diameter
+    unique_masks_dict = {
+        "diameter": [],
+        "unique_masks": [],
+    }
+    for diameter in range(len(diameters)):
+        unique_masks = np.unique(masks_all[diameter])
+        unique_masks_dict["diameter"].append(diameters[diameter])
+        unique_masks_dict["unique_masks"].append(len(unique_masks))
+
+    # get the diameter that is for the max
+    best_diameter = unique_masks_dict["diameter"][
+        np.argmax(unique_masks_dict["unique_masks"])
+    ]
+    print("Best diameter: ", best_diameter)
+    print("Number of unique masks: ", np.max(unique_masks_dict["unique_masks"]))
+
+    plt.plot(unique_masks_dict["diameter"], unique_masks_dict["unique_masks"])
+    # plot a vertical line
+    plt.axvline(x=best_diameter, color="red", linestyle="--")
+    plt.xlabel("Diameter")
+    plt.ylabel("Number of unique masks")
+    plt.title("Number of unique masks vs Diameter")
+    if in_notebook:
+        plt.show()
+    plt.savefig("../figures/unique_nuclei_masks_vs_diameter.png")
 
 
 # In[8]:
 
 
-# ensure that the number of frames of the detections is the same as the number of frames of the tiff files
-assert len(tiff_files) == detections.shape[0]
-for frame_index, frame in enumerate(tiff_files):
-    frame
-    tifffile.imwrite(
-        f"{input_dir_main}/{str(frame.name).split('_C4')[0]}_nuclei_mask.tiff",
-        detections[frame_index, :, :],
-    )
+if not optimize_segmentation:
+    # model_type='cyto' or 'nuclei' or 'cyto2' or 'cyto3'
+    model_name = "nuclei"
+    model = models.Cellpose(model_type=model_name, gpu=True)
+
+    channels = [[1, 0]]
+
+    masks_all_dict = {"masks": [], "imgs": []}
+
+    # get masks for all the images
+    # save to a dict for later use
+    for img in nuclei:
+        img = normalize(img)
+        masks, flows, styles, diams = model.eval(img, channels=channels, diameter=50)
+
+        masks_all_dict["masks"].append(masks)
+        masks_all_dict["imgs"].append(img)
+    print(len(masks_all_dict))
+    masks_all = masks_all_dict["masks"]
+    imgs = masks_all_dict["imgs"]
+
+    masks_all = np.array(masks_all)
+    imgs = np.array(imgs)
+
+    for frame_index, frame in enumerate(image_dict["nuclei_file_paths"]):
+        tifffile.imwrite(
+            f"{input_dir}/{str(frame).split('/')[-1].split('_C4')[0]}_nuclei_mask.tiff",
+            masks_all[frame_index, :, :],
+        )
+    if in_notebook:
+        for z in range(len(masks_all)):
+            plt.figure(figsize=(20, 10))
+            plt.title(f"z: {z}")
+            plt.axis("off")
+            plt.subplot(1, 2, 1)
+            plt.imshow(nuclei[z], cmap="gray")
+            plt.title("Nuclei")
+            plt.axis("off")
+
+            plt.subplot(122)
+            plt.imshow(render_label(masks_all[z]))
+            plt.title("Cell masks")
+            plt.axis("off")
+            plt.show()

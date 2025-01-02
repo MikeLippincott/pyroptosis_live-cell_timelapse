@@ -308,3 +308,4 @@ if not optimize_segmentation:
             plt.title("Cell masks")
             plt.axis("off")
             plt.show()
+

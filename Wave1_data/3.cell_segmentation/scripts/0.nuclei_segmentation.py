@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import skimage
 import tifffile
+import torch
 from cellpose import models
 from csbdeep.utils import normalize
 from PIL import Image
@@ -73,9 +74,19 @@ figures_dir = pathlib.Path("../figures").resolve()
 figures_dir.mkdir(exist_ok=True, parents=True)
 
 
+# In[3]:
+
+
+# set up memory profiler for GPU
+device = torch.device("cuda:0")
+free_before, total_before = torch.cuda.mem_get_info(device)
+starting_level_GPU_RAM = (total_before - free_before) / 1024**2
+print("Starting level of GPU RAM available (MB): ", starting_level_GPU_RAM)
+
+
 # ## Set up images, paths and functions
 
-# In[3]:
+# In[4]:
 
 
 image_extensions = {".tif", ".tiff"}
@@ -83,7 +94,7 @@ files = sorted(input_dir.glob("*"))
 files = [str(x) for x in files if x.suffix in image_extensions]
 
 
-# In[4]:
+# In[5]:
 
 
 image_dict = {
@@ -92,7 +103,7 @@ image_dict = {
 }
 
 
-# In[5]:
+# In[6]:
 
 
 # split files by channel
@@ -109,7 +120,7 @@ nuclei = skimage.exposure.equalize_adapthist(nuclei, clip_limit=clip_limit)
 print(nuclei.shape)
 
 
-# In[6]:
+# In[7]:
 
 
 original_nuclei_image = nuclei.copy()
@@ -117,7 +128,7 @@ original_nuclei_image = nuclei.copy()
 
 # ## Cellpose
 
-# In[7]:
+# In[8]:
 
 
 if optimize_segmentation:
@@ -191,7 +202,7 @@ if optimize_segmentation:
     plt.savefig("../figures/unique_nuclei_masks_vs_diameter.png")
 
 
-# In[8]:
+# In[9]:
 
 
 if not optimize_segmentation:
@@ -238,3 +249,14 @@ if not optimize_segmentation:
             plt.title("Cell masks")
             plt.axis("off")
             plt.show()
+
+
+# In[10]:
+
+
+# set up memory profiler for GPU
+device = torch.device("cuda:0")
+free_after, total_after = torch.cuda.mem_get_info(device)
+amount_used = ((total_after - free_after)) / 1024**2
+print(f"Used: {amount_used} MB or {amount_used / 1024} GB of GPU RAM")
+

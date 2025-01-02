@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=1
+#SBATCH --ntasks=2
 #SBATCH --partition=aa100
 #SBATCH --gres=gpu:1
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=10:00
-#SBATCH --output=segmentation-%j.out
+#SBATCH --output=segmentationo_child-%j.out
 
 module load anaconda
 

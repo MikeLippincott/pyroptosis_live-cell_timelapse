@@ -2,9 +2,9 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --partition=amilan
-#SBATCH --qos=normal
+#SBATCH --qos=long
 #SBATCH --account=amc-general
-#SBATCH --time=24:00:00
+#SBATCH --time=7-00:00:00
 #SBATCH --output=segmentation_parent-%j.out
 
 module load anaconda
@@ -19,12 +19,14 @@ illumination_correction_dir="../../2.illumination_correction/illum_directory"
 
 mapfile -t dirs < <(ls -d "$illumination_correction_dir"/*)
 
+cd .. || exit
+
 touch job_ids.out
 jobs_submitted_counter=0
 for dir in "${dirs[@]}"; do
     echo "$dir"
     number_of_jobs=$(squeue -u $USER | wc -l)
-        while [ $number_of_jobs -gt 8 ]; do
+        while [ $number_of_jobs -gt 990 ]; do
             sleep 1s
             number_of_jobs=$(squeue -u $USER | wc -l)
         done

@@ -197,3 +197,4 @@ if in_notebook:
     plt.savefig(figures_dir / "cell_segmentation_differences.png")
     if in_notebook:
         plt.show()
+

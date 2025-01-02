@@ -19,8 +19,8 @@ cd scripts || exit
 dir=$1
 
 echo "$dir"
-python 0.nuclei_segmentation.py --input_dir "$dir" --clip_limit 0.6 --optimize_segmentation False
-python 1.cell_segmentation.py --input_dir "$dir" --clip_limit 0.6 --optimize_segmentation False
+python 0.nuclei_segmentation.py --input_dir "$dir" --clip_limit 0.6
+python 1.cell_segmentation.py --input_dir "$dir" --clip_limit 0.6
 
 cd .. || exit
 

@@ -14,8 +14,8 @@ for dir in "${dirs[@]}"; do
     echo "$dir"
     # start time
     start=$(date +%s)
-    python 0.nuclei_segmentation.py --input_dir "$dir" --clip_limit 0.6 --optimize_segmentation False
-    python 1.cell_segmentation.py --input_dir "$dir" --clip_limit 0.6 --optimize_segmentation False
+    python 0.nuclei_segmentation.py --input_dir "$dir" --clip_limit 0.6 # --optimize_segmentation
+    python 1.cell_segmentation.py --input_dir "$dir" --clip_limit 0.6 # --optimize_segmentation
     # end time
     end=$(date +%s)
     runtime=$((end-start))

@@ -5,10 +5,11 @@
 # The end goals is to segment cell and extract morphology features from cellprofiler.
 # These masks must be imported into cellprofiler to extract features.
 
-# In[1]:
+# In[ ]:
 
 
 import argparse
+import ast
 import pathlib
 
 import matplotlib.pyplot as plt
@@ -30,10 +31,13 @@ try:
 except NameError:
     in_notebook = False
 
-print(in_notebook)
+if in_notebook:
+    print("Running as a notebook")
+elif not in_notebook:
+    print("Running as script")
 
 
-# In[2]:
+# In[ ]:
 
 
 if not in_notebook:
@@ -53,7 +57,7 @@ if not in_notebook:
     )
     parser.add_argument(
         "--optimize_segmentation",
-        type=bool,
+        action="store_true",
         help="Optimize the segmentation parameters",
     )
 
@@ -61,6 +65,7 @@ if not in_notebook:
     clip_limit = args.clip_limit
     input_dir = pathlib.Path(args.input_dir).resolve(strict=True)
     optimize_segmentation = args.optimize_segmentation
+    print(optimize_segmentation)
 
 else:
     input_dir = pathlib.Path(
@@ -72,6 +77,11 @@ else:
 
 figures_dir = pathlib.Path("../figures").resolve()
 figures_dir.mkdir(exist_ok=True, parents=True)
+
+if optimize_segmentation:
+    print("Optimizing Segmentation")
+elif not optimize_segmentation:
+    print("Running segmentation")
 
 
 # In[3]:
@@ -127,6 +137,8 @@ original_nuclei_image = nuclei.copy()
 
 
 # ## Cellpose
+
+# ### optimization
 
 # In[8]:
 
@@ -202,7 +214,9 @@ if optimize_segmentation:
     plt.savefig("../figures/unique_nuclei_masks_vs_diameter.png")
 
 
-# In[9]:
+# ### Runnning segmentation
+
+# In[ ]:
 
 
 if not optimize_segmentation:
@@ -230,6 +244,10 @@ if not optimize_segmentation:
     imgs = np.array(imgs)
 
     for frame_index, frame in enumerate(image_dict["nuclei_file_paths"]):
+        # saving the masks
+        print(
+            f"Saing mask to {input_dir}/{str(frame).split('/')[-1].split('_C4')[0]}_nuclei_mask.tiff"
+        )
         tifffile.imwrite(
             f"{input_dir}/{str(frame).split('/')[-1].split('_C4')[0]}_nuclei_mask.tiff",
             masks_all[frame_index, :, :],

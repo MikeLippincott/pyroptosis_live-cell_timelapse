@@ -1,5 +1,6 @@
 """
 This collection of functions runs CellProfiler and will rename the .sqlite outputted to any specified name if running an analysis pipeline.
+This file was written by Jenna Tomkinson.
 """
 
 # must use the annotations import as CellProfiler is restricted to Python 3.8 at this time so Optional

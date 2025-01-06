@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --nodes=2
-#SBATCH --ntasks-per-node=50
-#SBATCH --partition=amilan
-#SBATCH --qos=normal
+#SBATCH --nodes=1
+#SBATCH --mem=250G
+#SBATCH --partition=amem
+#SBATCH --qos=mem
 #SBATCH --account=amc-general
 #SBATCH --time=8:00:00
-#SBATCH --output=../cp-%j.out
+#SBATCH --output=cp-%j.out
 
 # 50 cores at 3.75 GB of ram per core puts us under the max ram for this node :D
 
@@ -18,7 +18,7 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 cd scripts/ || exit
 
-python run_cellprofiler_analysis.py
+python run_cellprofiler_analysis.py --input_dir "../../2.illumination_correction/illum_directory/W0052_F0001/"
 
 cd .. || exit
 

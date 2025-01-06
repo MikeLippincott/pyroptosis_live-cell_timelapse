@@ -177,6 +177,7 @@ print(df["Date_Time"].unique())
 list_of_files = glob.glob(str(path_to_repo_data / "**/*.tif*"), recursive=True)
 print(f"Found {len(list_of_files)} files")
 list_of_files = [pathlib.Path(file) for file in list_of_files]
+# rename files
 for file in tqdm.tqdm(list_of_files):
     for time_string, time in time_map.items():
         if time_string in file.stem:

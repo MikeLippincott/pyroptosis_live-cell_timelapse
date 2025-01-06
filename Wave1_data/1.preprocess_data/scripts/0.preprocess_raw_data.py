@@ -155,7 +155,7 @@ df.head()
 # In[10]:
 
 
-# create a mapping fpr time_string to Time
+# create a mapping for time_string to Time
 time_map = dict(zip(df["Time_string"], df["Time"]))
 time_map
 

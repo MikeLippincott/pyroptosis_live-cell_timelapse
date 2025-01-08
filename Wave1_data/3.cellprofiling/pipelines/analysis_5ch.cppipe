@@ -113,7 +113,7 @@ IdentifyTertiaryObjects:[module_num:7|svn_version:'Unknown'|variable_revision_nu
     Name the tertiary objects to be identified:Cytoplasm
     Shrink smaller object prior to subtraction?:No
 
-RelateObjects:[module_num:8|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+RelateObjects:[module_num:8|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:False|wants_pause:False]
     Parent objects:Nuclei
     Child objects:Cells
     Calculate child-parent distances?:None

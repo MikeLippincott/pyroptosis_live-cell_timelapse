@@ -2,10 +2,10 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --partition=amilan
-#SBATCH --qos=mem
+#SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=60:00
-#SBATCH --output=cp-%j.out
+#SBATCH --output=cp_parent-%j.out
 
 # 2 cores at 3.75 GB of ram per core
 
@@ -34,7 +34,7 @@ for FOV_dir in "${FOV_dirs[@]}"; do
         sleep 1s
         number_of_jobs=$(squeue -u $USER | wc -l)
     done
-    sbatch run_ic_child_HPC.sh "$FOV_dir"
+    sbatch perform_cellprofiling_child.sh "$FOV_dir"
 done
 
 conda deactivate

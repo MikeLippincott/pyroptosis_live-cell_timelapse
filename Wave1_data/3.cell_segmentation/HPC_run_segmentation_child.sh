@@ -6,7 +6,7 @@
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=10:00
-#SBATCH --output=segmentationo_child-%j.out
+#SBATCH --output=segmentation_child-%j.out
 
 module load anaconda
 

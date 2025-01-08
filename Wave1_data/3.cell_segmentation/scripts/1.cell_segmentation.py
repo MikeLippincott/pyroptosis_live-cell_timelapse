@@ -51,7 +51,7 @@ if not in_notebook:
     )
     parser.add_argument(
         "--optimize_segmentation",
-        type=bool,
+        action="store_true",
         help="Optimize the segmentation parameters",
     )
 
@@ -165,7 +165,7 @@ for z in range(nuclei.shape[0]):
 
 # ## Cellpose
 
-# In[8]:
+# In[ ]:
 
 
 if optimize_segmentation:
@@ -256,7 +256,7 @@ if optimize_segmentation:
 
 if not optimize_segmentation:
     # model_type='cyto' or 'nuclei' or 'cyto2' or 'cyto3'
-    model_name = "nuclei"
+    model_name = "cyto3"
     model = models.Cellpose(model_type=model_name, gpu=True)
 
     channels = [[1, 3]]  # channels=[red cells, blue nuclei]
@@ -280,14 +280,14 @@ if not optimize_segmentation:
     for frame_index, frame in enumerate(image_dict["nuclei_file_paths"]):
         tifffile.imwrite(
             f"{input_dir}/{str(frame).split('/')[-1].split('_C4')[0]}_cell_mask.tiff",
-            nuclei[frame_index, :, :],
+            masks_all[frame_index],
         )
 
     if in_notebook:
         for z in range(len(masks_all)):
             plt.figure(figsize=(30, 10))
             plt.title(f"z: {z}")
-            plt.axi("off")
+            plt.axis("off")
             plt.subplot(1, 4, 1)
             plt.imshow(nuclei[z], cmap="gray")
             plt.title("Nuclei")
@@ -308,4 +308,3 @@ if not optimize_segmentation:
             plt.title("Cell masks")
             plt.axis("off")
             plt.show()
-

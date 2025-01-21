@@ -5,11 +5,10 @@
 # The end goals is to segment cell and extract morphology features from cellprofiler.
 # These masks must be imported into cellprofiler to extract features.
 
-# In[ ]:
+# In[1]:
 
 
 import argparse
-import ast
 import pathlib
 
 import matplotlib.pyplot as plt
@@ -37,7 +36,7 @@ elif not in_notebook:
     print("Running as script")
 
 
-# In[ ]:
+# In[2]:
 
 
 if not in_notebook:
@@ -216,7 +215,7 @@ if optimize_segmentation:
 
 # ### Runnning segmentation
 
-# In[ ]:
+# In[9]:
 
 
 if not optimize_segmentation:
@@ -277,4 +276,3 @@ device = torch.device("cuda:0")
 free_after, total_after = torch.cuda.mem_get_info(device)
 amount_used = ((total_after - free_after)) / 1024**2
 print(f"Used: {amount_used} MB or {amount_used / 1024} GB of GPU RAM")
-

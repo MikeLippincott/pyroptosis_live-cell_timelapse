@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# This notebook focuses on trying to find a way to segment cells within organoids properly.
-# The end goals is to segment cell and extract morphology features from cellprofiler.
-# These masks must be imported into cellprofiler to extract features.
+# This notebook displays key segmentation differences between different stains.
 
 # In[1]:
 
@@ -197,4 +195,3 @@ if in_notebook:
     plt.savefig(figures_dir / "cell_segmentation_differences.png")
     if in_notebook:
         plt.show()
-

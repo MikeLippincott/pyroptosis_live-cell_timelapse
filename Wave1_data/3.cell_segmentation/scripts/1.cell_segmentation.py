@@ -165,7 +165,7 @@ for z in range(nuclei.shape[0]):
 
 # ## Cellpose
 
-# In[ ]:
+# In[8]:
 
 
 if optimize_segmentation:
@@ -251,7 +251,7 @@ if optimize_segmentation:
     plt.savefig("../figures/unique_cell_masks_vs_diameter.png")
 
 
-# In[ ]:
+# In[9]:
 
 
 if not optimize_segmentation:
@@ -267,7 +267,6 @@ if not optimize_segmentation:
     # get masks for all the images
     # save to a dict for later use
     for img in imgs:
-        # masks, flows, styles, diams = model.eval(img, diameter=diameter, channels=channels)
         masks, flows, styles, diams = model.eval(img, channels=channels, diameter=100)
 
         masks_all_dict["masks"].append(masks)

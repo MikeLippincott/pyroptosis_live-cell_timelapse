@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# This notebook focuses on trying to find a way to segment cells within organoids properly.
+# This notebook focuses on trying to find a way to segment nuclei properly.
 # The end goals is to segment cell and extract morphology features from cellprofiler.
 # These masks must be imported into cellprofiler to extract features.
 

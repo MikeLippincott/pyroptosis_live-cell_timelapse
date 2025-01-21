@@ -182,7 +182,7 @@ if optimize_segmentation:
 
             plt.subplot(122)
             plt.imshow(render_label(masks_all[diameter]))
-            plt.title("Cell masks")
+            plt.title("Nuclei masks")
             plt.axis("off")
             plt.show()
 

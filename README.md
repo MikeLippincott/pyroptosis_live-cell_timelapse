@@ -1,4 +1,4 @@
-# pyroptosis_live-cell_timelapse
+# Image profiling of live-cell timelapse data inducing pyroptosis
 
 This repo contains code that processes and performs image-based profiling on single-cells in live-cell timelapse imaging data of pyroptosis in SH-SY5Y cells.
 

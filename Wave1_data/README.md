@@ -22,58 +22,7 @@ The images were acquired in 4 channels:
 | 4 | DNA | 405 | 447/60 | Hoechst 33342 | 600 |
 | 5 | Brightfield | | | | 200 |
 
-The following treatments were applied to the cells, a plate map is provided below:
-| Well | Treatment | Treatment1 | Treatment2 | Treatment1 Dose | Treatment1 Unit | Treatment2 Dose | Treatment2 Unit | Serum |
-|:----:|:---------:|:----------:|:----------:|:---------------:|:---------------:|:---------------:|:---------------:|:-----:|
-| C04 | Media| Media |||||| FBS|
-| C05 | DMSO CTL | DMSO|| CTL|||| FBS|
-| C06 | Media| Media |||||| FBS|
-| C07 | DMSO CTL | DMSO|| CTL|||| FBS|
-| C08 | Media| Media |||||| FBS|
-| C09 | DMSO CTL | DMSO|| CTL|||| FBS|
-| C10 | Media| Media |||||| NuSerum|
-| C11 | DMSO CTL | DMSO|| CTL|||| NuSerum|
-| D04 | LPS 10 ug/ml| LPS|| 10| ug/ml ||| FBS|
-| D05 | Thapsigargin 10 uM | Thapsigargin|| 10| uM||| FBS|
-| D06 | LPS 10 ug/ml| LPS|| 10| ug/ml ||| FBS|
-| D07 | Thapsigargin 10 uM | Thapsigargin|| 10| uM||| FBS|
-| D08 | LPS 10 ug/ml| LPS|| 10| ug/ml ||| FBS|
-| D09 | Thapsigargin 10 uM | Thapsigargin|| 10| uM||| FBS|
-| D10 | LPS 10 ug/ml| LPS|| 10| ug/ml ||| NuSerum|
-| D11 | Thapsigargin 10 uM | Thapsigargin|| 10| uM||| NuSerum|
-| E04 | LPS 1 ug/ml| LPS|| 1 | ug/ml ||| FBS|
-| E05 | Thapsigargin 1 uM| Thapsigargin|| 1 | uM||| FBS|
-| E06 | LPS 1 ug/ml| LPS|| 1 | ug/ml ||| FBS|
-| E07 | Thapsigargin 1 uM| Thapsigargin|| 1 | uM||| FBS|
-| E08 | LPS 1 ug/ml| LPS|| 1 | ug/ml ||| FBS|
-| E09 | Thapsigargin 1 uM| Thapsigargin|| 1 | uM||| FBS|
-| E10 | LPS 1 ug/ml| LPS|| 1 | ug/ml ||| NuSerum|
-| E11 | Thapsigargin 1 uM| Thapsigargin|| 1 | uM||| NuSerum|
-| F04 | LPS 0.1 ug/ml| LPS|| 0.1| ug/ml ||| FBS|
-| F05 | Thapsigargin 0.5uM | Thapsigargin|| 0.5| uM||| FBS|
-| F06 | LPS 0.1 ug/ml| LPS|| 0.1| ug/ml ||| FBS|
-| F07 | Thapsigargin 0.5uM | Thapsigargin|| 0.5| uM||| FBS|
-| F08 | LPS 0.1 ug/ml| LPS|| 0.1| ug/ml ||| FBS|
-| F09 | Thapsigargin 0.5uM | Thapsigargin|| 0.5| uM||| FBS|
-| F10 | LPS 0.1 ug/ml| LPS|| 0.1| ug/ml ||| NuSerum|
-| F11 | Thapsigargin 0.5uM | Thapsigargin|| 0.5| uM||| NuSerum|
-| G04 | LPS 1 ug/ml + ATP 2.5 mM | LPS| ATP| 1 | ug/ml | 2.5| mM| FBS|
-| G05 | LPS 1 ug/ml + Nigericin 5uM| LPS| Nigericin| 1 | ug/ml | 5 | uM| FBS|
-| G06 | LPS 1 ug/ml + ATP 2.5 mM | LPS| ATP| 1 | ug/ml | 2.5| mM| FBS|
-| G07 | LPS 1 ug/ml + Nigericin 5uM| LPS| Nigericin| 1 | ug/ml | 5 | uM| FBS|
-| G08 | LPS 1 ug/ml + ATP 2.5 mM | LPS| ATP| 1 | ug/ml | 2.5| mM| FBS|
-| G09 | LPS 1 ug/ml + Nigericin 5uM| LPS| Nigericin| 1 | ug/ml | 5 | uM| FBS|
-| G10 | LPS 1 ug/ml + ATP 2.5 mM | LPS| ATP| 1 | ug/ml | 2.5| mM| NuSerum|
-| G11 | LPS 1 ug/ml + Nigericin 5uM| LPS| Nigericin| 1 | ug/ml | 5 | uM| NuSerum|
-| H04 | Flagellin 10 ug/ml | Flagellin || 10| ug/ml ||| FBS|
-| H05 | LPS 1 ug/ml + Nigericin 3uM| LPS| Nigericin| 1 | ug/ml | 3 | uM| FBS|
-| H06 | Flagellin 10 ug/ml | Flagellin || 10| ug/ml ||| FBS|
-| H07 | LPS 1 ug/ml + Nigericin 3uM| LPS| Nigericin| 1 | ug/ml | 3 | uM| FBS|
-| H08 | Flagellin 10 ug/ml | Flagellin || 10| ug/ml ||| FBS|
-| H09 | LPS 1 ug/ml + Nigericin 3uM| LPS| Nigericin| 1 | ug/ml | 3 | uM| FBS|
-| H10 | Flagellin 10 ug/ml | Flagellin || 10| ug/ml ||| NuSerum|
-| H11 | LPS 1 ug/ml + Nigericin 3uM| LPS| Nigericin| 1 | ug/ml | 3 | uM| NuSerum|
-
+The wave 1 plate map can be viewed in the [Wave1_data/platemap_readme.md](./platemap_readme.md).
 
 ## Data
 This wave 1 data is preliminary and generated to identify the best conditions for imaging pyroptosis in SH-SY5Y cells.

@@ -12,6 +12,7 @@ import pathlib
 import pandas as pd
 import pycytominer
 
+
 # In[ ]:
 
 
@@ -107,3 +108,4 @@ for profile in dict_of_inputs.keys():
     # Save the aggregated selected data
     norm_fs_aggregate_df.to_parquet(dict_of_inputs[profile]["aggregate_selected"])
     del norm_fs_df, norm_fs_aggregate_df
+

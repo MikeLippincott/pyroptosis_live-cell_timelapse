@@ -27,7 +27,7 @@ for well_fov in "${well_fovs[@]}"; do
         sleep 1s
         number_of_jobs=$(squeue -u $USER | wc -l)
     done
-    job_id=$(sbatch 1.annotate_sc_child.sh "$well_fov" | cut -f 4 -d " ")
+    job_id=$(sbatch 1b.annotate_sc_child.sh "$well_fov" | cut -f 4 -d " ")
     job_ids+=("$job_id")
 done
 

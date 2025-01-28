@@ -5,7 +5,7 @@
 
 # ## Import libraries
 
-# In[1]:
+# In[4]:
 
 
 import json
@@ -23,7 +23,7 @@ from pycytominer.cyto_utils import output
 
 # ## Set paths and variables
 
-# In[2]:
+# In[12]:
 
 
 # directory where parquet files are located
@@ -34,13 +34,16 @@ data_dir = pathlib.Path("../data/annotated_data")
 
 output_dir = pathlib.Path("../data/annotated_data_combined/")
 output_dir.mkdir(exist_ok=True)
+# get all the parquet files in the directory recursively
+files = list(data_dir.glob("**/*.parquet"))
+files = [file for file in files if file.is_file()]
+print(f"Found {len(files)} files")
 
 
-# In[3]:
+# In[13]:
 
 
 # get a list of all files in the data directory
-files = list(data_dir.glob("*.parquet"))
 df = pd.concat([pd.read_parquet(file) for file in files])
 print(df.shape)
 df.to_parquet(output_dir / "live_cell_pyroptosis_wave1_sc.parquet")

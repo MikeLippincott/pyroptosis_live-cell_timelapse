@@ -6,7 +6,9 @@
 # In[1]:
 
 
+import argparse
 import pathlib
+import pprint
 import sys
 
 import pandas as pd
@@ -17,33 +19,75 @@ import sc_extraction_utils as sc_utils
 from parsl.config import Config
 from parsl.executors import HighThroughputExecutor
 
+
 # ## Set paths and variables
-#
+# 
 # All paths must be string but we use pathlib to show which variables are paths
 
 # In[2]:
 
 
+# check if in a jupyter notebook
+try:
+    cfg = get_ipython().config
+    in_notebook = True
+except NameError:
+    in_notebook = False
+
+if not in_notebook:
+    print("Running as script")
+    # set up arg parser
+    parser = argparse.ArgumentParser(description="Segment the nuclei of a tiff image")
+
+    parser.add_argument(
+        "--input_dir",
+        type=str,
+        help="Path to the input directory containing the tiff images",
+    )
+
+    args = parser.parse_args()
+    input_dir = pathlib.Path(args.input_dir).resolve(strict=True)
+else:
+    print("Running in a notebook")
+    input_dir = pathlib.Path(
+        "../../3.cellprofiling/analysis_output/W0052_F0001"
+    ).resolve(strict=True)
+
+
+# In[3]:
+
+
 # type of file output from CytoTable (currently only parquet)
 dest_datatype = "parquet"
 
-# s1lite directory
-source_dir = pathlib.Path("../../3.cellprofiling/analysis_output")
 # directory where parquet files are saved to
 output_dir = pathlib.Path("../data/converted_data")
 output_dir.mkdir(exist_ok=True, parents=True)
 
 
+# In[5]:
+
+
+# get the .sqlite file from the input directory
+sqlite_file = list(input_dir.glob("*.sqlite"))[0]
+dest_path = output_dir / str(sqlite_file.parent).split("/")[-1]
+dest_path.mkdir(exist_ok=True, parents=True)
+dest_path = dest_path / f"{sqlite_file.stem}.{dest_datatype}"
+print(f"Destination path: {dest_path}")
+
+
 # ## set config joins for each preset
 
-# In[3]:
+# In[6]:
 
 
 # preset configurations based on typical CellProfiler outputs
 preset = "cellprofiler_sqlite_pycytominer"
-# remove Image_Metadata_Plate from SELECT as this metadata was not extracted from file names
-# add Image_Metadata_Site as this is an important metadata when finding where single cells are located
-presets_config = """WITH Per_Image_Filtered AS (
+presets.config[preset][
+    "CONFIG_JOINS"
+    # remove Image_Metadata_Plate from SELECT as this metadata was not extracted from file names
+    # add Image_Metadata_Site as this is an important metadata when finding where single cells are located
+] = """WITH Per_Image_Filtered AS (
                 SELECT
                     Metadata_ImageNumber,
                     Image_Metadata_Well,
@@ -57,7 +101,7 @@ presets_config = """WITH Per_Image_Filtered AS (
                     Image_FileName_CL561,
                     Image_FileName_GSDM,
                     Image_FileName_BF,
-                    Image_FileName_DNA
+                    Image_FileName_DNA,
                 FROM
                     read_parquet('per_image.parquet')
                 )
@@ -76,70 +120,47 @@ presets_config = """WITH Per_Image_Filtered AS (
             """
 
 
-# In[4]:
-
-
-sqlite_file_paths = pathlib.Path("../../3.cellprofiling/analysis_output").rglob(
-    "*.sqlite"
-)
-# get all directories with raw images
-dict_of_runs = {}
-sqlite_file_paths = [str(x) for x in sqlite_file_paths]
-# order the sqlite files by the name of the directory
-sqlite_file_paths = sorted(sqlite_file_paths)
-
-for sqlite in sqlite_file_paths:
-    # get the name of the directory
-    run_name = sqlite.split("/")[-2].split(".")[0]
-    dict_of_runs[run_name] = {
-        "source_path": sqlite,
-        "dest_path": str(pathlib.Path(output_dir / f"{run_name}.parquet")),
-        "preset": presets_config,
-    }
-
-
 # ## Convert SQLite file and merge single cell objects into parquet file
-#
+# 
 # This was not run to completion as we use the nbconverted python file for full run.
 
-# In[5]:
+# In[8]:
 
 
-# run through each run with each set of paths based on dictionary
-for sqlite_file, info in dict_of_runs.items():
-    source_path = info["source_path"]
-    dest_path = info["dest_path"]
-    presets.config["cellprofiler_sqlite_pycytominer"]["CONFIG_JOINS"] = info["preset"]
-    print(f"Performing merge single cells and conversion on {sqlite_file}!")
-    print(f"Source path: {source_path}")
-    print(f"Destination path: {dest_path}")
-    # merge single cells and output as parquet file
-    convert(
-        source_path=source_path,
-        dest_path=dest_path,
-        dest_datatype=dest_datatype,
-        preset=preset,
-        parsl_config=Config(
-            executors=[HighThroughputExecutor()],
-        ),
-        chunk_size=1000,
-    )
-    print(f"Merged and converted {pathlib.Path(dest_path).name}!")
-    df = pd.read_parquet(dest_path)
-    print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
-    # add single cell count per well as metadata column to parquet file and save back to same path
-    sc_utils.add_sc_count_metadata_file(
-        data_path=dest_path,
-        well_column_name="Metadata_ImageNumber",
-        file_type="parquet",
-    )
-    # read the parquet file to check if metadata was added
-    df1 = pd.read_parquet(dest_path)
-    print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
-    print(f"Added single cell count as metadata to {pathlib.Path(dest_path).name}!")
+# merge single cells and output as parquet file
+convert(
+    source_path=sqlite_file,
+    dest_path=dest_path,
+    dest_datatype=dest_datatype,
+    preset=preset,
+    parsl_config=Config(
+        executors=[HighThroughputExecutor()],
+    ),
+    chunk_size=1000,
+)
 
 
-# In[6]:
+# In[9]:
+
+
+print(f"Merged and converted {pathlib.Path(dest_path).name}!")
+print(f"Saved to {dest_path}")
+df = pd.read_parquet(dest_path)
+print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
+# add single cell count per well as metadata column to parquet file and save back to same path
+sc_utils.add_sc_count_metadata_file(
+    data_path=dest_path,
+    well_column_name="Metadata_ImageNumber",
+    file_type="parquet",
+)
+# read the parquet file to check if metadata was added
+df1 = pd.read_parquet(dest_path)
+print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
+print(f"Added single cell count as metadata to {pathlib.Path(dest_path).name}!")
+
+
+# In[ ]:
 
 
 df1.head()
+

@@ -8,8 +8,10 @@
 # In[1]:
 
 
+import argparse
 import json
 import pathlib
+import sys
 
 import lancedb
 import matplotlib.pyplot as plt
@@ -19,35 +21,62 @@ import seaborn as sns
 from pycytominer import annotate
 from pycytominer.cyto_utils import output
 
+
 # ## Set paths and variables
 # ### Relate the CellProfiler output to the platemap file
 
 # In[2]:
 
 
-# load in platemap file as a pandas dataframe
-platemap_path = pathlib.Path(
-    "../../../data/raw/platemaps/wave1_plate_map.csv"
-).resolve()
-well_mapping_path = pathlib.Path("../../../data/processed/well_map.json").resolve(
-    strict=True
-)
+# check if in a jupyter notebook
+try:
+    cfg = get_ipython().config
+    in_notebook = True
+except NameError:
+    in_notebook = False
 
-# directory where parquet files are located
-data_dir = pathlib.Path("../data/converted_data")
+if not in_notebook:
+    print("Running as script")
+    # set up arg parser
+    parser = argparse.ArgumentParser(description="Segment the nuclei of a tiff image")
 
-# directory where the annotated parquet files are saved to
-output_dir = pathlib.Path("../data/annotated_data")
-output_dir.mkdir(exist_ok=True)
+    parser.add_argument(
+        "--input_dir",
+        type=str,
+        help="Path to the input directory containing the tiff images",
+    )
 
-well_number_to_name_map = json.load(open(well_mapping_path))
+    args = parser.parse_args()
+    input_dir = pathlib.Path(args.input_dir).resolve(strict=True)
+else:
+    print("Running in a notebook")
+    input_dir = pathlib.Path("../data/converted_data/W0052_F0001").resolve(strict=True)
 
 
 # In[3]:
 
 
+# load in platemap file as a pandas dataframe
+platemap_path = pathlib.Path(
+    "../../../data/processed/platemaps/wave1_plate_map.csv"
+).resolve()
+well_mapping_path = pathlib.Path("../../../data/processed/well_map.json").resolve(
+    strict=True
+)
+
+
+# directory where the annotated parquet files are saved to
+output_dir = pathlib.Path(f"../data/annotated_data/{input_dir.stem}")
+output_dir.mkdir(exist_ok=True)
+
+well_number_to_name_map = json.load(open(well_mapping_path))
+
+
+# In[4]:
+
+
 # get a list of all files in the data directory
-files = list(data_dir.glob("*.parquet"))
+files = list(input_dir.glob("*.parquet"))
 dict_of_inputs = {}
 for file in files:
     file_name = file.stem
@@ -61,7 +90,7 @@ print(f"Processing {len(dict_of_inputs.keys())} files")
 
 # ## Annotate merged single cells
 
-# In[4]:
+# In[5]:
 
 
 for data_run, info in dict_of_inputs.items():
@@ -143,3 +172,4 @@ for data_run, info in dict_of_inputs.items():
     print(f"{data_run} has been annotated")
     print(f"With the input shape of {single_cell_df.shape}")
     print(f"Output shape of {annotated_df.shape}")
+

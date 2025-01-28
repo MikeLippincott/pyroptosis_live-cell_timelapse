@@ -18,6 +18,7 @@ cd scripts/ || exit
 
 # get the directory names of the well_fovs
 mapfile -t well_fovs < <(ls -d ../data/converted_data/*)
+echo "${well_fovs[@]}"
 cd ../ || exit
 # array of well_fovs jobs
 job_ids=()
@@ -33,9 +34,9 @@ done
 
 
 # check that all jobs have completed
-running_total=0
+running_total=1
 completed_total=0
-while [ $running_total -gt 1 ]; do
+while [ $running_total -gt 0 ]; do
     running_total=0
     completed_total=0
     for job_id in "${job_ids[@]}"; do

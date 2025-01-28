@@ -16,7 +16,7 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 cd scripts/ || exit
 
-python 1.annotate_sc.py
+python 1.annotate_sc.py --input_dir $1
 
 cd ../ || exit
 

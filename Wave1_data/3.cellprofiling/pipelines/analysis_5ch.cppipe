@@ -2,7 +2,7 @@ CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
 DateRevision:426
 GitHash:
-ModuleCount:14
+ModuleCount:12
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Module notes are provided by Jenna Tomkinson.', '', 'Images module is left blank since we are giving the path to the images in the CLI command.', '', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -73,14 +73,14 @@ NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|sho
     Maximum intensity:255.0
     Select the rule criteria:and (file does contain "nuclei_mask")
     Name to assign these images:nuclei_mask
-    Name to assign these objects:Nucleus
-    Select the image type:Grayscale image
+    Name to assign these objects:Nuclei
+    Select the image type:Objects
     Set intensity range from:Image metadata
     Maximum intensity:255.0
     Select the rule criteria:and (file does contain "cell_mask")
     Name to assign these images:cell_mask
-    Name to assign these objects:Nucleus
-    Select the image type:Grayscale image
+    Name to assign these objects:Cells
+    Select the image type:Objects
     Set intensity range from:Image metadata
     Maximum intensity:255.0
 
@@ -91,29 +91,13 @@ Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_windo
     Metadata category:FOV
     Metadata category:Time
 
-ConvertImageToObjects:[module_num:5|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select the input image:nuclei_mask
-    Name the output object:Nuclei
-    Convert to boolean image:No
-    Preserve original labels:Yes
-    Background label:0
-    Connectivity:0
-
-ConvertImageToObjects:[module_num:6|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select the input image:cell_mask
-    Name the output object:Cells
-    Convert to boolean image:No
-    Preserve original labels:Yes
-    Background label:0
-    Connectivity:0
-
-IdentifyTertiaryObjects:[module_num:7|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+IdentifyTertiaryObjects:[module_num:5|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the larger identified objects:Cells
     Select the smaller identified objects:Nuclei
     Name the tertiary objects to be identified:Cytoplasm
     Shrink smaller object prior to subtraction?:No
 
-MeasureGranularity:[module_num:8|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureGranularity:[module_num:6|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:BF, CL488, CL561, DNA, GSDM
     Measure within objects?:Yes
     Select objects to measure:Cells, Cytoplasm, Nuclei
@@ -122,11 +106,11 @@ MeasureGranularity:[module_num:8|svn_version:'Unknown'|variable_revision_number:
     Radius of structuring element:10
     Range of the granular spectrum:16
 
-MeasureObjectIntensity:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensity:[module_num:7|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:BF, CL488, CL561, DNA, GSDM
     Select objects to measure:Cells, Cytoplasm, Nuclei
 
-MeasureObjectIntensityDistribution:[module_num:10|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensityDistribution:[module_num:8|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:BF, CL488, CL561, DNA, GSDM
     Hidden:3
     Hidden:1
@@ -146,7 +130,7 @@ MeasureObjectIntensityDistribution:[module_num:10|svn_version:'Unknown'|variable
     Number of bins:4
     Maximum radius:100
 
-MeasureObjectNeighbors:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectNeighbors:[module_num:9|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select objects to measure:Cells
     Select neighboring objects to measure:Cells
     Method to determine neighbors:Adjacent
@@ -159,12 +143,12 @@ MeasureObjectNeighbors:[module_num:11|svn_version:'Unknown'|variable_revision_nu
     Name the output image:PercentTouching
     Select colormap:Oranges
 
-MeasureObjectSizeShape:[module_num:12|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectSizeShape:[module_num:10|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select object sets to measure:Cells, Cytoplasm, Nuclei
     Calculate the Zernike features?:Yes
     Calculate the advanced features?:Yes
 
-MeasureTexture:[module_num:13|svn_version:'Unknown'|variable_revision_number:7|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureTexture:[module_num:11|svn_version:'Unknown'|variable_revision_number:7|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:BF, CL488, CL561, DNA, GSDM
     Select objects to measure:Cells, Cytoplasm, Nuclei
     Enter how many gray levels to measure the texture at:256
@@ -172,7 +156,7 @@ MeasureTexture:[module_num:13|svn_version:'Unknown'|variable_revision_number:7|s
     Measure whole images or objects?:Both
     Texture scale to measure:3
 
-ExportToDatabase:[module_num:14|svn_version:'Unknown'|variable_revision_number:28|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToDatabase:[module_num:12|svn_version:'Unknown'|variable_revision_number:28|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Database type:SQLite
     Database name:DefaultDB
     Add a prefix to table names?:No

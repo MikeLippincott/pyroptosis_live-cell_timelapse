@@ -4,7 +4,7 @@
 #SBATCH --partition=amilan
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
-#SBATCH --time=20:00
+#SBATCH --time=2:00:00
 #SBATCH --output=cp_child-%j.out
 
 # 2 cores at 3.75 GB of ram per core

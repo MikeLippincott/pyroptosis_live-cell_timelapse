@@ -5,7 +5,7 @@
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=4:00:00
-#SBATCH --output=annotate_sc-%j.out
+#SBATCH --output=annotate_sc_parent-%j.out
 
 # activate  cellprofiler environment
 module load anaconda
@@ -17,8 +17,8 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 cd scripts/ || exit
 
 # get the directory names of the well_fovs
-mapfile -t well_fovs < <(ls -d ../data/converted_data)
-
+mapfile -t well_fovs < <(ls -d ../data/converted_data/*)
+cd ../ || exit
 # array of well_fovs jobs
 job_ids=()
 for well_fov in "${well_fovs[@]}"; do
@@ -52,7 +52,6 @@ while [ $running_total -gt 1 ]; do
 done
 
 
-cd ../ || exit
 
 # deactivate cellprofiler environment
 conda deactivate

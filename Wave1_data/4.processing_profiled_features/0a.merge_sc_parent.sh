@@ -5,7 +5,7 @@
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=4:00:00
-#SBATCH --output=merge_sc-%j.out
+#SBATCH --output=merge_sc_parent-%j.out
 
 # activate  cellprofiler environment
 module load anaconda
@@ -17,8 +17,8 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 cd scripts/ || exit
 
 # get the directory names of the well_fovs
-mapfile -t well_fovs < <(ls -d ../3.cellprofiling/analysis_output)
-
+mapfile -t well_fovs < <(ls -d ../3.cellprofiling/analysis_output/*)
+cd ../ || exit 
 # array of well_fovs jobs
 job_ids=()
 for well_fov in "${well_fovs[@]}"; do
@@ -33,9 +33,9 @@ done
 
 
 # check that all jobs have completed
-running_total=0
+running_total=1
 completed_total=0
-while [ $running_total -gt 1 ]; do
+while [ $running_total -gt 0 ]; do
     running_total=0
     completed_total=0
     for job_id in "${job_ids[@]}"; do
@@ -51,7 +51,6 @@ while [ $running_total -gt 1 ]; do
     sleep 1s
 done
 
-cd ../ || exit
 
 # deactivate cellprofiler environment
 conda deactivate

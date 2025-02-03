@@ -17,7 +17,7 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 cd scripts/ || exit
 
 # get the directory names of the well_fovs
-mapfile -t well_fovs < <(ls -d ../3.cellprofiling/analysis_output/*)
+mapfile -t well_fovs < <(ls -d ../../3.cellprofiling/analysis_output/*)
 cd ../ || exit 
 # array of well_fovs jobs
 job_ids=()
@@ -27,7 +27,7 @@ for well_fov in "${well_fovs[@]}"; do
         sleep 1s
         number_of_jobs=$(squeue -u $USER | wc -l)
     done
-    job_id=$(sbatch 0.merge_sc_child.sh "$well_fov" | cut -f 4 -d " ")
+    job_id=$(sbatch 0b.merge_sc_child.sh "$well_fov" | cut -f 4 -d " ")
     job_ids+=("$job_id")
 done
 

@@ -4,7 +4,7 @@
 # # Aggregate the single-cell profiles to the well level
 # This notebook is not run as a large amount of RAM is needed to run it. It is provided for reference only.
 
-# In[ ]:
+# In[1]:
 
 
 import pathlib
@@ -12,8 +12,7 @@ import pathlib
 import pandas as pd
 import pycytominer
 
-
-# In[ ]:
+# In[2]:
 
 
 # directory where combined parquet file are located
@@ -22,7 +21,7 @@ aggregate_dir = pathlib.Path("../data/aggregated")
 aggregate_dir.mkdir(exist_ok=True, parents=True)
 
 
-# In[ ]:
+# In[3]:
 
 
 # dictionary with each run for the cell type
@@ -72,6 +71,8 @@ dict_of_inputs = {
 }
 
 
+# The cell below must be run as a script on an HPC cluster with sufficient memory.
+
 # In[ ]:
 
 
@@ -82,7 +83,7 @@ for profile in dict_of_inputs.keys():
 
     norm_aggregate_df = pycytominer.aggregate(
         population_df=norm_df,
-        strata=["Metadata_Well", "Metadata_time"],
+        strata=["Metadata_Well", "Metadata_Time"],
         features="infer",
         operation="median",
     )
@@ -98,7 +99,7 @@ for profile in dict_of_inputs.keys():
 
     norm_fs_aggregate_df = pycytominer.aggregate(
         population_df=norm_fs_df,
-        strata=["Metadata_Well", "Metadata_time"],
+        strata=["Metadata_Well", "Metadata_Time"],
         features="infer",
         operation="median",
     )
@@ -108,4 +109,3 @@ for profile in dict_of_inputs.keys():
     # Save the aggregated selected data
     norm_fs_aggregate_df.to_parquet(dict_of_inputs[profile]["aggregate_selected"])
     del norm_fs_df, norm_fs_aggregate_df
-

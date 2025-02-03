@@ -17,6 +17,7 @@ import seaborn as sns
 import umap
 from sklearn.decomposition import PCA
 
+
 # In[ ]:
 
 
@@ -132,3 +133,4 @@ for data_set_name in input_data_dict.keys():
     pca_embedding_df.to_parquet(pca_embeddings_file_path)
     print(f"PCA embedding shape: {pca_embedding_df.shape}")
     pca_embedding_df.head()
+

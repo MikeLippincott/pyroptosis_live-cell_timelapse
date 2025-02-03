@@ -3,7 +3,7 @@
 
 # This notebook preprocesses the data to have correct time and treatment metadata.
 
-# In[ ]:
+# In[6]:
 
 
 import pathlib
@@ -12,10 +12,12 @@ from pprint import pprint
 import pandas as pd
 import pyarrow.parquet as pq
 
+
 # In[ ]:
 
 
-data_subset = False
+data_subset = True
+samples_per_group = 100
 
 # path to the data
 feature_selected_profiles_data_dir = pathlib.Path(
@@ -57,7 +59,10 @@ for dataset in input_data_dict:
         data = pd.read_parquet(
             input_data_dict[dataset]["input_file_path"], columns=["Metadata_Well"]
         )
-        data = data.groupby("Metadata_Well").head(50)
+        data_df = data.groupby("Metadata_Well").apply(
+            lambda x: x.sample(min(len(x), samples_per_group), random_state=0)
+        )
+
         # get the indexes of the data
         data_idx = data.index
         data = pd.concat(
@@ -106,3 +111,4 @@ for dataset in input_data_dict:
         data.to_parquet(input_data_dict[dataset]["input_file_path"])
 
     print(f"Preprocessed data for {dataset} has the shape: {data.shape}")
+

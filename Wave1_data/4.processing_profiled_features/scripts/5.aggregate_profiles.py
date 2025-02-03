@@ -84,7 +84,7 @@ for profile in dict_of_inputs.keys():
 
     norm_aggregate_df = pycytominer.aggregate(
         population_df=norm_df,
-        strata=["Metadata_Well", "Metadata_Time"],
+        strata=["Metadata_Well", "Metadata_Plate"],
         features="infer",
         operation="median",
     )
@@ -100,7 +100,7 @@ for profile in dict_of_inputs.keys():
 
     norm_fs_aggregate_df = pycytominer.aggregate(
         population_df=norm_fs_df,
-        strata=["Metadata_Well", "Metadata_Time"],
+        strata=["Metadata_Well", "Metadata_Plate"],
         features="infer",
         operation="median",
     )

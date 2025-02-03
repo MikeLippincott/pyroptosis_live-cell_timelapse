@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --partition=amem
-#SBATCH --mem=300G
+#SBATCH --mem=900G
 #SBATCH --qos=mem
 #SBATCH --account=amc-general
 #SBATCH --time=24:00:00

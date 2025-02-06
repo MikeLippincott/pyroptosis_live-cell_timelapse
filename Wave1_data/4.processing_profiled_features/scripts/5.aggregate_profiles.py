@@ -74,6 +74,28 @@ dict_of_inputs = {
 
 # The cell below must be run as a script on an HPC cluster with sufficient memory.
 
+# In[5]:
+
+
+path = pathlib.Path(
+    "../data/preprocessed/live_cell_pyroptosis_wave1_first_time_norm_agg_subset_testing_data.parquet"
+).resolve(strict=True)
+df = pd.read_parquet(path)
+df
+
+
+# In[6]:
+
+
+df["Metadata_Plate"].unique()
+
+
+# In[ ]:
+
+
+
+
+
 # In[ ]:
 
 

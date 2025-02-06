@@ -67,7 +67,7 @@ well_mapping_path = pathlib.Path("../../../data/processed/well_map.json").resolv
 
 # directory where the annotated parquet files are saved to
 output_dir = pathlib.Path(f"../data/annotated_data/{input_dir.stem}")
-output_dir.mkdir(exist_ok=True)
+output_dir.mkdir(exist_ok=True, parents=True)
 
 well_number_to_name_map = json.load(open(well_mapping_path))
 

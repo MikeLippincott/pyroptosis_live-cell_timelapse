@@ -11,12 +11,12 @@ jid1=$(sbatch 2.combine_sc.sh | awk '{print $4}')
 jid2=$(sbatch --dependency=afterok:$jid1 3.normalize_sc.sh | awk '{print $4}')
 jid3=$(sbatch --dependency=afterok:$jid2 4.feature_select_sc.sh | awk '{print $4}')
 jid4=$(sbatch --dependency=afterok:$jid3 5.aggregate_sc.sh | awk '{print $4}')
-
-
+jid5=$(sbatch --dependency=afterok:$jid4 6.preprocess.sh | awk '{print $4}')
 
 seff $jid1
 seff $jid2
 seff $jid3
 seff $jid4
+seff $jid5
 
 echo "Cellprofiling processing completed."

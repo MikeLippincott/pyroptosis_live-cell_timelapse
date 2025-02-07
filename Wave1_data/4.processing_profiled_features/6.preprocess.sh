@@ -5,7 +5,7 @@
 #SBATCH --qos=mem
 #SBATCH --account=amc-general
 #SBATCH --time=24:00:00
-#SBATCH --output=agg-%j.out
+#SBATCH --output=preprocessing-%j.out
 
 # activate  cellprofiler environment
 module load anaconda
@@ -16,6 +16,7 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 cd scripts/ || exit
 
+python 6.preprocess_profiles.py --samples_per_group 25 --data_subset
 python 6.preprocess_profiles.py --samples_per_group 25
 
 cd ../ || exit

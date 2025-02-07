@@ -24,4 +24,4 @@ cd ../ || exit
 # deactivate cellprofiler environment
 conda deactivate
 
-echo "Aggregation completed."
+echo "Preprocessing completed."

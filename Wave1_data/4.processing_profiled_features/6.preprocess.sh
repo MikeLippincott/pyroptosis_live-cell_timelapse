@@ -16,9 +16,7 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 cd scripts/ || exit
 
-python 6.preprocess_profiles.py --samples_per_group 25 --data_subset
 python 6.preprocess_profiles.py --samples_per_group 25
-
 
 cd ../ || exit
 

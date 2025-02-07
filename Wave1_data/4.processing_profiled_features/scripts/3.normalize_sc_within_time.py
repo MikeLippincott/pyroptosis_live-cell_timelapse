@@ -63,14 +63,14 @@ for info, input_path in dict_of_inputs.items():
     # Normalize the single cell data per time point
     print(f"Shape of the annotated data: {annotated_df.shape}")
     # get unique time points (plates)
-    plates = annotated_df.Metadata_Plate.unique()
-    print(f"Unique time points: {plates}")
+    timepoints = annotated_df.Metadata_Time.unique()
+    print(f"Unique time points: {len(timepoints)}")
     output_dict_of_normalized_dfs = {}
 
     # define a for loop to normalize each time point
-    for time_point in plates:
+    for time_point in timepoints:
         # subset the data to the time point
-        time_point_df = annotated_df.loc[annotated_df.Metadata_Plate == time_point]
+        time_point_df = annotated_df.loc[annotated_df.Metadata_Time == time_point]
         print(time_point_df.shape)
         # normalize annotated data
         normalized_df = normalize(

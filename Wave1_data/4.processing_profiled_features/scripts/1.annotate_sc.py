@@ -113,19 +113,17 @@ for data_run, info in dict_of_inputs.items():
         join_on=["Metadata_well", "Image_Metadata_Well"],
     )
     annotated_df.rename(columns={"Image_Metadata_FOV": "Metadata_FOV"}, inplace=True)
-    annotated_df["Metadata_Plate"] = data_run.split("_")[0]
 
     # move metadata well and single cell count to the front of the df (for easy visualization in python)
     well_column = annotated_df.pop("Metadata_Well")
     singlecell_column = annotated_df.pop("Metadata_number_of_singlecells")
     FOV_column = annotated_df.pop("Metadata_FOV")
-    plate_column = annotated_df.pop("Metadata_Plate")
+    time_column = annotated_df.pop("Image_Metadata_Time")
     # insert the column as the second index column in the dataframe
     annotated_df.insert(1, "Metadata_Well", well_column)
     annotated_df.insert(2, "Metadata_number_of_singlecells", singlecell_column)
     annotated_df.insert(3, "Metadata_FOV", FOV_column)
-    annotated_df.insert(4, "Metadata_Plate", plate_column)
-
+    annotated_df.insert(5, "Metadata_Time", time_column)
     # rename metadata columns to match the expected column names
     columns_to_rename = {
         "Nuclei_Location_Center_Y": "Metadata_Nuclei_Location_Center_Y",
@@ -141,26 +139,9 @@ for data_run, info in dict_of_inputs.items():
             columns_to_rename[col] = f"Metadata_{col}"
     # rename metadata columns
     annotated_df.rename(columns=columns_to_rename, inplace=True)
-
-    time_mapping = {
-        time: i
-        for i, time in enumerate(annotated_df["Metadata_Plate"].sort_values().unique())
-    }
     # check if the new columns exist, if so drop them
     if "Metadata_treatment_serum" in annotated_df.columns:
         annotated_df.drop(columns=["Metadata_treatment_serum"], inplace=True)
-    if "Metadata_Time" in annotated_df.columns:
-        annotated_df.drop(columns=["Metadata_Time"], inplace=True)
-    # Combine all new columns at once to avoid fragmentation
-    new_columns = pd.DataFrame(
-        {
-            "Metadata_treatment_serum": annotated_df["Metadata_treatment"]
-            + " "
-            + annotated_df["Metadata_serum"],
-            "Metadata_Time": annotated_df["Metadata_Plate"].map(time_mapping),
-        }
-    )
-    annotated_df = pd.concat([annotated_df, new_columns], axis=1)
 
     # save annotated df as parquet file
     output(
@@ -172,4 +153,5 @@ for data_run, info in dict_of_inputs.items():
     print(f"{data_run} has been annotated")
     print(f"With the input shape of {single_cell_df.shape}")
     print(f"Output shape of {annotated_df.shape}")
+annotated_df.head()
 

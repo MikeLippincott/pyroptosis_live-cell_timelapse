@@ -67,7 +67,7 @@ for info, input_path in dict_of_inputs.items():
         # df with annotated raw merged single cell features
         profiles=annotated_df,
         # specify samples used as normalization reference (negative control)
-        samples="Metadata_treatment == 'DMSO CTL' & Metadata_Plate == '20241024T194653'",
+        samples="Metadata_treatment == 'DMSO CTL' & Metadata_Time == '00'",
         # normalization method used
         method="standardize",
     )

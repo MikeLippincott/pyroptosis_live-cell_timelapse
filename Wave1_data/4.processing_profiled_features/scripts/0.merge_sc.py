@@ -65,7 +65,7 @@ output_dir = pathlib.Path("../data/converted_data")
 output_dir.mkdir(exist_ok=True, parents=True)
 
 
-# In[5]:
+# In[4]:
 
 
 # get the .sqlite file from the input directory
@@ -78,7 +78,7 @@ print(f"Destination path: {dest_path}")
 
 # ## set config joins for each preset
 
-# In[6]:
+# In[5]:
 
 
 # preset configurations based on typical CellProfiler outputs
@@ -90,6 +90,7 @@ presets.config[preset][
 ] = """WITH Per_Image_Filtered AS (
                 SELECT
                     Metadata_ImageNumber,
+                    Image_Metadata_Time,
                     Image_Metadata_Well,
                     Image_Metadata_FOV,
                     Image_PathName_CL488,
@@ -124,7 +125,7 @@ presets.config[preset][
 # 
 # This was not run to completion as we use the nbconverted python file for full run.
 
-# In[8]:
+# In[6]:
 
 
 # merge single cells and output as parquet file
@@ -140,7 +141,7 @@ convert(
 )
 
 
-# In[9]:
+# In[7]:
 
 
 print(f"Merged and converted {pathlib.Path(dest_path).name}!")
@@ -159,7 +160,7 @@ print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
 print(f"Added single cell count as metadata to {pathlib.Path(dest_path).name}!")
 
 
-# In[ ]:
+# In[8]:
 
 
 df1.head()

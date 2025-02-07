@@ -3,9 +3,10 @@
 
 # This notebook preprocesses the data to have correct time and treatment metadata.
 
-# In[1]:
+# In[5]:
 
 
+import argparse
 import pathlib
 from pprint import pprint
 
@@ -13,11 +14,44 @@ import pandas as pd
 import pyarrow.parquet as pq
 
 
-# In[2]:
+# In[ ]:
 
 
-data_subset = True
-samples_per_group = 25
+# check if in a jupyter notebook
+try:
+    cfg = get_ipython().config
+    in_notebook = True
+except NameError:
+    in_notebook = False
+
+if not in_notebook:
+    print("Running as script")
+    # set up arg parser
+    parser = argparse.ArgumentParser(description="Segment the nuclei of a tiff image")
+
+    parser.add_argument(
+        "--samples_per_group",
+        type=int,
+        default=25,
+        help="Number of samples per group",
+    )
+    parser.add_argument(
+        "--data_subset",
+        action="store_true",
+        help="Use a subset of the data",
+    )
+
+    args = parser.parse_args()
+    samples_per_group = args.samples_per_group
+    data_subset = args.data_subset
+else:
+    print("Running in a notebook")
+    data_subset = True
+    samples_per_group = 25
+
+
+# In[ ]:
+
 
 # path to the data
 feature_selected_profiles_data_dir = pathlib.Path(
@@ -26,52 +60,31 @@ feature_selected_profiles_data_dir = pathlib.Path(
 list_of_files = list(feature_selected_profiles_data_dir.glob("*.parquet"))
 
 input_data_dict = {
-    # "first_time": {
-    #     "input_file_path": list_of_files[0],
-    #     "output_data_dir": pathlib.Path("../data/first_time").resolve(),
-    #     "figure_dir": pathlib.Path("../figures/first_time").resolve(),
-    # },
-    # "within_time": {
-    #     "input_file_path": list_of_files[1],
-    #     "output_data_dir": pathlib.Path("../data/within_time").resolve(),
-    #     "figure_dir": pathlib.Path("../figures/within_time").resolve(),
-    # },
-    # "pan_time": {
-    #     "input_file_path": list_of_files[2],
-    #     "output_data_dir": pathlib.Path("../data/pan_time").resolve(),
-    #     "figure_dir": pathlib.Path("../figures/pan_time").resolve(),
-    # },
-    "aggregated_norm": {
-        "input_file_path": pathlib.Path(
-            "../data/aggregated/live_cell_pyroptosis_wave1_first_time_norm_agg.parquet"
-        ).resolve(),
-        "output_data_dir": pathlib.Path("../data/preprocessed").resolve(),
+    "first_time": {
+        "input_file_path": list_of_files[0],
+        "output_data_dir": pathlib.Path("../data/first_time").resolve(),
+        "figure_dir": pathlib.Path("../figures/first_time").resolve(),
+    },
+    "within_time": {
+        "input_file_path": list_of_files[1],
+        "output_data_dir": pathlib.Path("../data/within_time").resolve(),
+        "figure_dir": pathlib.Path("../figures/within_time").resolve(),
+    },
+    "pan_time": {
+        "input_file_path": list_of_files[2],
+        "output_data_dir": pathlib.Path("../data/pan_time").resolve(),
+        "figure_dir": pathlib.Path("../figures/pan_time").resolve(),
     },
 }
 pprint(input_data_dict)
 
 
-# In[6]:
-
-
-# show all the columns
-pd.set_option("display.max_columns", None)
-
-
-# In[7]:
-
-
-df = pd.read_parquet(input_data_dict["aggregated_norm"]["input_file_path"])
-print(df.shape)
-df.head()
-
-
-# In[5]:
+# In[ ]:
 
 
 for dataset in input_data_dict:
     input_data_dict[dataset]["output_data_dir"].mkdir(parents=True, exist_ok=True)
-    if data_subset:
+    if data_subset and "aggregate" not in dataset:
         subset_data_output_file_path = pathlib.Path(
             input_data_dict[dataset]["output_data_dir"]
             / f'{input_data_dict[dataset]["input_file_path"].stem}_subset_testing_data.parquet'

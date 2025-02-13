@@ -13,7 +13,6 @@ import pandas as pd
 from IPython.display import HTML, Image, display
 from matplotlib import animation
 
-
 # In[2]:
 
 
@@ -42,7 +41,7 @@ pprint(input_data_dict)
 visualize = False
 
 
-# In[3]:
+# In[ ]:
 
 
 for profile in input_data_dict.keys():
@@ -104,4 +103,3 @@ for profile in input_data_dict.keys():
                 treatment_name = treatment.replace(" ", "_").replace("/", "_")
                 with open(f"{output_path}/test_{treatment_name}.gif", "rb") as f:
                     display(Image(f.read()))
-

@@ -10,12 +10,10 @@
 
 import gc
 import pathlib
-import sys
 
 import pandas as pd
 from pycytominer import feature_select
 from pycytominer.cyto_utils import output
-
 
 # ## Set paths and variables
 
@@ -32,7 +30,7 @@ output_dir.mkdir(exist_ok=True, parents=True)
 
 # ## Define dict of paths
 
-# In[3]:
+# In[ ]:
 
 
 # dictionary with each run for the cell type
@@ -79,7 +77,7 @@ feature_select_ops = [
 ]
 
 
-# In[5]:
+# In[ ]:
 
 
 manual_block_list = [
@@ -89,7 +87,7 @@ manual_block_list = [
 ]
 
 
-# In[ ]:
+# In[9]:
 
 
 # feature selection parameters
@@ -97,9 +95,11 @@ print("Performing feature selection on normalized annotated merged single cells!
 for info, input_path in dict_of_inputs.items():
     # read in the annotated file
     normalized_df = pd.read_parquet(input_path["normalized_df_path"])
+    metadata_cols = [x for x in normalized_df.columns if x.startswith("Metadata_")]
+    normalized_features_df = normalized_df.drop(metadata_cols, axis="columns")
     # perform feature selection with the operations specified
     feature_select_df = feature_select(
-        normalized_df,
+        normalized_features_df,
         operation=feature_select_ops,
     )
 
@@ -108,6 +108,10 @@ for info, input_path in dict_of_inputs.items():
         "Metadata_" + column if column in manual_block_list else column
         for column in feature_select_df.columns
     ]
+    # add metadata columns back to the feature selected df
+    feature_select_df = pd.concat(
+        [normalized_df[metadata_cols], feature_select_df], axis="columns"
+    )
     print("Feature selection complete, saving to parquet file!")
     # save features selected df as parquet file
     output(
@@ -121,4 +125,3 @@ for info, input_path in dict_of_inputs.items():
     # check to see if the shape of the df has changed indicating feature selection occurred
     print(feature_select_df.shape)
     feature_select_df.head()
-

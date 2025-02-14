@@ -41,7 +41,7 @@ pprint(input_data_dict)
 visualize = False
 
 
-# In[ ]:
+# In[3]:
 
 
 for profile in input_data_dict.keys():
@@ -74,8 +74,8 @@ for profile in input_data_dict.keys():
 
         # plot the list of dfs and animate them
         fig, ax = plt.subplots(figsize=(6, 6))
-        ax.set_xlim(-10, 20)
-        ax.set_ylim(-10, 15)
+        ax.set_xlim(9, 20)
+        ax.set_ylim(4, 15)
         scat = ax.scatter([], [], c="b", s=0.1)
         text = ax.text(-9, -9, "", ha="left", va="top")
         # add title

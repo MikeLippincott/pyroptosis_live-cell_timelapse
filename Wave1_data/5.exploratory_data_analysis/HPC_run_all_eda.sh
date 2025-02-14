@@ -19,14 +19,12 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 cd scripts || exit
 
 # run the scripts
-python 0.preprocess_profiles.py
 python 1.eda_compute.py
+python 3.timelapse_visualization.py
 
 conda deactivate
-#conda activate pyroptosis_timelapse_R
+conda activate pyroptosis_timelapse_R
 
 Rscript 2.eda_vizualize.r --dataset "first_time"
-#Rscript 2.eda_vizualize.r --dataset "pan_time"
-#Rscript 2.eda_vizualize.r --dataset "within_time"
 
 echo "EDA completed successfully"

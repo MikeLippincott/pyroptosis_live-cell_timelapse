@@ -16,7 +16,7 @@ import seaborn as sns
 import umap
 from sklearn.decomposition import PCA
 
-# In[ ]:
+# In[2]:
 
 
 figure_dir = pathlib.Path("../figures").resolve()

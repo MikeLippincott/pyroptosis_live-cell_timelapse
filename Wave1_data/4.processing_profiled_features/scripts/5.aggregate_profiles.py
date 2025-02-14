@@ -97,6 +97,8 @@ sc_metadata_cols_to_drop = [
     "Metadata_Image_PathName_GSDM",
     "Metadata_Nuclei_Location_Center_X",
     "Metadata_Nuclei_Location_Center_Y",
+    "Metadata_number_of_singlecells",
+    "Metadata_FOV",
 ]
 
 

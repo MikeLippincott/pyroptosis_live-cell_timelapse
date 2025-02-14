@@ -71,9 +71,6 @@ input_data_dict = {
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_first_time_norm.parquet"
             ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_first_time_norm_subset.parquet"
-            ).resolve(),
         },
         "selected": {
             "input_data": pathlib.Path(
@@ -81,9 +78,6 @@ input_data_dict = {
             ).resolve(),
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_first_time_norm_fs.parquet"
-            ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_first_time_norm_fs_subset.parquet"
             ).resolve(),
         },
         "aggregate_normalized": {
@@ -93,9 +87,6 @@ input_data_dict = {
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_first_time_norm_agg.parquet"
             ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_first_time_norm_agg_subset.parquet"
-            ).resolve(),
         },
         "aggregate_selected": {
             "input_data": pathlib.Path(
@@ -103,9 +94,6 @@ input_data_dict = {
             ).resolve(),
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_first_time_norm_fs_agg.parquet"
-            ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_first_time_norm_fs_agg_subset.parquet"
             ).resolve(),
         },
     },
@@ -117,9 +105,6 @@ input_data_dict = {
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_within_time_norm.parquet"
             ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_within_time_norm_subset.parquet"
-            ).resolve(),
         },
         "selected": {
             "input_data": pathlib.Path(
@@ -127,9 +112,6 @@ input_data_dict = {
             ).resolve(),
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_within_time_norm_fs.parquet"
-            ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_within_time_norm_fs_subset.parquet"
             ).resolve(),
         },
         "aggregate_normalized": {
@@ -139,9 +121,6 @@ input_data_dict = {
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_within_time_norm_agg.parquet"
             ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_within_time_norm_agg_subset.parquet"
-            ).resolve(),
         },
         "aggregate_selected": {
             "input_data": pathlib.Path(
@@ -149,9 +128,6 @@ input_data_dict = {
             ).resolve(),
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_within_time_norm_fs_agg.parquet"
-            ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_within_time_norm_fs_agg_subset.parquet"
             ).resolve(),
         },
     },
@@ -163,9 +139,6 @@ input_data_dict = {
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_pan_time_norm.parquet"
             ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_pan_time_norm_subset.parquet"
-            ).resolve(),
         },
         "selected": {
             "input_data": pathlib.Path(
@@ -173,9 +146,6 @@ input_data_dict = {
             ).resolve(),
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_pan_time_norm_fs.parquet"
-            ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_pan_time_norm_fs_subset.parquet"
             ).resolve(),
         },
         "aggregate_normalized": {
@@ -185,9 +155,6 @@ input_data_dict = {
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_pan_time_norm_agg.parquet"
             ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_pan_time_norm_agg_subset.parquet"
-            ).resolve(),
         },
         "aggregate_selected": {
             "input_data": pathlib.Path(
@@ -195,9 +162,6 @@ input_data_dict = {
             ).resolve(),
             "output_data": pathlib.Path(
                 f"{preprocessed_dir}/live_cell_pyroptosis_wave1_pan_time_norm_fs_agg.parquet"
-            ).resolve(),
-            "output_data_subset": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_pan_time_norm_fs_agg_subset.parquet"
             ).resolve(),
         },
     },
@@ -215,14 +179,26 @@ for dataset in input_data_dict:
 
         # drop Wells N04, N06, N08, and N10 as they have no Hoechst stain
         data = data[~data["Metadata_Well"].str.contains("N04|N06|N08|N10")]
+        # calculate the number of cells per well
+        cells_per_well = data.groupby("Metadata_Well").size()
+        data["Metadata_cells_per_well"] = data["Metadata_Well"].map(cells_per_well)
 
-        if data_subset and "aggregate" not in data_type:
+        if "aggregate" not in data_type:
             data = (
                 data.groupby("Metadata_Well")
                 .apply(lambda x: x.sample(samples_per_group))
                 .reset_index(drop=True)
             )
-            data.to_parquet(input_data_dict[dataset][data_type]["output_data_subset"])
+            data.to_parquet(input_data_dict[dataset][data_type]["output_data"])
+        elif data_subset:
+            data = data.apply(lambda x: x.sample(samples_per_group)).reset_index(
+                drop=True
+            )
+            subset_output = (
+                input_data_dict[dataset][data_type]["output_data"].parent
+                / f"{input_data_dict[dataset][data_type]['output_data'].stem}_subset.parquet"
+            )
+            data.to_parquet(subset_output)
         else:
             # over write the current parquet file
             data.to_parquet(input_data_dict[dataset][data_type]["output_data"])

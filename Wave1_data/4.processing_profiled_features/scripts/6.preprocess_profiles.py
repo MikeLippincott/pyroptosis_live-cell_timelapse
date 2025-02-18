@@ -46,7 +46,7 @@ if not in_notebook:
 else:
     print("Running in a notebook")
     data_subset = True
-    samples_per_group = 100
+    samples_per_group = 1000
 
 
 # In[8]:

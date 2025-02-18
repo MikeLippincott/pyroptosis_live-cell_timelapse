@@ -40,34 +40,6 @@ dict_of_inputs = {
             f"{aggregate_dir}/live_cell_pyroptosis_wave1_first_time_norm_fs_agg.parquet"
         ).resolve(),
     },
-    "pan_time": {
-        "normalized": pathlib.Path(
-            f"{data_dir}/normalized_data/live_cell_pyroptosis_wave1_sc_pan_time_norm.parquet"
-        ).resolve(strict=True),
-        "selected": pathlib.Path(
-            f"{data_dir}/feature_selected_data/live_cell_pyroptosis_wave1_sc_pan_time_norm_fs.parquet"
-        ).resolve(strict=True),
-        "aggregate_normalized": pathlib.Path(
-            f"{aggregate_dir}/live_cell_pyroptosis_wave1_pan_time_norm_agg.parquet"
-        ).resolve(),
-        "aggregate_selected": pathlib.Path(
-            f"{aggregate_dir}/live_cell_pyroptosis_wave1_pan_time_norm_fs_agg.parquet"
-        ).resolve(),
-    },
-    "within_time": {
-        "normalized": pathlib.Path(
-            f"{data_dir}/normalized_data/live_cell_pyroptosis_wave1_sc_within_time_norm.parquet"
-        ).resolve(strict=True),
-        "selected": pathlib.Path(
-            f"{data_dir}/feature_selected_data/live_cell_pyroptosis_wave1_sc_within_time_norm_fs.parquet"
-        ).resolve(strict=True),
-        "aggregate_normalized": pathlib.Path(
-            f"{aggregate_dir}/live_cell_pyroptosis_wave1_within_time_norm_agg.parquet"
-        ).resolve(),
-        "aggregate_selected": pathlib.Path(
-            f"{aggregate_dir}/live_cell_pyroptosis_wave1_within_time_norm_fs_agg.parquet"
-        ).resolve(),
-    },
 }
 
 

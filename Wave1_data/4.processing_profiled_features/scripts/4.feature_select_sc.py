@@ -43,22 +43,6 @@ dict_of_inputs = {
             f"{output_dir}/live_cell_pyroptosis_wave1_sc_first_time_norm_fs.parquet"
         ).resolve(),
     },
-    "live_cell_pyroptosis_wave1_sc_pan_time_norm": {
-        "normalized_df_path": pathlib.Path(
-            f"{data_dir}/live_cell_pyroptosis_wave1_sc_pan_time_norm.parquet"
-        ).resolve(strict=True),
-        "output_file_path": pathlib.Path(
-            f"{output_dir}/live_cell_pyroptosis_wave1_sc_pan_time_norm_fs.parquet"
-        ).resolve(),
-    },
-    "live_cell_pyroptosis_wave1_sc_within_time_norm": {
-        "normalized_df_path": pathlib.Path(
-            f"{data_dir}/live_cell_pyroptosis_wave1_sc_within_time_norm.parquet"
-        ).resolve(strict=True),
-        "output_file_path": pathlib.Path(
-            f"{output_dir}/live_cell_pyroptosis_wave1_sc_within_time_norm_fs.parquet"
-        ).resolve(),
-    },
 }
 
 

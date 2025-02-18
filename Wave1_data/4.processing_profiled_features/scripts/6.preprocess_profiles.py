@@ -46,7 +46,7 @@ if not in_notebook:
 else:
     print("Running in a notebook")
     data_subset = True
-    samples_per_group = 25
+    samples_per_group = 100
 
 
 # In[8]:
@@ -97,74 +97,6 @@ input_data_dict = {
             ).resolve(),
         },
     },
-    "within_time": {
-        "normalized": {
-            "input_data": pathlib.Path(
-                f"{normalized_dir}/live_cell_pyroptosis_wave1_sc_within_time_norm.parquet"
-            ).resolve(),
-            "output_data": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_within_time_norm.parquet"
-            ).resolve(),
-        },
-        "selected": {
-            "input_data": pathlib.Path(
-                f"{feature_selected_dir}/live_cell_pyroptosis_wave1_sc_within_time_norm_fs.parquet"
-            ).resolve(),
-            "output_data": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_within_time_norm_fs.parquet"
-            ).resolve(),
-        },
-        "aggregate_normalized": {
-            "input_data": pathlib.Path(
-                f"{aggregate_dir}/live_cell_pyroptosis_wave1_within_time_norm_agg.parquet"
-            ).resolve(),
-            "output_data": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_within_time_norm_agg.parquet"
-            ).resolve(),
-        },
-        "aggregate_selected": {
-            "input_data": pathlib.Path(
-                f"{aggregate_dir}/live_cell_pyroptosis_wave1_within_time_norm_fs_agg.parquet"
-            ).resolve(),
-            "output_data": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_within_time_norm_fs_agg.parquet"
-            ).resolve(),
-        },
-    },
-    "pan_time": {
-        "normalized": {
-            "input_data": pathlib.Path(
-                f"{normalized_dir}/live_cell_pyroptosis_wave1_sc_pan_time_norm.parquet"
-            ).resolve(),
-            "output_data": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_pan_time_norm.parquet"
-            ).resolve(),
-        },
-        "selected": {
-            "input_data": pathlib.Path(
-                f"{feature_selected_dir}/live_cell_pyroptosis_wave1_sc_pan_time_norm_fs.parquet"
-            ).resolve(),
-            "output_data": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_sc_pan_time_norm_fs.parquet"
-            ).resolve(),
-        },
-        "aggregate_normalized": {
-            "input_data": pathlib.Path(
-                f"{aggregate_dir}/live_cell_pyroptosis_wave1_pan_time_norm_agg.parquet"
-            ).resolve(),
-            "output_data": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_pan_time_norm_agg.parquet"
-            ).resolve(),
-        },
-        "aggregate_selected": {
-            "input_data": pathlib.Path(
-                f"{aggregate_dir}/live_cell_pyroptosis_wave1_pan_time_norm_fs_agg.parquet"
-            ).resolve(),
-            "output_data": pathlib.Path(
-                f"{preprocessed_dir}/live_cell_pyroptosis_wave1_pan_time_norm_fs_agg.parquet"
-            ).resolve(),
-        },
-    },
 }
 
 pprint(input_data_dict)
@@ -183,16 +115,12 @@ for dataset in input_data_dict:
         cells_per_well = data.groupby("Metadata_Well").size()
         data["Metadata_cells_per_well"] = data["Metadata_Well"].map(cells_per_well)
 
-        if "aggregate" not in data_type:
-            data = (
-                data.groupby("Metadata_Well")
-                .apply(lambda x: x.sample(samples_per_group))
-                .reset_index(drop=True)
-            )
+        if "aggregate" in data_type:
             data.to_parquet(input_data_dict[dataset][data_type]["output_data"])
         elif data_subset:
-            data = data.apply(lambda x: x.sample(samples_per_group)).reset_index(
-                drop=True
+            # sample the data stratified by Metadata_Well and Metadata Time
+            data = data.groupby(["Metadata_Well", "Metadata_Time"]).apply(
+                lambda x: x.sample(samples_per_group)
             )
             subset_output = (
                 input_data_dict[dataset][data_type]["output_data"].parent
@@ -200,7 +128,6 @@ for dataset in input_data_dict:
             )
             data.to_parquet(subset_output)
         else:
-            # over write the current parquet file
             data.to_parquet(input_data_dict[dataset][data_type]["output_data"])
 
         print(f"Preprocessed data for {dataset} has the shape: {data.shape}")

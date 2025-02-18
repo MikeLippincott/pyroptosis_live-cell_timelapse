@@ -8,7 +8,6 @@
 
 import argparse
 import pathlib
-import pprint
 import sys
 
 import pandas as pd
@@ -19,9 +18,8 @@ import sc_extraction_utils as sc_utils
 from parsl.config import Config
 from parsl.executors import HighThroughputExecutor
 
-
 # ## Set paths and variables
-# 
+#
 # All paths must be string but we use pathlib to show which variables are paths
 
 # In[2]:
@@ -122,7 +120,7 @@ presets.config[preset][
 
 
 # ## Convert SQLite file and merge single cell objects into parquet file
-# 
+#
 # This was not run to completion as we use the nbconverted python file for full run.
 
 # In[6]:
@@ -147,21 +145,38 @@ convert(
 print(f"Merged and converted {pathlib.Path(dest_path).name}!")
 print(f"Saved to {dest_path}")
 df = pd.read_parquet(dest_path)
+df["Metadata_Well_Time"] = df["Image_Metadata_Well"] + "_" + df["Image_Metadata_Time"]
 print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
-# add single cell count per well as metadata column to parquet file and save back to same path
-sc_utils.add_sc_count_metadata_file(
-    data_path=dest_path,
-    well_column_name="Metadata_ImageNumber",
-    file_type="parquet",
-)
-# read the parquet file to check if metadata was added
-df1 = pd.read_parquet(dest_path)
-print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
-print(f"Added single cell count as metadata to {pathlib.Path(dest_path).name}!")
+df.head()
 
 
 # In[8]:
 
 
-df1.head()
+Metadata_number_of_singlecells_df = (
+    df.groupby(["Metadata_Well_Time"])["Metadata_Well_Time"]
+    .value_counts()
+    .reset_index(name="Metadata_number_of_singlecells")
+)
+# merge the number of single cells with the original dataframe
+df = df.merge(
+    Metadata_number_of_singlecells_df, on=["Metadata_Well_Time", "Metadata_Well_Time"]
+)
+df.head()
 
+
+# In[9]:
+
+
+# cast to int
+df["Metadata_number_of_singlecells"] = df["Metadata_number_of_singlecells"].astype(int)
+df.to_parquet(dest_path)
+
+print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
+print(f"Added single cell count as metadata to {pathlib.Path(dest_path).name}!")
+
+
+# In[10]:
+
+
+df.head()

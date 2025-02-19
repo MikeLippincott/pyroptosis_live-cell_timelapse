@@ -28,16 +28,24 @@ df <- file.path("../../4.processing_profiled_features/data/preprocessed_data/liv
 
 df <- arrow::read_parquet(df,col_select = columns)
 df$well_fov <- paste0(df$Metadata_Well, "_", df$Metadata_FOV)
-df$Metadata_timpoint <- as.numeric(df$Metadata_Time) * 3 # 3 hours
-df$unique_cell <- paste0(df$Metadata_timpoint, "_", df$well_fov, "_", df$Metadata_ImageNumber, "_", df$Metadata_Nuclei_Number_Object_Number)
+df$unique_cell <- paste0(df$Metadata_Time, "_", df$well_fov, "_", df$Metadata_ImageNumber, "_", df$Metadata_Nuclei_Number_Object_Number)
 df$unique_well <- paste0(df$well_fov, "_", df$Metadata_treatment)
 # show all columns in a jupyter notebooks
 print(dim(df))
 head(df)
 
+# map the timepoints to the actual hour timepoint
+timepoints <- data.frame(
+    reference = c("00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17"),
+    Metadata_timepoint  = c(1,4,7,10,13,16,19,22,25,28,31,34,37,40,43,46,49,90)
+)
+# map the timepoints to the main df
+df <- df %>% left_join(timepoints, by = c("Metadata_Time" = "reference"))
+head(df)
+
 # get the cell counts per well per time
 cell_counts <- df %>%
-  group_by(unique_well,Metadata_treatment, Metadata_timpoint) %>%
+  group_by(unique_well,Metadata_treatment, Metadata_timepoint) %>%
   # get the unique cell count per well per time
     summarise(cell_count = n_distinct(unique_cell)) %>%
     ungroup()
@@ -79,7 +87,7 @@ options(repr.plot.width=width, repr.plot.height=height)
 # plot the timelapse _profiles for a given feature
 timelapse_plot <- (
     # group the timepoints by the feature
-    ggplot(cell_counts, aes(x=Metadata_timpoint, y=cell_count), fill=Metadata_treatment)
+    ggplot(cell_counts, aes(x=Metadata_timepoint, y=cell_count), fill=Metadata_treatment)
     + geom_line(aes(group=unique_well, color=Metadata_treatment), alpha=0.9, linewidth=1)
     # add a sd ribbon to the plot
 
@@ -103,36 +111,3 @@ timelapse_plot
 
 # save the plot
 ggsave(file.path("../figures","cell_count_timelapse.png"), timelapse_plot, width=width, height=height, dpi=600)
-
-# get the last timepoint for each well and treatment
-cell_counts %>%
-    group_by(unique_well) %>%
-    filter(Metadata_timpoint == max(Metadata_timpoint)) %>%
-    filter(Metadata_treatment == "DMSO CTL") %>%
-    ungroup() %>%
-    arrange(desc(cell_count)) %>%
-    head(50)
-
-# get the
-
-# width <- 20
-# height <- 10
-# options(repr.plot.width=width, repr.plot.height=height)
-# # plot the timelapse _profiles for a given feature
-# cell_count_difference_plot <- (
-#     # group the timepoints by the feature
-#     ggplot(df, aes(x=Metadata_treatment, y=cell_count), fill=Metadata_treatment)
-#     # bar plot for the cell counts per well per time
-#     + geom_bar(stat="identity", position="dodge", aes(fill=Metadata_treatment))
-#     + theme_bw()
-#     + theme(
-#         legend.position = "none",
-#         axis.text.x = element_text(angle = 45, hjust = 1, size = 16),
-#         axis.text.y = element_text(size = 16),
-#         axis.title = element_text(size = 20)
-#     )
-
-#     + labs(x="Treatment", y="Cell count difference\n between first and last time point")
-# )
-# cell_count_difference_plot
-# ggsave(file.path("../figures","cell_count_difference.png"), cell_count_difference_plot, width=width, height=height, dpi=600)

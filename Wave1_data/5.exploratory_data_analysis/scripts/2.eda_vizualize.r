@@ -5,13 +5,12 @@ suppressWarnings(suppressPackageStartupMessages(library(arrow)))
 suppressWarnings(suppressPackageStartupMessages(library(argparse)))
 
 
-# argparser <- ArgumentParser()
-# argparser$add_argument("--dataset", help="Input file", required=TRUE)
+argparser <- ArgumentParser()
+argparser$add_argument("--dataset", help="Input file", required=TRUE)
 
-# args <- argparser$parse_args()
+args <- argparser$parse_args()
 
-# data_set <- args$dataset
-data_set <- "first_time"
+data_set <- args$dataset
 
 input_data_path <- file.path("..","data",data_set)
 

@@ -23,25 +23,13 @@ input_data_dict = {
         ).resolve(strict=True),
         "figure_dir": pathlib.Path("../figures/first_time/timelapse_gifs").resolve(),
     },
-    "pan_time": {
-        "umap_file_path": pathlib.Path(
-            "../data/pan_time/umap_embeddings.parquet"
-        ).resolve(strict=True),
-        "figure_dir": pathlib.Path("../figures/pan_time/timelapse_gifs").resolve(),
-    },
-    "within_time": {
-        "umap_file_path": pathlib.Path(
-            "../data/within_time/umap_embeddings.parquet"
-        ).resolve(strict=True),
-        "figure_dir": pathlib.Path("../figures/within_time/timelapse_gifs").resolve(),
-    },
 }
 pprint(input_data_dict)
 
 visualize = False
 
 
-# In[3]:
+# In[ ]:
 
 
 for profile in input_data_dict.keys():
@@ -74,8 +62,8 @@ for profile in input_data_dict.keys():
 
         # plot the list of dfs and animate them
         fig, ax = plt.subplots(figsize=(6, 6))
-        ax.set_xlim(9, 20)
-        ax.set_ylim(4, 15)
+        ax.set_xlim(-6, 5)
+        ax.set_ylim(-3, 10)
         scat = ax.scatter([], [], c="b", s=0.1)
         text = ax.text(-9, -9, "", ha="left", va="top")
         # add title

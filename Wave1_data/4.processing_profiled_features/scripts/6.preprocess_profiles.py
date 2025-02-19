@@ -3,10 +3,11 @@
 
 # This notebook preprocesses the data to have correct time and treatment metadata.
 
-# In[2]:
+# In[17]:
 
 
 import argparse
+import json
 import pathlib
 from pprint import pprint
 
@@ -49,13 +50,14 @@ else:
     samples_per_group = 1000
 
 
-# In[8]:
+# In[19]:
 
 
 normalized_dir = pathlib.Path("../data/normalized_data").resolve()
 feature_selected_dir = pathlib.Path("../data/feature_selected_data").resolve()
 aggregate_dir = pathlib.Path("../data/aggregated").resolve()
 preprocessed_dir = pathlib.Path("../data/preprocessed_data").resolve()
+timepoint_dir = pathlib.Path("../../../data/processed/time_to_timepoint.json").resolve()
 preprocessed_dir.mkdir(exist_ok=True, parents=True)
 
 
@@ -105,15 +107,22 @@ pprint(input_data_dict)
 # In[ ]:
 
 
+# load the time map
+with open(timepoint_dir, "r") as f:
+    time_map = json.load(f)
+
+
+# In[ ]:
+
+
 for dataset in input_data_dict:
     for data_type in input_data_dict[dataset]:
         data = pd.read_parquet(input_data_dict[dataset][data_type]["input_data"])
 
         # drop Wells N04, N06, N08, and N10 as they have no Hoechst stain
         data = data[~data["Metadata_Well"].str.contains("N04|N06|N08|N10")]
-        # calculate the number of cells per well
-        cells_per_well = data.groupby("Metadata_Well").size()
-        data["Metadata_cells_per_well"] = data["Metadata_Well"].map(cells_per_well)
+        # map the time to the time point in hours
+        data["Metadata_Time"] = data["Metadata_Time"].map(lambda x: time_map[x])
 
         if "aggregate" in data_type:
             data.to_parquet(input_data_dict[dataset][data_type]["output_data"])

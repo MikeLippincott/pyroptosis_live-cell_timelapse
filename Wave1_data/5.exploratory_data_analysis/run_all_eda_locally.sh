@@ -8,16 +8,17 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 cd scripts || exit
 
 # run the scripts
-python 0.preprocess_profiles.py
-python 1.eda_compute.py
+# python 1.eda_compute.py # this gets run on the HPC due to memory requirements
+python 3.timelapse_visualization.py
 
 conda deactivate
 conda activate pyroptosis_timelapse_R
 
 Rscript 2.eda_vizualize.r --dataset "first_time"
-Rscript 2.eda_vizualize.r --dataset "pan_time"
-Rscript 2.eda_vizualize.r --dataset "within_time"
+Rscript 4.cell_count_analysis.r
 
 cd .. || exit
+
+conda deactivate
 
 echo "EDA completed successfully"

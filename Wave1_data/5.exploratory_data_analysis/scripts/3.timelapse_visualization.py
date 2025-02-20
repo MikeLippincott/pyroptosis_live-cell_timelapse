@@ -29,7 +29,7 @@ pprint(input_data_dict)
 visualize = False
 
 
-# In[ ]:
+# In[5]:
 
 
 for profile in input_data_dict.keys():
@@ -42,52 +42,58 @@ for profile in input_data_dict.keys():
     # define an interval for the animation
     # I want it to be 5 frames per second (fps)
     # so I will set the interval to 1000/5
-    fps = 5
+    fps = 2
     interval = 1000 / fps
     print(f"Interval: {interval}")
+umap_df.head()
+umap_df["Metadata_treatment"].unique()
 
-    for treatment in umap_df["Metadata_treatment"].unique():
-        treatment_name = treatment.replace(" ", "_").replace("/", "_")
-        tmp_df = umap_df.loc[umap_df["Metadata_treatment"] == treatment]
-        classes = umap_df["Metadata_Time"].unique()
-        # split the data into n different dfs based on the classes
-        dfs = [tmp_df[tmp_df["Metadata_Time"] == c] for c in classes]
-        for i in range(len(dfs)):
-            df = dfs[i]
-            # split the data into the Metadata and the Features
-            metadata_columns = df.columns[df.columns.str.contains("Metadata")]
-            metadata_df = df[metadata_columns]
-            features_df = df.drop(metadata_columns, axis=1)
-            dfs[i] = features_df
 
-        # plot the list of dfs and animate them
-        fig, ax = plt.subplots(figsize=(6, 6))
-        ax.set_xlim(-6, 5)
-        ax.set_ylim(-3, 10)
-        scat = ax.scatter([], [], c="b", s=0.1)
-        text = ax.text(-9, -9, "", ha="left", va="top")
-        # add title
-        ax.set_title(f"{treatment}")
-        # axis titles
-        ax.set_xlabel("UMAP0")
-        ax.set_ylabel("UMAP1")
+# In[ ]:
 
-        def animate(i):
-            df = dfs[i]
-            i = i * 30
-            scat.set_offsets(df.values)
-            text.set_text(f"{i} minutes.")
-            return (scat,)
 
-        anim = animation.FuncAnimation(
-            fig, init_func=None, func=animate, frames=len(dfs), interval=interval
-        )
-        anim.save(f"{output_path}/{treatment_name}.gif", writer="imagemagick")
-        plt.close(fig)
+for treatment in umap_df["Metadata_treatment"].unique():
+    treatment_name = treatment.replace(" ", "_").replace("/", "_")
+    tmp_df = umap_df.loc[umap_df["Metadata_treatment"] == treatment]
+    classes = umap_df["Metadata_Time"].unique()
+    # split the data into n different dfs based on the classes
+    dfs = [tmp_df[tmp_df["Metadata_Time"] == c] for c in classes]
+    for i in range(len(dfs)):
+        df = dfs[i]
+        # split the data into the Metadata and the Features
+        metadata_columns = df.columns[df.columns.str.contains("Metadata")]
+        metadata_df = df[metadata_columns]
+        features_df = df.drop(metadata_columns, axis=1)
+        dfs[i] = features_df
 
-        if visualize:
-            # Display the animations
-            for treatment in umap_df["Metadata_treatment"].unique():
-                treatment_name = treatment.replace(" ", "_").replace("/", "_")
-                with open(f"{output_path}/test_{treatment_name}.gif", "rb") as f:
-                    display(Image(f.read()))
+    # plot the list of dfs and animate them
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax.set_xlim(-6, 20)
+    ax.set_ylim(-12, 12)
+    scat = ax.scatter([], [], c="b", s=0.1)
+    text = ax.text(0, -10, "", ha="left", va="top")
+    # add title
+    ax.set_title(f"{treatment}")
+    # axis titles
+    ax.set_xlabel("UMAP0")
+    ax.set_ylabel("UMAP1")
+
+    def animate(i):
+        df = dfs[i]
+        i = i * 30
+        scat.set_offsets(df.values)
+        text.set_text(f"{i} minutes.")
+        return (scat,)
+
+    anim = animation.FuncAnimation(
+        fig, init_func=None, func=animate, frames=len(dfs), interval=interval
+    )
+    anim.save(f"{output_path}/{treatment_name}.gif", writer="imagemagick")
+    plt.close(fig)
+
+    if visualize:
+        # Display the animations
+        for treatment in umap_df["Metadata_treatment"].unique():
+            treatment_name = treatment.replace(" ", "_").replace("/", "_")
+            with open(f"{output_path}/test_{treatment_name}.gif", "rb") as f:
+                display(Image(f.read()))

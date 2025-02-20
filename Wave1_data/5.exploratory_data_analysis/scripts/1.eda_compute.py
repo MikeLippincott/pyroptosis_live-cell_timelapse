@@ -16,7 +16,7 @@ import seaborn as sns
 import umap
 from sklearn.decomposition import PCA
 
-# In[ ]:
+# In[2]:
 
 
 figure_dir = pathlib.Path("../figures").resolve()
@@ -24,7 +24,7 @@ output_data_dir = pathlib.Path("../data").resolve()
 figure_dir.mkdir(parents=True, exist_ok=True)
 output_data_dir.mkdir(parents=True, exist_ok=True)
 
-data_subset = False
+data_subset = True
 
 
 # In[3]:
@@ -34,7 +34,7 @@ input_file_path_subset = pathlib.Path(
     "../../4.processing_profiled_features/data/preprocessed_data/live_cell_pyroptosis_wave1_sc_first_time_norm_fs_subset.parquet"
 ).resolve()
 input_file_path = pathlib.Path(
-    "../../4.processing_profiled_features/data/feature_selected_data/live_cell_pyroptosis_wave1_sc_first_time_norm_fs.parquet"
+    "../../4.processing_profiled_features/data/preprocessed_data/live_cell_pyroptosis_wave1_sc_first_time_norm_fs.parquet"
 ).resolve()
 agg_file_path = pathlib.Path(
     "../../4.processing_profiled_features/data/aggregated/live_cell_pyroptosis_wave1_first_time_norm_fs_agg.parquet"

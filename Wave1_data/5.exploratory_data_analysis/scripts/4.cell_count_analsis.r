@@ -34,6 +34,8 @@ df$unique_well <- paste0(df$well_fov, "_", df$Metadata_treatment)
 print(dim(df))
 head(df)
 
+unique(df$Metadata_treatment)
+
 # map the timepoints to the actual hour timepoint
 timepoints <- data.frame(
     reference = c("00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17"),

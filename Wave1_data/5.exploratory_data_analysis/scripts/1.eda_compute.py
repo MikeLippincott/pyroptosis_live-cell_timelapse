@@ -24,7 +24,7 @@ output_data_dir = pathlib.Path("../data").resolve()
 figure_dir.mkdir(parents=True, exist_ok=True)
 output_data_dir.mkdir(parents=True, exist_ok=True)
 
-data_subset = True
+data_subset = False
 
 
 # In[3]:

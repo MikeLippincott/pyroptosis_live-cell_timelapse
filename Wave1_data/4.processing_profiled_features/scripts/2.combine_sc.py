@@ -8,9 +8,7 @@
 # In[1]:
 
 
-import json
 import pathlib
-import sys
 
 import lancedb
 import matplotlib.pyplot as plt
@@ -19,7 +17,6 @@ import pandas as pd
 import seaborn as sns
 from pycytominer import annotate
 from pycytominer.cyto_utils import output
-
 
 # ## Set paths and variables
 
@@ -34,15 +31,20 @@ data_dir = pathlib.Path("../data/annotated_data")
 
 output_dir = pathlib.Path("../data/annotated_data_combined/")
 output_dir.mkdir(exist_ok=True)
+# get all the parquet files in the directory recursively
+files = list(data_dir.glob("**/*.parquet"))
+files = [file for file in files if file.is_file()]
+print(f"Found {len(files)} files")
 
 
-# In[3]:
+# This last cell does not get run due to memory constraints.
+# It is run on an HPC cluster with more memory available.
+
+# In[ ]:
 
 
 # get a list of all files in the data directory
-files = list(data_dir.glob("*.parquet"))
 df = pd.concat([pd.read_parquet(file) for file in files])
 print(df.shape)
 df.to_parquet(output_dir / "live_cell_pyroptosis_wave1_sc.parquet")
 df.head()
-

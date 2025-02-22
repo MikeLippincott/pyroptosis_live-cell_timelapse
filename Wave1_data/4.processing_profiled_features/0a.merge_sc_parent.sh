@@ -7,7 +7,7 @@
 #SBATCH --time=4:00:00
 #SBATCH --output=merge_sc_parent-%j.out
 
-# activate  cellprofiler environment
+# activate cellprofiler environment
 module load anaconda
 conda init bash
 conda activate cellprofiler_timelapse_env

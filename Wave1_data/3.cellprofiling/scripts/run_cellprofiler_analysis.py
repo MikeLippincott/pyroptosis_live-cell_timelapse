@@ -26,7 +26,7 @@ except NameError:
 
 # ## Set paths and variables
 
-# In[2]:
+# In[ ]:
 
 
 if not in_notebook:
@@ -48,10 +48,6 @@ else:
         "../../2.illumination_correction/illum_directory/W0052_F0001/"
     )
 
-# path to plugins directory as one of the pipelines uses the RunCellpose plugin
-plugins_dir = pathlib.Path(
-    "/home/lippincm/Documents/CellProfiler-plugins/active_plugins"
-)
 path_to_pipeline = pathlib.Path("../pipelines/analysis_5ch.cppipe").resolve(strict=True)
 
 # set main output dir for all plates
@@ -76,7 +72,7 @@ print(f"Running {images_dir.stem}")
 
 
 # ## Run analysis pipeline on each plate in parallel
-# 
+#
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
 # In[4]:
@@ -105,4 +101,3 @@ minutes, seconds = divmod(rem, 60)
 print(
     "Total time taken: {:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
 )
-

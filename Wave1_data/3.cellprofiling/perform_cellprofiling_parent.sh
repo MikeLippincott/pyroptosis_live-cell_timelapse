@@ -20,7 +20,6 @@ cd scripts/ || exit
 
 # get a list of all dirs in the raw data folder
 data_dir="../../2.illumination_correction/illum_directory"
-# data_dir="../../../data/test_dir"
 mapfile -t FOV_dirs < <(ls -d $data_dir/*)
 echo length of plate_dirs: ${#FOV_dirs[@]}
 

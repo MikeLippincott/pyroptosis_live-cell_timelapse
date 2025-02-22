@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --partition=amem
-#SBATCH --mem=300G
+#SBATCH --mem=600G
 #SBATCH --qos=mem
 #SBATCH --account=amc-general
-#SBATCH --time=24:00:00
+#SBATCH --time=12:00:00
 #SBATCH --output=combine_sc-%j.out
 
 # activate  cellprofiler environment

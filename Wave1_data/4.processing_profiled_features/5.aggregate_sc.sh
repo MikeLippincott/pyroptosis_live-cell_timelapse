@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --partition=amem
-#SBATCH --mem=300G
+#SBATCH --mem=900G
 #SBATCH --qos=mem
 #SBATCH --account=amc-general
 #SBATCH --time=24:00:00
-#SBATCH --output=fs_sc-%j.out
+#SBATCH --output=agg-%j.out
 
 # activate  cellprofiler environment
 module load anaconda

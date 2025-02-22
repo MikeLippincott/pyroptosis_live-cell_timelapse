@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --partition=amem
-#SBATCH --mem=550G
-#SBATCH --qos=mem
+#SBATCH --ntasks=2
+#SBATCH --partition=amilan
+#SBATCH --qos=normal
 #SBATCH --account=amc-general
-#SBATCH --time=30:00:00
-#SBATCH --output=fs_sc-%j.out
+#SBATCH --time=1:00:00
+#SBATCH --output=annotate_sc-%j.out
 
 # activate  cellprofiler environment
 module load anaconda
@@ -16,11 +16,11 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 cd scripts/ || exit
 
-python 4.feature_select_sc.py
+python 1.annotate_sc.py --input_dir $1
 
 cd ../ || exit
 
 # deactivate cellprofiler environment
 conda deactivate
 
-echo "Feature_selection processing completed."
+echo "Annotate sc processing completed."

@@ -9,12 +9,10 @@
 
 
 import pathlib
-import pprint
 
 import pandas as pd
 from pycytominer import normalize
 from pycytominer.cyto_utils import output
-
 
 # ## Set paths and variables
 
@@ -49,11 +47,14 @@ dict_of_inputs = {
 
 # ## Normalize with standardize method with negative control on annotated data
 
-# The normalization needs to occur per time step. 
+# The normalization needs to occur per time step.
 # This code cell will split the data into time steps and normalize each time step separately.
-# Then each normalized time step will be concatenated back together. 
+# Then each normalized time step will be concatenated back together.
 
-# In[5]:
+# This last cell does not get run due to memory constraints.
+# It is run on an HPC cluster with more memory available.
+
+# In[ ]:
 
 
 for info, input_path in dict_of_inputs.items():
@@ -67,7 +68,7 @@ for info, input_path in dict_of_inputs.items():
         # df with annotated raw merged single cell features
         profiles=annotated_df,
         # specify samples used as normalization reference (negative control)
-        samples="Metadata_treatment == 'DMSO CTL' & Metadata_Plate == '20241024T194653'",
+        samples="Metadata_treatment == 'DMSO CTL' & Metadata_Time == '00'",
         # normalization method used
         method="standardize",
     )
@@ -81,4 +82,3 @@ for info, input_path in dict_of_inputs.items():
     # check to see if the features have been normalized
     print(normalized_df.shape)
     normalized_df.head()
-

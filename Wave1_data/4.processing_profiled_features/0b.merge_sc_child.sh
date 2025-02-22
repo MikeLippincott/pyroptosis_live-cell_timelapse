@@ -1,12 +1,11 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=32
+#SBATCH --ntasks=16
 #SBATCH --partition=amilan
-#SBATCH --mem=100G
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
-#SBATCH --time=24:00:00
-#SBATCH --output=merge_sc-%j.out
+#SBATCH --time=1:00:00
+#SBATCH --output=merge_sc_child-%j.out
 
 # activate  cellprofiler environment
 module load anaconda
@@ -17,7 +16,7 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 cd scripts/ || exit
 
-python 0.merge_sc.py
+python 0.merge_sc.py --input_dir $1
 
 cd ../ || exit
 

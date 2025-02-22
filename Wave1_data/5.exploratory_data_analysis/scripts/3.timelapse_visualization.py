@@ -40,7 +40,7 @@ for profile in input_data_dict.keys():
     umap_df = pd.read_parquet(input_data_dict[profile]["umap_file_path"])
     print(umap_df.shape)
     # define an interval for the animation
-    # I want it to be 5 frames per second (fps)
+    # I want it to be 2 frames per second (fps)
     # so I will set the interval to 1000/5
     fps = 2
     interval = 1000 / fps

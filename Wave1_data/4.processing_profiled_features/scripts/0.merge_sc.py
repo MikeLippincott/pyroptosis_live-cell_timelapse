@@ -84,7 +84,7 @@ preset = "cellprofiler_sqlite_pycytominer"
 presets.config[preset][
     "CONFIG_JOINS"
     # remove Image_Metadata_Plate from SELECT as this metadata was not extracted from file names
-    # add Image_Metadata_Site as this is an important metadata when finding where single cells are located
+    # add Image_Metadata_FOV as this is an important metadata when finding where single cells are located
 ] = """WITH Per_Image_Filtered AS (
                 SELECT
                     Metadata_ImageNumber,

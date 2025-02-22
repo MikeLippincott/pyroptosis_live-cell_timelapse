@@ -23,25 +23,13 @@ input_data_dict = {
         ).resolve(strict=True),
         "figure_dir": pathlib.Path("../figures/first_time/timelapse_gifs").resolve(),
     },
-    "pan_time": {
-        "umap_file_path": pathlib.Path(
-            "../data/pan_time/umap_embeddings.parquet"
-        ).resolve(strict=True),
-        "figure_dir": pathlib.Path("../figures/pan_time/timelapse_gifs").resolve(),
-    },
-    "within_time": {
-        "umap_file_path": pathlib.Path(
-            "../data/within_time/umap_embeddings.parquet"
-        ).resolve(strict=True),
-        "figure_dir": pathlib.Path("../figures/within_time/timelapse_gifs").resolve(),
-    },
 }
 pprint(input_data_dict)
 
 visualize = False
 
 
-# In[3]:
+# In[ ]:
 
 
 for profile in input_data_dict.keys():
@@ -52,9 +40,9 @@ for profile in input_data_dict.keys():
     umap_df = pd.read_parquet(input_data_dict[profile]["umap_file_path"])
     print(umap_df.shape)
     # define an interval for the animation
-    # I want it to be 5 frames per second (fps)
+    # I want it to be 2 frames per second (fps)
     # so I will set the interval to 1000/5
-    fps = 5
+    fps = 2
     interval = 1000 / fps
     print(f"Interval: {interval}")
 
@@ -74,10 +62,10 @@ for profile in input_data_dict.keys():
 
         # plot the list of dfs and animate them
         fig, ax = plt.subplots(figsize=(6, 6))
-        ax.set_xlim(-10, 20)
-        ax.set_ylim(-10, 15)
+        ax.set_xlim(-10, 15)
+        ax.set_ylim(-10, 13)
         scat = ax.scatter([], [], c="b", s=0.1)
-        text = ax.text(-9, -9, "", ha="left", va="top")
+        text = ax.text(0, -10, "", ha="left", va="top")
         # add title
         ax.set_title(f"{treatment}")
         # axis titles

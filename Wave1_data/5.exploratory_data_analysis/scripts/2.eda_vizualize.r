@@ -5,12 +5,14 @@ suppressWarnings(suppressPackageStartupMessages(library(arrow)))
 suppressWarnings(suppressPackageStartupMessages(library(argparse)))
 
 
-argparser <- ArgumentParser()
-argparser$add_argument("--dataset", help="Input file", required=TRUE)
+# argparser <- ArgumentParser()
+# argparser$add_argument("--dataset", help="Input file", required=TRUE)
 
-args <- argparser$parse_args()
+# args <- argparser$parse_args()
 
-data_set <- args$dataset
+# data_set <- args$dataset
+
+data_set <- "first_time"
 
 input_data_path <- file.path("..","data",data_set)
 
@@ -24,11 +26,28 @@ umap_data <- arrow::read_parquet(umap_data_path)
 pca_data <- arrow::read_parquet(pca_data_path)
 scree_data <- arrow::read_parquet(scree_data_path)
 
+# map the timepoints to the actual hour timepoint
+timepoints <- data.frame(
+    reference = c("00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17"),
+    Metadata_timepoint  = c(1,4,7,10,13,16,19,22,25,28,31,34,37,40,43,46,49,90)
+)
+# map the timepoints to the main df
+umap_data <- umap_data %>% left_join(timepoints, by = c("Metadata_Time" = "reference"))
+umap_data$Metadata_timepoint_hours <- paste0(umap_data$Metadata_timepoint, " hours")
+head(umap_data)
+
 figure_path <- file.path("..","figures",data_set)
 # create the output directory if it does not exist
 if (!dir.exists(figure_path)) {
   dir.create(figure_path)
 }
+
+head(umap_data)
+
+
+wells <- unique(umap_data$Metadata_Well)
+# sort the wells alphabetically
+wells <- sort(wells)
 
 print(dim(umap_data))
 print(dim(pca_data))
@@ -72,6 +91,9 @@ png(file.path(figure_path,"scree_plot_zoom.png"), width = width, height = height
 scree_plot_zoom
 dev.off()
 
+scree_plot
+scree_plot_zoom
+
 # plot the data
 width <- 15
 height <- 10
@@ -99,9 +121,9 @@ umap_plot <- (
         legend.position="bottom",
         legend.title.position="top"
     )
-    + facet_wrap(~Metadata_Time)
+    + facet_wrap(~Metadata_timepoint_hours)
 )
-
+umap_plot
 
 # Modify the get_plot_component function call
 components <- get_plot_component(umap_plot, "guide-box", return_all = TRUE)
@@ -126,7 +148,7 @@ width <- 15
 height <- 10
 options(repr.plot.width=width, repr.plot.height=height)
 umap_plot <- umap_plot + theme(legend.position="none")
-png(file.path(figure_path,"umap_plot.png"), width=width, height=height, units="in", res=600)
+png(file.path(figure_path,"umap_plot_facet_time.png"), width=width, height=height, units="in", res=600)
 umap_plot
 dev.off()
 
@@ -136,7 +158,7 @@ umap_data$Metadata_Time <- as.numeric(as.character(umap_data$Metadata_Time))
 
 umap_all_time_plot <- (
     ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
-    + geom_point(aes(color=Metadata_Time), size=0.2)
+    + geom_point(aes(color=Metadata_timepoint_hours), size=0.2)
     # move the legend to the bottom
     + guides(
         # make the legend a continuous color scale
@@ -163,7 +185,7 @@ dev.off()
 
 umap_all_time_plot_facet <- (
     ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
-    + geom_point(aes(color=Metadata_Time), size=0.2)
+    + geom_point(aes(color=Metadata_timepoint_hours), size=0.2)
     # move the legend to the bottom
     + guides(
         # make the legend a continuous color scale
@@ -370,7 +392,7 @@ umap_over_time_serum_plot <- (
         legend.position="bottom",
         legend.title.position="top"
     )
-    + facet_wrap(~Metadata_Time)
+    + facet_wrap(~Metadata_Timepoint)
 )
 png(file.path(figure_path,"umap_over_time_serum_plot.png"), width=width, height=height, units="in", res=600)
 umap_over_time_serum_plot
@@ -378,7 +400,7 @@ dev.off()
 
 umap_time_serum_plot <- (
     ggplot(umap_data, aes(x=UMAP0, y=UMAP1))
-    + geom_point(aes(color=Metadata_Time), size=0.2)
+    + geom_point(aes(color=Metadata_timepoint), size=0.2)
     # move the legend to the bottom
     + guides(
         # make the legend a continuous color scale

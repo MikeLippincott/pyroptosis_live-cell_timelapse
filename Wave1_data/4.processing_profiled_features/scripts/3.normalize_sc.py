@@ -51,7 +51,10 @@ dict_of_inputs = {
 # This code cell will split the data into time steps and normalize each time step separately.
 # Then each normalized time step will be concatenated back together.
 
-# In[5]:
+# This last cell does not get run due to memory constraints.
+# It is run on an HPC cluster with more memory available.
+
+# In[ ]:
 
 
 for info, input_path in dict_of_inputs.items():

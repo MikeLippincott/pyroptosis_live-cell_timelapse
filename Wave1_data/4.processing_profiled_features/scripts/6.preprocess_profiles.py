@@ -3,7 +3,7 @@
 
 # This notebook preprocesses the data to have correct time and treatment metadata.
 
-# In[17]:
+# In[1]:
 
 
 import argparse
@@ -13,7 +13,7 @@ from pprint import pprint
 
 import pandas as pd
 
-# In[ ]:
+# In[2]:
 
 
 # check if in a jupyter notebook
@@ -50,7 +50,7 @@ else:
     samples_per_group = 1000
 
 
-# In[19]:
+# In[3]:
 
 
 normalized_dir = pathlib.Path("../data/normalized_data").resolve()
@@ -61,7 +61,7 @@ timepoint_dir = pathlib.Path("../../../data/processed/time_to_timepoint.json").r
 preprocessed_dir.mkdir(exist_ok=True, parents=True)
 
 
-# In[ ]:
+# In[4]:
 
 
 input_data_dict = {
@@ -104,13 +104,16 @@ input_data_dict = {
 pprint(input_data_dict)
 
 
-# In[ ]:
+# In[5]:
 
 
 # load the time map
 with open(timepoint_dir, "r") as f:
     time_map = json.load(f)
 
+
+# This last cell does not get run due to memory constraints.
+# It is run on an HPC cluster with more memory available.
 
 # In[ ]:
 

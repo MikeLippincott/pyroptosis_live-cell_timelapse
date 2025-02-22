@@ -76,7 +76,7 @@ print(f"Destination path: {dest_path}")
 
 # ## set config joins for each preset
 
-# In[5]:
+# In[ ]:
 
 
 # preset configurations based on typical CellProfiler outputs
@@ -150,11 +150,11 @@ print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
 df.head()
 
 
-# In[8]:
+# In[ ]:
 
 
 Metadata_number_of_singlecells_df = (
-    df.groupby(["Metadata_Well_Time"])["Metadata_Well_Time"]
+    df.groupby("Metadata_Well_Time")
     .value_counts()
     .reset_index(name="Metadata_number_of_singlecells")
 )

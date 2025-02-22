@@ -30,7 +30,7 @@ output_dir.mkdir(exist_ok=True, parents=True)
 
 # ## Define dict of paths
 
-# In[ ]:
+# In[3]:
 
 
 # dictionary with each run for the cell type
@@ -67,11 +67,17 @@ feature_select_ops = [
 manual_block_list = [
     "Nuclei_AreaShape_BoundingBoxArea",
     "Nuclei_AreaShape_BoundingBoxMinimum_X",
+    "Nuclei_AreaShape_BoundingBoxMinimum_Y",
+    "Nuclei_AreaShape_BoundingBoxMaximum_X",
+    "Nuclei_AreaShape_BoundingBoxMaximum_Y",
     "Cells_AreaShape_BoundingBoxArea",
 ]
 
 
-# In[9]:
+# This last cell does not get run due to memory constraints.
+# It is run on an HPC cluster with more memory available.
+
+# In[ ]:
 
 
 # feature selection parameters

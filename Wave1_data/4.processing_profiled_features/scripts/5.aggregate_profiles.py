@@ -21,7 +21,7 @@ aggregate_dir = pathlib.Path("../data/aggregated")
 aggregate_dir.mkdir(exist_ok=True, parents=True)
 
 
-# In[ ]:
+# In[3]:
 
 
 # dictionary with each run for the cell type
@@ -74,7 +74,10 @@ sc_metadata_cols_to_drop = [
 ]
 
 
-# In[5]:
+# This last cell does not get run due to memory constraints.
+# It is run on an HPC cluster with more memory available.
+
+# In[ ]:
 
 
 for profile in dict_of_inputs.keys():

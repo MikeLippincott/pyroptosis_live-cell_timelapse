@@ -5,12 +5,10 @@
 
 # ## Import libraries
 
-# In[4]:
+# In[1]:
 
 
-import json
 import pathlib
-import sys
 
 import lancedb
 import matplotlib.pyplot as plt
@@ -20,10 +18,9 @@ import seaborn as sns
 from pycytominer import annotate
 from pycytominer.cyto_utils import output
 
-
 # ## Set paths and variables
 
-# In[12]:
+# In[2]:
 
 
 # directory where parquet files are located
@@ -40,7 +37,10 @@ files = [file for file in files if file.is_file()]
 print(f"Found {len(files)} files")
 
 
-# In[13]:
+# This last cell does not get run due to memory constraints.
+# It is run on an HPC cluster with more memory available.
+
+# In[ ]:
 
 
 # get a list of all files in the data directory
@@ -48,4 +48,3 @@ df = pd.concat([pd.read_parquet(file) for file in files])
 print(df.shape)
 df.to_parquet(output_dir / "live_cell_pyroptosis_wave1_sc.parquet")
 df.head()
-

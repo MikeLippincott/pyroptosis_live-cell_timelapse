@@ -38,7 +38,7 @@ dependencies:
   - conda-forge::r-arrow
   - conda-forge::r-polychrome
   - conda-forge::r-argparse
-
+  - conda-forge::r-gganimate
   - conda-forge::r-ggridges
   - pip:
     - pre-commit

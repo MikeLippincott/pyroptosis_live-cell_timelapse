@@ -19,8 +19,8 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 cd scripts || exit
 
 # run the scripts
-# python 1.eda_compute.py
-# python 3.timelapse_visualization.py
+python 1.eda_compute.py
+python 3.timelapse_visualization.py
 
 conda deactivate
 conda activate pyroptosis_timelapse_R
@@ -29,5 +29,8 @@ Rscript 2.eda_vizualize.r --dataset "first_time"
 Rscript 4.cell_count_analsis.r
 Rscript 5.plot_platemap.r
 Rscript 6.bulk_analysis.r
+Rscript 7.umap_videos.r
+
+conda deactivate
 
 echo "EDA completed successfully"

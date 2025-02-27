@@ -40,6 +40,7 @@ dependencies:
   - conda-forge::r-argparse
   - conda-forge::r-gganimate
   - conda-forge::r-ggridges
+  - conda-forge::r-gifski
   - pip:
     - pre-commit
     - black

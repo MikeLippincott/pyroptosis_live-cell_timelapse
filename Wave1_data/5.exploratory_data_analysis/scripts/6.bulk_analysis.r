@@ -56,11 +56,6 @@ umap_data$Metadata_treatment <- factor(umap_data$Metadata_treatment, levels = c(
 unique(umap_data$Metadata_treatment)
 
 
-
-
-# 9 colors
-# col 1 - 3 hues
-# colorgrad1 <- c("white", "grey", "#585858")
 colorgrad1 <- colorRampPalette(c("lightgrey", "grey"))(3)
 # col 2 - 5 hues color ramp 5 hues
 colorgrad2 <- colorRampPalette(c("pink", "darkred"))(11)

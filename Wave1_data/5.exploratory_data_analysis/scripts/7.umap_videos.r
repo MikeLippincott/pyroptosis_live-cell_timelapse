@@ -4,14 +4,10 @@ suppressWarnings(suppressPackageStartupMessages(library(dplyr)))
 suppressWarnings(suppressPackageStartupMessages(library(arrow)))
 suppressWarnings(suppressPackageStartupMessages(library(argparse)))
 suppressWarnings(suppressPackageStartupMessages(library(gifski)))
+if (!requireNamespace("gganimate", quietly = TRUE)) {
+  install.packages("gganimate")
+}
 suppressWarnings(suppressPackageStartupMessages(library(gganimate)))
-
-# argparser <- ArgumentParser()
-# argparser$add_argument("--dataset", help="Input file", required=TRUE)
-
-# args <- argparser$parse_args()
-
-# data_set <- args$dataset
 
 data_set <- "first_time"
 

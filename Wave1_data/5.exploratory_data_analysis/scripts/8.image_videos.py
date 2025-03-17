@@ -24,6 +24,7 @@ def create_composite_image(
 ) -> np.ndarray:
     """
     Create a composite image from three grayscale images using a lookup table.
+    Create a composite image from either three or four grayscale images using a lookup table.
 
     Parameters
     ----------
@@ -100,6 +101,22 @@ def make_animation_gif(
     fps: int = 5,
     loop: int = 0,
 ):
+    """
+    Create an animation gif from a list of images.
+
+    Parameters
+    ----------
+    image_list : int
+        List of images in order to create the gif.
+    save_path : pathlib.Path
+        The output path pf the gif.
+    duration : int, optional
+        The duration of each frame in milliseconds, by default 500
+    fps : int, optional
+        The frames per second, by default 5
+    loop : int, optional
+        The number of loops, where 0 loops indefinitely, by default 0
+    """
 
     imageio.mimsave(save_path, image_list, duration=duration, loop=loop, fps=fps)
 

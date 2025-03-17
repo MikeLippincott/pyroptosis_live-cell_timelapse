@@ -84,9 +84,6 @@ cell_counts$Metadata_treatment <- factor(cell_counts$Metadata_treatment, levels 
 ))
 
 
-# 9 colors
-# col 1 - 3 hues
-# colorgrad1 <- c("white", "grey", "#585858")
 colorgrad1 <- colorRampPalette(c("lightgrey", "grey"))(3)
 # col 2 - 5 hues color ramp 5 hues
 colorgrad2 <- colorRampPalette(c("pink", "darkred"))(11)
@@ -143,13 +140,12 @@ height <- 20
 options(repr.plot.width=width, repr.plot.height=height)
 # plot the timelapse _profiles for a given feature
 timelapse_plot <- (
-    # group the timepoints by the feature
+
     ggplot(cell_counts, aes(x=Metadata_timepoint, y=cell_count), fill=Metadata_treatment)
+    # group the timepoints by the feature
     + geom_line(aes(group=unique_well, color=Metadata_treatment), alpha=0.9, linewidth=1)
     # add a sd ribbon to the plot
-
     + theme_bw()
-
     + theme(
         axis.text.x = element_text(angle = 45, hjust = 1, size = 16),
         axis.text.y = element_text(size = 16),
@@ -178,13 +174,12 @@ height <- 20
 options(repr.plot.width=width, repr.plot.height=height)
 # plot the timelapse _profiles for a given feature
 timelapse_plot <- (
-    # group the timepoints by the feature
+
     ggplot(cell_counts, aes(x=Metadata_timepoint, y=cell_count), fill=Metadata_serum)
+    # group the timepoints by the feature
     + geom_line(aes(group=unique_well, color=Metadata_serum), alpha=0.9, linewidth=1)
     # add a sd ribbon to the plot
-
     + theme_bw()
-
     + theme(
         axis.text.x = element_text(angle = 45, hjust = 1, size = 16),
         axis.text.y = element_text(size = 16),

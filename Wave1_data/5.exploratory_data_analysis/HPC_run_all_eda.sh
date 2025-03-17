@@ -25,8 +25,6 @@ python 3.timelapse_visualization.py
 conda deactivate
 conda activate pyroptosis_timelapse_R
 
-
-
 Rscript 2.eda_vizualize.r
 Rscript 4.cell_count_analsis.r
 Rscript 5.plot_platemap.r

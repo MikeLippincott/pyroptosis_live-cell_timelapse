@@ -16,8 +16,8 @@ seed=$2
 cd scripts/ || exit
 
 
-python 1.run_map_on_percentages_of_cells.py --percentage $percent --seed $seed --shuffle
-python 1.run_map_on_percentages_of_cells.py --percentage $percent --seed $seed
+python 2.run_map_on_percentages_of_cells.py --percentage $percent --seed $seed --shuffle
+python 2.run_map_on_percentages_of_cells.py --percentage $percent --seed $seed
 
 cd .. || exit
 

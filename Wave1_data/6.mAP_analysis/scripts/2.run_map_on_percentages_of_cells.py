@@ -149,7 +149,7 @@ sc_metadata_cols_to_drop = [
 
 
 data_file_path = pathlib.Path(
-    "../../4.processing_profiled_features/data/preprocessed_data/live_cell_pyroptosis_wave1_sc_first_time_norm_fs_subset.parquet"
+    "../../4.processing_profiled_features/data/preprocessed_data/live_cell_pyroptosis_wave1_sc_first_time_norm_fs.parquet"
 ).resolve(strict=True)
 df = pd.read_parquet(data_file_path)
 df.reset_index(drop=True, inplace=True)

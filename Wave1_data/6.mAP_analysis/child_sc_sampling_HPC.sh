@@ -8,6 +8,7 @@
 #SBATCH --output=sc_sampling_child-%j.out
 
 module load miniforge
+conda init bash
 conda activate timelapse_map_env
 
 percent=$1

@@ -189,8 +189,10 @@ aggregate_df = pd.merge(
     metadata_df, aggregate_df, on=["Metadata_Well", "Metadata_Time"]
 )
 dict_of_map_dfs = run_mAP_across_time(aggregate_df)
+output_df = pd.concat(dict_of_map_dfs.values(), keys=dict_of_map_dfs.keys())
+output_df.reset_index(inplace=True)
+output_df.rename(columns={"level_0": "Metadata_Time"}, inplace=True)
 # add the percentage of cells to the keys
-output_df = pd.concat(dict_of_map_dfs.values())
 output_df["percentage_of_cells"] = percentage
 output_df["seed"] = set_seed
 output_df["shuffle"] = shuffle

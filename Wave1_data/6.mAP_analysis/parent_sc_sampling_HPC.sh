@@ -8,6 +8,7 @@
 #SBATCH --output=sc_sampling_parent-%j.out
 
 module load miniforge
+conda init bash
 conda activate timelapse_map_env
 
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb

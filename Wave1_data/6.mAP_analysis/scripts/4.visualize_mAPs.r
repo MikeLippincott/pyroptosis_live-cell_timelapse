@@ -12,23 +12,43 @@ across_channels_mAP <- arrow::read_parquet(across_channels_mAP_file_path)
 dim(percent_cell_mAP)
 dim(across_channels_mAP)
 
-head(percent_cell_mAP)
+# get the first time point only
+percent_cell_mAP <- percent_cell_mAP %>% filter(Metadata_Time == "00")
 
-# get the average mAP for each treatment and timepoint
-percent_cell_mAP <- percent_cell_mAP %>%
-  group_by(Metadata_treatment, Metadata_Time, shuffle, percentage_of_cells) %>%
+percent_cell_mAP <- percent_cell_mAP %>% group_by(Metadata_treatment, shuffle, percentage_of_cells) %>%
   summarise(mAP = mean(mean_average_precision))
 
-head(percent_cell_mAP)
+
+
+width <- 30
+height <- 30
+options(repr.plot.width = width, repr.plot.height = height)
+percent_cell_plot <- (
+    ggplot(data = percent_cell_mAP, aes(x = Metadata_treatment, y = mAP, fill=Metadata_treatment))
+    + geom_bar(stat = "identity", position = "dodge")
+    + facet_wrap(shuffle~percentage_of_cells, scales = "free")
+)
+percent_cell_plot
+
+across_channels_mAP <- arrow::read_parquet(across_channels_mAP_file_path)
+
+across_channels_mAP <- across_channels_mAP %>%
+  group_by(Metadata_treatment, Metadata_Time, shuffle, Channel) %>%
+  summarise(mAP = mean(mean_average_precision))
+unique(across_channels_mAP$Metadata_Time)
+# selct only 'LPS 1 ug/ml + Nigericin 5uM',
+across_channels_mAP <- across_channels_mAP %>%
+  filter(Metadata_treatment == 'LPS 1 ug/ml + Nigericin 5uM')
 
 width <- 15
 height <- 15
 options(repr.plot.width = width, repr.plot.height = height)
-percent_cell_plot <- (
-    ggplot(data = percent_cell_mAP, aes(x = Metadata_Time, y = mAP))
+channels_mAP_plot <- (
+    ggplot(data = across_channels_mAP, aes(x = Metadata_Time, y = mAP))
     + geom_line(aes(group = Metadata_treatment, color = Metadata_treatment))
-    + facet_grid(shuffle ~ percentage_of_cells)
+    + facet_wrap(shuffle ~ Channel)
+
 )
-percent_cell_plot
+channels_mAP_plot
 
 

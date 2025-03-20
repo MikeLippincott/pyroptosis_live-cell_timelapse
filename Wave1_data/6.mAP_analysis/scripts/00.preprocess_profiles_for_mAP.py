@@ -32,60 +32,6 @@ import itertools
 # In[2]:
 
 
-def run_mAP_across_time(
-    df: pd.DataFrame,
-):
-    """
-    Run mAP across timepoints specifies and hardcoded columns for this data
-
-    Parameters
-    ----------
-    df : pd.DataFrame
-        An aggregated dataframe with metadata and features and temporal information
-
-    Returns
-    -------
-    dict
-        A dictionary of dataframes with the mAP results for each
-        timepoint.
-    """
-    unique_timepoints = df.Metadata_Time.unique()
-    dict_of_map_dfs = {}
-    for timepoint in unique_timepoints:
-        single_time_df = df.loc[df.Metadata_Time == timepoint]
-        reference_col = "Metadata_reference_index"
-        df_activity = assign_reference_index(
-            single_time_df,
-            "Metadata_treatment == 'DMSO CTL'",
-            reference_col=reference_col,
-            default_value=-1,
-        )
-        pos_sameby = ["Metadata_treatment", reference_col]
-        pos_diffby = []
-        neg_sameby = []
-        neg_diffby = ["Metadata_treatment", reference_col]
-        metadata = df_activity.filter(regex="Metadata")
-        profiles = df_activity.filter(regex="^(?!Metadata)").values
-
-        activity_ap = map.average_precision(
-            metadata, profiles, pos_sameby, pos_diffby, neg_sameby, neg_diffby
-        )
-
-        activity_ap = activity_ap.query("Metadata_treatment != 'DMSO CTL'")
-        activity_map = map.mean_average_precision(
-            activity_ap, pos_sameby, null_size=1000000, threshold=0.05, seed=0
-        )
-        activity_map["-log10(p-value)"] = -activity_map["corrected_p_value"].apply(
-            np.log10
-        )
-        # flatten the multi-index columns to make it easier to work with
-        dict_of_map_dfs[timepoint] = activity_map
-    return dict_of_map_dfs
-
-
-# In[3]:
-
-
 data_file_path = pathlib.Path(
     "../../4.processing_profiled_features/data/preprocessed_data/live_cell_pyroptosis_wave1_first_time_norm_fs_agg.parquet"
 ).resolve(strict=True)
@@ -101,6 +47,47 @@ aggregate_df = aggregate_df.dropna(
 )
 print(aggregate_df.shape)
 aggregate_df.head()
+
+
+# 'Media',
+# 'DMSO CTL',
+#
+#
+#
+# 'Flagellin 0.1 ug/ml',
+# 'Flagellin 1 ug/ml',
+# 'Flagellin 10 ug/ml',
+#
+# 'LPS 0.1 ug/ml',
+# 'LPS 1 ug/ml',
+# 'LPS 10 ug/ml',
+# 'LPS 1 ug/ml + ATP 2.5 mM',
+# 'LPS 1 ug/ml + Nigericin 0.1 uM'
+# 'LPS 1 ug/ml + Nigericin 0.5 uM',
+# 'LPS 1 ug/ml + Nigericin 1 uM',
+# 'LPS 1 ug/ml + Nigericin 3uM',
+# 'LPS 1 ug/ml + Nigericin 5uM',
+#
+# 'Thapsigargin 0.5uM',
+# 'Thapsigargin 1 uM',
+# 'Thapsigargin 10 uM',
+# 'H2O2 100 nM',
+# 'H2O2 100 uM',
+# 'H2O2 500 uM',
+# 'Ab1-42 0.4 uM',
+# 'Ab1-42 2 uM',
+# 'Ab1-42 10 uM',
+#
+#
+#
+#
+#
+
+# In[3]:
+
+
+aggregate_df["Metadata_treatment"].unique()
+# assign a class to each treatment
 
 
 # In[4]:
@@ -207,7 +194,6 @@ final_df = pd.concat(
     channel_combo_output_dict.values(), keys=channel_combo_output_dict.keys()
 )
 final_df.reset_index(inplace=True, drop=True)
-final_df.rename(columns={"level_0": "Metadata_Time"}, inplace=True)
 # save the output to a file
 final_df.to_parquet("../results/mAP_across_channels.parquet")
 final_df.head()

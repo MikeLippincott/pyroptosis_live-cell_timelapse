@@ -67,6 +67,7 @@ output_file.parent.mkdir(exist_ok=True, parents=True)
 
 def run_mAP_across_time(
     df: pd.DataFrame,
+    seed: int = 0,
 ):
     """
     Run mAP across timepoints specifies and hardcoded columns for this data
@@ -106,7 +107,7 @@ def run_mAP_across_time(
 
         activity_ap = activity_ap.query("Metadata_treatment != 'DMSO CTL'")
         activity_map = map.mean_average_precision(
-            activity_ap, pos_sameby, null_size=1000000, threshold=0.05, seed=0
+            activity_ap, pos_sameby, null_size=1000000, threshold=0.05, seed=seed
         )
         activity_map["-log10(p-value)"] = -activity_map["corrected_p_value"].apply(
             np.log10
@@ -167,7 +168,6 @@ subset_df = df.groupby(["Metadata_Time", "Metadata_treatment"]).apply(
     include_groups=False,
 )
 if shuffle:
-    random.seed(0)
     # permutate the data
     for col in subset_df.columns:
         subset_df[col] = np.random.permutation(subset_df[col])
@@ -188,7 +188,7 @@ metadata_df = metadata_df.drop_duplicates()
 aggregate_df = pd.merge(
     metadata_df, aggregate_df, on=["Metadata_Well", "Metadata_Time"]
 )
-dict_of_map_dfs = run_mAP_across_time(aggregate_df)
+dict_of_map_dfs = run_mAP_across_time(aggregate_df, seed=set_seed)
 output_df = pd.concat(dict_of_map_dfs.values(), keys=dict_of_map_dfs.keys())
 output_df.reset_index(inplace=True)
 output_df.rename(columns={"level_0": "Metadata_Time"}, inplace=True)

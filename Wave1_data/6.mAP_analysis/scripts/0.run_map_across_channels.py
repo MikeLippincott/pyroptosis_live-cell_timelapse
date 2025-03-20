@@ -24,6 +24,7 @@ import pycytominer.aggregate
 
 # Suppress all RuntimeWarnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
+import itertools
 
 #
 
@@ -150,8 +151,6 @@ loadable_features["All"] = [
 
 # In[6]:
 
-
-import itertools
 
 unique_channels = df["Channel"].unique().tolist()
 # unique_channels = unique_channels + ['None']

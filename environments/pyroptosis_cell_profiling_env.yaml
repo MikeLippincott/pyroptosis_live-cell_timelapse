@@ -48,5 +48,6 @@ dependencies:
     - javabridge
     - tensorflow
     - fuzzymatcher
+    - memory_profiler
 
 

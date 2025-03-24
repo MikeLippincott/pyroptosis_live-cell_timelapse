@@ -52,7 +52,7 @@ if not in_notebook:
     set_seed = args.seed
     shuffle = args.shuffle
 else:
-    percentage = 0.4
+    percentage = 0.1
     set_seed = 0
     shuffle = False
 
@@ -99,7 +99,10 @@ def run_mAP_across_time(
         neg_sameby = []
         neg_diffby = ["Metadata_treatment", reference_col]
         metadata = df_activity.filter(regex="Metadata")
-        profiles = df_activity.filter(regex="^(?!Metadata)").values
+        profiles = df_activity.filter(regex="^(?!Metadata)")
+        profiles.dropna(inplace=True)
+        metadata = metadata.loc[profiles.index]
+        profiles = profiles.values
 
         activity_ap = map.average_precision(
             metadata, profiles, pos_sameby, pos_diffby, neg_sameby, neg_diffby
@@ -150,7 +153,7 @@ sc_metadata_cols_to_drop = [
 
 
 data_file_path = pathlib.Path(
-    "../../4.processing_profiled_features/data/preprocessed_data/live_cell_pyroptosis_wave1_sc_first_time_norm_fs.parquet"
+    "../../4.processing_profiled_features/data/preprocessed_data/live_cell_pyroptosis_wave1_sc_first_time_norm_fs_subset.parquet"
 ).resolve(strict=True)
 df = pd.read_parquet(data_file_path)
 df.reset_index(drop=True, inplace=True)
@@ -165,17 +168,18 @@ df.head()
 random.seed(set_seed)
 subset_df = df.groupby(["Metadata_Time", "Metadata_treatment"]).apply(
     lambda x: x.sample(frac=percentage, random_state=set_seed),
-    include_groups=False,
+    include_groups=True,
 )
+subset_df.reset_index(drop=True, inplace=True)
 if shuffle:
     # permutate the data
     for col in subset_df.columns:
         subset_df[col] = np.random.permutation(subset_df[col])
-metadata_cols = [cols for cols in df.columns if "Metadata" in cols]
-features_cols = [cols for cols in df.columns if "Metadata" not in cols]
+metadata_cols = [cols for cols in subset_df.columns if "Metadata" in cols]
+features_cols = [cols for cols in subset_df.columns if "Metadata" not in cols]
 features_cols = features_cols + ["Metadata_number_of_singlecells"]
 aggregate_df = pycytominer.aggregate(
-    population_df=df,
+    population_df=subset_df,
     strata=["Metadata_Well", "Metadata_Time"],
     features=features_cols,
     operation="median",
@@ -183,11 +187,12 @@ aggregate_df = pycytominer.aggregate(
 # Drop metadata columns
 metadata_cols = [x for x in metadata_cols if x not in sc_metadata_cols_to_drop]
 
-metadata_df = df[metadata_cols]
+metadata_df = subset_df[metadata_cols]
 metadata_df = metadata_df.drop_duplicates()
 aggregate_df = pd.merge(
     metadata_df, aggregate_df, on=["Metadata_Well", "Metadata_Time"]
 )
+
 dict_of_map_dfs = run_mAP_across_time(aggregate_df, seed=set_seed)
 output_df = pd.concat(dict_of_map_dfs.values(), keys=dict_of_map_dfs.keys())
 output_df.reset_index(inplace=True)

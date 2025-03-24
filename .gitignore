@@ -180,3 +180,4 @@ Wave1_data/5.exploratory_data_analysis/data/*
 Wave1_data/5.exploratory_data_analysis/figures/first_time/timelapse_gifs/*
 Wave1_data/5.exploratory_data_analysis/figures/image_gifs/*
 Wave1_data/6.mAP_analysis/results/*
+Wave1_data/7.feature_select_table_optimzation/results_of_memory_profiling

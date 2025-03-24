@@ -19,12 +19,6 @@ output_dir.mkdir(exist_ok=True)
 # In[3]:
 
 
-num_of_features = 100
-num_of_cells_per_well = 100
-num_of_groups = 50
-num_of_replicates = 4
-
-
 def generate_parameter_search_space(
     min,
     max,
@@ -35,17 +29,14 @@ def generate_parameter_search_space(
     return np.linspace(min, max, num_of_steps, dtype=int)
 
 
-num_of_features = generate_parameter_search_space(10, 3000, 100)
-num_of_cells_per_well = generate_parameter_search_space(10, 10000, 1000)
-num_of_groups = generate_parameter_search_space(2, 50, 1)
-num_of_replicates = generate_parameter_search_space(2, 15, 1)
+num_of_features = generate_parameter_search_space(10, 5000, 500)  # min, max, increment
+num_of_cells_per_well = generate_parameter_search_space(10, 10000, 500)
+num_of_wells = generate_parameter_search_space(10, 5000, 500)
+
 
 # get the total number of combinations
 total_combinations = (
-    len(num_of_features)
-    * len(num_of_cells_per_well)
-    * len(num_of_groups)
-    * len(num_of_replicates)
+    len(num_of_features) * len(num_of_cells_per_well) * len(num_of_wells)
 )
 print(f"Total number of combinations: {total_combinations}")
 
@@ -64,12 +55,7 @@ with open(pathlib.Path(f"{output_dir}/num_of_cells_per_well.txt"), "w") as f:
         f.write(str(num_of_cell_per_well))
         f.write("\n")
 
-with open(pathlib.Path(f"{output_dir}/num_of_groups.txt"), "w") as f:
-    for num_of_group in num_of_groups:
-        f.write(str(num_of_group))
-        f.write("\n")
-
-with open(pathlib.Path(f"{output_dir}/num_of_replicates.txt"), "w") as f:
-    for num_of_replicate in num_of_replicates:
-        f.write(str(num_of_replicate))
+with open(pathlib.Path(f"{output_dir}/num_of_wells.txt"), "w") as f:
+    for num_of_well in num_of_wells:
+        f.write(str(num_of_well))
         f.write("\n")

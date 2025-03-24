@@ -11,11 +11,11 @@
 import argparse
 import gc
 import pathlib
+import time
 
 import numpy as np
 import pandas as pd
 import psutil
-from memory_profiler import profile
 from pycytominer import feature_select
 from pycytominer.cyto_utils import output
 
@@ -26,7 +26,7 @@ except NameError:
     in_notebook = False
 
 
-# In[2]:
+# In[ ]:
 
 
 if not in_notebook:
@@ -34,19 +34,17 @@ if not in_notebook:
     argparser = argparse.ArgumentParser()
     argparser.add_argument("--num_of_features", type=int, default=1000)
     argparser.add_argument("--num_of_cells_per_well", type=int, default=100)
-    argparser.add_argument("--num_of_groups", type=int, default=50)
-    argparser.add_argument("--num_of_replicates", type=int, default=4)
+    argparser.add_argument("--num_of_wells", type=int, default=50)
     args = argparser.parse_args()
 
     num_of_features = args.num_of_features
     num_of_cells_per_well = args.num_of_cells_per_well
-    num_of_groups = args.num_of_groups
-    num_of_replicates = args.num_of_replicates
+    num_of_wells = args.num_of_wells
 else:
-    num_of_features = 100
+    num_of_features = 300
     num_of_cells_per_well = 100
-    num_of_groups = 50
-    num_of_replicates = 4
+    num_of_wells = 308
+    df_shape = (num_of_wells * num_of_cells_per_well, num_of_features)
 
 
 # In[3]:
@@ -75,29 +73,25 @@ feature_select_ops = [
 
 
 # generate a profile for input data for fs
+
+
 def generate_toy_data(
     num_of_features: int = 1000,
     num_of_cells_per_well: int = 100,
-    num_of_groups: int = 50,
-    num_of_replicates: int = 4,
+    num_of_wells: int = 308,
     seed: int = 0,
 ):
     np.random.seed(seed)
-    num_of_rows_total = num_of_groups * num_of_replicates
+    num_of_rows_total = num_of_wells * num_of_cells_per_well
     output_dict = {
         "Metadata_Well": [],
     }
-    for group in range(num_of_groups):
-        for replicate in range(num_of_replicates):
-            well = f"{group}_{replicate}"
-            output_dict["Metadata_Well"].extend([well] * num_of_cells_per_well)
+    for well in range(num_of_wells):
+        output_dict["Metadata_Well"].extend([well] * num_of_cells_per_well)
 
     for feature in range(num_of_features):
         feature_name = f"feature_{feature}"
-        output_dict[feature_name] = np.random.normal(
-            0, 1, num_of_rows_total * num_of_cells_per_well
-        )
-
+        output_dict[feature_name] = np.random.normal(0, 1, num_of_rows_total)
     df = pd.DataFrame(output_dict)
     return df
 
@@ -105,23 +99,23 @@ def generate_toy_data(
 df = generate_toy_data(
     num_of_features=num_of_features,
     num_of_cells_per_well=num_of_cells_per_well,
-    num_of_groups=num_of_groups,
-    num_of_replicates=num_of_replicates,
-    seed=0,
+    num_of_wells=num_of_wells,
 )
+df.head()
 
 
-# In[ ]:
+# In[6]:
 
 
 metadata_cols = ["Metadata_Well"]
 feature_cols = [x for x in df.columns if x not in metadata_cols]
+start_time = time.time()
 feature_select_df = feature_select(
     df,
     operation=feature_select_ops,
     features=feature_cols,
 )
-
+elapsed_time = time.time() - start_time
 num_of_features_retained = feature_select_df.shape[1]
 percent_of_features_retained = num_of_features_retained / df.shape[1] * 100
 print(f"Initial shape: {df.shape}, Final shape: {feature_select_df.shape}")
@@ -149,8 +143,7 @@ print(f"Total: {(post_mem_info.rss - prior_mem_info.rss) / (1024 ** 2):.2f} MB")
 output_dict = {
     "num_of_features": num_of_features,
     "num_of_cells_per_well": num_of_cells_per_well,
-    "num_of_groups": num_of_groups,
-    "num_of_replicates": num_of_replicates,
+    "num_of_wells": num_of_wells,
     "num_of_features_retained": num_of_features_retained,
     "percent_of_features_retained": percent_of_features_retained,
     "rss_MB": (post_mem_info.rss - prior_mem_info.rss) / (1024**2),
@@ -161,6 +154,7 @@ output_dict = {
     "data_MB": (post_mem_info.data - prior_mem_info.data) / (1024**2),
     "dirty_MB": (post_mem_info.dirty - prior_mem_info.dirty) / (1024**2),
     "total_MB": (post_mem_info.rss - prior_mem_info.rss) / (1024**2),
+    "elapsed_time": elapsed_time,
 }
 output_df = pd.DataFrame(output_dict, index=[0])
 output_df
@@ -171,7 +165,7 @@ output_df
 
 # write the output to a file
 output_file_path = pathlib.Path(
-    f"../results_of_memory_profiling/{num_of_features}_features_{num_of_cells_per_well}_cells_per_well_{num_of_groups}_groups_{num_of_replicates}_replicates.parquet"
+    f"../results_of_memory_profiling/{num_of_features}_features_{num_of_cells_per_well}_cells_per_well_{num_of_wells}_wells.parquet"
 ).resolve()
 output_file_path.parent.mkdir(exist_ok=True, parents=True)
 output_df.to_parquet(output_file_path)

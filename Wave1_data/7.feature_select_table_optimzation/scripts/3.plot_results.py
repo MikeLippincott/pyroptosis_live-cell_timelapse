@@ -115,7 +115,7 @@ plt.title(
 plt.show()
 
 
-# In[7]:
+# In[6]:
 
 
 # 3d plot of the data

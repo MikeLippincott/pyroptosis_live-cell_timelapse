@@ -26,7 +26,7 @@ except NameError:
     in_notebook = False
 
 
-# In[ ]:
+# In[2]:
 
 
 if not in_notebook:
@@ -121,8 +121,6 @@ percent_of_features_retained = num_of_features_retained / df.shape[1] * 100
 print(f"Initial shape: {df.shape}, Final shape: {feature_select_df.shape}")
 print(f"Number of features retained: {num_of_features_retained}")
 print(f"Percent of features retained: {percent_of_features_retained:.2f}%")
-del df
-del feature_select_df
 
 
 # In[7]:

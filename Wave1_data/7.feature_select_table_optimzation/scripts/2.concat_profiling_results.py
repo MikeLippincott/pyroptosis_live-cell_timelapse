@@ -29,3 +29,9 @@ list_of_dfs = [
 concated_df = pd.concat(list_of_dfs, ignore_index=True)
 concated_df.to_parquet(output_file_path)
 concated_df.head()
+
+
+# In[4]:
+
+
+concated_df["total_MB"].max()

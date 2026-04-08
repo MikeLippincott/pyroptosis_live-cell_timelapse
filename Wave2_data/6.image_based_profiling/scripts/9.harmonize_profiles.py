@@ -26,7 +26,7 @@ else:
     import tqdm
 
 
-# In[4]:
+# In[2]:
 
 
 # load in platemap file as a pandas dataframe
@@ -48,8 +48,13 @@ chammi_profiles_path = pathlib.Path(
     f"{image_base_dir}/7a.CHAMMI75_extracted_features/CHAMMI75_combined_sc_profiles.parquet"
 ).resolve(strict=True)
 
+harmonized_profiles_path = pathlib.Path(
+    f"{image_base_dir}/9.harmonized_profiles/harmonized_profiles.parquet"
+).resolve()
+harmonized_profiles_path.parent.mkdir(parents=True, exist_ok=True)
 
-# In[5]:
+
+# In[3]:
 
 
 norm_CP_df = pd.read_parquet(normalized_profiles_path)
@@ -59,13 +64,7 @@ print(f"Normalized CP: {norm_CP_df.shape[0]}")
 print(f"CHAMMI75: {chammi75_df.shape[0]}")
 
 
-# In[7]:
-
-
-norm_CP_df
-
-
-# In[8]:
+# In[4]:
 
 
 merged_df = pd.merge(
@@ -80,13 +79,6 @@ merged_df = pd.merge(
     ],
     how="left",
 )
+merged_df.to_parquet(harmonized_profiles_path, index=False)
 print(f"Merged profiles: {merged_df.shape[0]}")
-
-
-# In[10]:
-
-
-merged_df
-
-
-# In[ ]:
+merged_df.head()

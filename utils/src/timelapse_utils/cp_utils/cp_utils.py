@@ -51,10 +51,12 @@ def run_cellprofiler(
     path_to_pipeline: str,
     path_to_input: str,
     path_to_output: str,
+    run_with_apptainer_interactive: Optional[pathlib.Path | None] = None,
     sqlite_name: Optional[None | str] = None,
     hardcode_sqlite_name: Optional[str | None] = None,
     analysis_run: Optional[bool | False] = False,
     rename_sqlite_file_bool: Optional[bool | False] = False,
+    log_file_name: Optional[str | None] = None,
 ):
     """Run CellProfiler on data using LoadData CSV. It can be used for both a illumination correction pipeline and analysis pipeline.
 
@@ -75,6 +77,7 @@ def run_cellprofiler(
             pipeline for multiple datasets. If kept as default, the SQLite file will not be renamed and the sqlite_name is used to
             find if the analysis pipeline has already been ran (default is False)
     """
+
     # check to make sure the paths to files are correct and they exists before running CellProfiler
     if not pathlib.Path.exists(path_to_pipeline):
         raise FileNotFoundError(f"Directory '{path_to_pipeline}' does not exist")
@@ -84,24 +87,43 @@ def run_cellprofiler(
     os.makedirs(log_dir, exist_ok=True)
 
     if not analysis_run:
-
+        if log_file_name is None:
+            log_file_name = "cellprofiler_output.log"
         # a log file is created for each plate or data set name that holds all outputs and errors
         with open(
-            pathlib.Path(f"logs/cellprofiler_output.log"),
+            pathlib.Path(f"logs/{log_file_name}"),
             "w",
         ) as cellprofiler_output_file:
             # run CellProfiler pipeline
-            command = [
-                "cellprofiler",
-                "-c",
-                "-r",
-                "-p",
-                path_to_pipeline,
-                "-i",
-                path_to_input,
-                "-o",
-                path_to_output,
-            ]
+            command = (
+                [
+                    "apptainer",
+                    "exec",
+                    str(run_with_apptainer_interactive),
+                    "cellprofiler",
+                    "-c",
+                    "-r",
+                    "-p",
+                    path_to_pipeline,
+                    "-i",
+                    path_to_input,
+                    "-o",
+                    path_to_output,
+                ]
+                if run_with_apptainer_interactive
+                else [
+                    "cellprofiler",
+                    "-c",
+                    "-r",
+                    "-p",
+                    path_to_pipeline,
+                    "-i",
+                    path_to_input,
+                    "-o",
+                    path_to_output,
+                ]
+            )
+
             subprocess.run(
                 command,
                 stdout=cellprofiler_output_file,
@@ -124,7 +146,7 @@ def run_cellprofiler(
 
         # a log file is created for each plate or data set name that holds all outputs and errors
         with open(
-            pathlib.Path("logs/cellprofiler_output.log"),
+            pathlib.Path(f"logs/{log_file_name}"),
             "w",
         ) as cellprofiler_output_file:
             # run CellProfiler for an analysis run

@@ -5,7 +5,7 @@
 #SBATCH --constraint=128c # specify the constraint for 128 cores
 #SBATCH --qos=long
 #SBATCH --account=amc-general
-#SBATCH --time=5:00:00
+#SBATCH --time=7:00:00
 #SBATCH --output=timelapse_cellprofiling-%j.out
 
 # 2 cores at 3.75 GB of ram per core

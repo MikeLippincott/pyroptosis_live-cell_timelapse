@@ -68,5 +68,5 @@ def bandicoot_check(
             )
         ).resolve(strict=True)
     else:
-        image_base_dir = root_dir
+        image_base_dir = root_dir / "data"
     return image_base_dir

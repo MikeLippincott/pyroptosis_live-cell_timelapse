@@ -10,6 +10,17 @@ from concurrent.futures import Future, ProcessPoolExecutor
 from typing import List, Optional
 
 
+def _extract_plate_name_from_command(command_args: List[str]) -> str:
+    """Extract a plate-like name from a CellProfiler command argument list."""
+    # Prefer the input path, then output path; both are explicit and stable CLI arguments.
+    for flag in ("-i", "-o"):
+        if flag in command_args:
+            value_index = command_args.index(flag) + 1
+            if value_index < len(command_args):
+                return pathlib.Path(command_args[value_index]).name
+    return "unknown_plate"
+
+
 def results_to_log(
     results: List[subprocess.CompletedProcess], log_dir: pathlib.Path, run_name: str
 ) -> None:
@@ -27,8 +38,12 @@ def results_to_log(
 
     # Run through each result to make individual log files
     for result in results:
-        plate_name = result.args[6].name
-        output_string = result.stderr.decode("utf-8")
+        plate_name = _extract_plate_name_from_command(result.args)
+        output_string = (
+            result.stderr.decode("utf-8")
+            if isinstance(result.stderr, bytes)
+            else str(result.stderr)
+        )
 
         # Set up a unique logger for each plate/process
         logger = logging.getLogger(f"logger_{plate_name}")
@@ -148,12 +163,13 @@ def run_cellprofiler_parallel(
 
     print("All processes have been completed!")
 
+    # convert the results into log files
+    results_to_log(results=results, log_dir=log_dir, run_name=run_name)
+
     # for each process, confirm that the process completed successfully and return a log file
     for result in results:
-        plate_name = result.args[6].name
-        # convert the results into log files
-        results_to_log(results=results, log_dir=log_dir, run_name=run_name)
-        if result.returncode == 1:
+        plate_name = _extract_plate_name_from_command(result.args)
+        if result.returncode != 0:
             print(
                 f"A return code of {result.returncode} was returned for {plate_name}, which means there was an error in the CellProfiler run."
             )

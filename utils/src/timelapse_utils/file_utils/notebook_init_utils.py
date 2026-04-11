@@ -62,9 +62,11 @@ def bandicoot_check(
         The base directory for image data.
     """
     if bandicoot_mount_path.exists():
-        image_base_dir = pathlib.Path(os.path.expanduser("~/mnt/bandicoot/")).resolve(
-            strict=True
-        )
+        image_base_dir = pathlib.Path(
+            os.path.expanduser(
+                "~/mnt/bandicoot/live_cell_timelapse_pyroptosis_project_data"
+            )
+        ).resolve(strict=True)
     else:
         image_base_dir = root_dir
     return image_base_dir

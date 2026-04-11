@@ -27,7 +27,6 @@ image_based_dir = bandicoot_check(
     bandicoot_mount_path=pathlib.Path(f"{os.path.expanduser('~')}/mnt/bandicoot/"),
     root_dir=root_dir,
 )
-image_based_dir = image_based_dir / "live_cell_timelapse_pyroptosis_project_data"
 
 
 # In[2]:
@@ -62,11 +61,11 @@ path_to_pipeline = pathlib.Path(
 load_file_dir = pathlib.Path(f"{root_dir}/Wave2_data/5.feature_extraction/loadfiles/")
 
 
-# In[ ]:
+# In[4]:
 
 
 # find all dirs in loadfiles path that contain the well_fov name (one per timepoint)
-timepoint_dirs = sorted(load_file_dir.glob(f"*/"))[:1000]
+timepoint_dirs = sorted(load_file_dir.glob(f"*/"))
 
 
 # ## Create dictionary with all info for each well
@@ -111,31 +110,46 @@ for timepoint_dir in tqdm.tqdm(timepoint_dirs):
     ):
         # remove this record from the run dict
         dict_of_runs.pop(timepoint_dir.name, None)
-dict_of_runs
 
 
 # ## Run analysis pipeline on each plate in parallel
 #
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
-# In[6]:
+# In[7]:
+
+
+try:
+    path_to_apptainer_image = pathlib.Path(
+        f"{root_dir}/environments/cellprofiler.sif"
+    ).resolve(strict=True)
+    print("Using apptainer image for CellProfiler run.")
+except FileNotFoundError:
+    print("No apptainer image found, running CellProfiler without apptainer.")
+    path_to_apptainer_image = None
+
+
+# ## This section gets run in script only as it takes a long time to run. It is not ran in the notebook.
+
+# In[8]:
 
 
 start = time.time()
 
 
-# In[7]:
+# In[9]:
 
 
 run_cellprofiler_parallel(
     plate_info_dictionary=dict_of_runs,
-    run_name="pyroptosis_live_cell_timelapse_analysis",
+    run_name="timelapse_pyroptosis_wave2_analysis",
+    run_with_apptainer_interactive=path_to_apptainer_image,
     log_dir=pathlib.Path(f"{root_dir}/Wave2_data/5.feature_extraction/logs/").resolve(),
-    max_workers=max_workers,  # adjust this based on your system's capabilities
+    max_workers=max_workers,
 )
 
 
-# In[8]:
+# In[10]:
 
 
 end = time.time()
@@ -147,7 +161,7 @@ print(
 )
 
 
-# In[9]:
+# In[11]:
 
 
 # loop through the dict of runs and move the output files to the final output directory

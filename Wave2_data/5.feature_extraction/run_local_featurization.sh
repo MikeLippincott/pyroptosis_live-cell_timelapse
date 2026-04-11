@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # activate the preprocessing environment
-conda activate cellprofiler_timelapse_env
+conda activate pyroptosis_timelapse_env
 
 jupyter nbconvert --to script --output-dir=scripts/ notebooks/*.ipynb
 

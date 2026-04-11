@@ -5,7 +5,7 @@
 # This is needed when the segmentation mask images are in a separate directory from the raw images, and the file names are not exactly the same.
 #
 
-# In[1]:
+# In[ ]:
 
 
 import os
@@ -29,7 +29,6 @@ image_based_dir = bandicoot_check(
     bandicoot_mount_path=pathlib.Path(f"{os.path.expanduser('~')}/mnt/bandicoot/"),
     root_dir=root_dir,
 )
-image_based_dir = image_based_dir / "live_cell_timelapse_pyroptosis_project_data"
 
 
 # ## Set paths and variables

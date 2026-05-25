@@ -1,14 +1,11 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=128
+#SBATCH --ntasks=34
 #SBATCH --partition=amilan
-#SBATCH --constraint=128c # specify the constraint for 128 cores
-#SBATCH --qos=long
+#SBATCH --qos=normal
 #SBATCH --account=amc-general
-#SBATCH --time=7:00:00
+#SBATCH --time=20:00:00
 #SBATCH --output=timelapse_cellprofiling-%j.out
-
-# 2 cores at 3.75 GB of ram per core
 
 # activate cellprofiler environment
 module load anaconda
@@ -29,7 +26,7 @@ python generate_load_data.py
 # 126 to buffer ram usage,
 # 128 cores available but we want to leave some overhead for the system
 
-python run_cellprofiler_analysis.py --max_workers 126
+python run_cellprofiler_analysis.py --max_workers 32
 
 conda deactivate
 

@@ -130,7 +130,6 @@ def run_cellprofiler_parallel(
                 raise EnvironmentError(
                     "Neither apptainer nor singularity is available on this system. Please install one of these containerization tools to run CellProfiler in parallel."
                 )
-        
 
         # Build command for each plate
         command = (

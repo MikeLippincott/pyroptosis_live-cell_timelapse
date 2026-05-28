@@ -1,10 +1,8 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=34
-#SBATCH --partition=amilan
-#SBATCH --qos=normal
-#SBATCH --account=amc-general
-#SBATCH --time=20:00:00
+#SBATCH --ntasks=16
+#SBATCH --partition=math-alderaan
+#SBATCH --time=10:00:00
 #SBATCH --output=timelapse_cellprofiling-%j.out
 
 # activate cellprofiler environment
@@ -26,7 +24,7 @@ python generate_load_data.py
 # 126 to buffer ram usage,
 # 128 cores available but we want to leave some overhead for the system
 
-python run_cellprofiler_analysis.py --max_workers 32
+python run_cellprofiler_analysis.py --max_workers 14
 
 conda deactivate
 

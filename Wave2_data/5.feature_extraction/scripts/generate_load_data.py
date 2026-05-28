@@ -3,17 +3,14 @@
 
 # This notebook generates a loaddata file specific for CellProfiler.
 # This is needed when the segmentation mask images are in a separate directory from the raw images, and the file names are not exactly the same.
-# 
+#
 
 # In[1]:
 
 
-import argparse
-import csv
 import os
 import pathlib
 import re
-import sys
 import time
 
 import pandas as pd
@@ -253,4 +250,3 @@ if not incomplete_df.empty:
         .head(15)
         .to_string(index=False)
     )
-

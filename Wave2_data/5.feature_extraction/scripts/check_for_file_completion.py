@@ -1,18 +1,15 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# This notebook generates the well, FOV, timepoint image-sets that still need to be run. 
+# This notebook generates the well, FOV, timepoint image-sets that still need to be run.
 # Generating this loadfile of sorts cuts down on computation time by not running the same image-sets multiple times.
 # This is a super archaeic form of preemptive caching, but it works.
 
 # In[1]:
 
 
-import argparse
 import os
 import pathlib
-import sys
-import time
 
 import natsort
 import pandas as pd
@@ -132,4 +129,3 @@ print(f"Progress: {len(completed) / len(well_fov_df) * 100:.2f}%")
 
 
 well_fov_df["well_fov"].unique()
-

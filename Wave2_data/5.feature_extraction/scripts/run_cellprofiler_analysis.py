@@ -12,7 +12,6 @@ import argparse
 import os
 import pathlib
 import shutil
-import sys
 import time
 
 from timelapse_utils.cp_utils.cp_parallel import run_cellprofiler_parallel
@@ -120,7 +119,7 @@ print(dict_of_runs)
 
 
 # ## Run analysis pipeline on each plate in parallel
-# 
+#
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
 # In[ ]:
@@ -194,4 +193,3 @@ if "bandicoot" in str(image_based_dir).lower():
             final_output_file_path.unlink()
         # use move (copy+remove fallback) to support cross-device paths
         shutil.move(str(tmp_output_file_path), str(final_output_file_path))
-

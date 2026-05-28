@@ -105,10 +105,37 @@ def run_cellprofiler_parallel(
         # make output directory if it is not already created
         pathlib.Path(path_to_output).mkdir(exist_ok=True, parents=True)
 
+        # check if the system uses apptainer or singularity
+        apptainer_or_singularity = None
+        try:
+            shell_command = "apptainer --version"
+            subprocess.run(
+                shell_command.split(),
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            apptainer_or_singularity = "apptainer"
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            try:
+                shell_command = "singularity --version"
+                subprocess.run(
+                    shell_command.split(),
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                apptainer_or_singularity = "singularity"
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                raise EnvironmentError(
+                    "Neither apptainer nor singularity is available on this system. Please install one of these containerization tools to run CellProfiler in parallel."
+                )
+        
+
         # Build command for each plate
         command = (
             [
-                "apptainer",
+                f"{apptainer_or_singularity}",
                 "exec",
                 str(run_with_apptainer_interactive),
                 "cellprofiler",

@@ -5,7 +5,7 @@
 # Generating this loadfile of sorts cuts down on computation time by not running the same image-sets multiple times.
 # This is a super archaeic form of preemptive caching, but it works.
 
-# In[ ]:
+# In[1]:
 
 
 import os
@@ -69,6 +69,12 @@ well_fov_df.drop_duplicates(subset=["well_fov", "timepoint"], inplace=True)
 # In[ ]:
 
 
+print(well_fov_df)
+
+
+# In[3]:
+
+
 # Build expected output sqlite path per well_fov + timepoint row
 well_fov_df["output_path"] = well_fov_df["well_fov_timepoint"].apply(
     lambda x: str(pathlib.Path(x).parents[2] / "3.extracted_features")
@@ -92,7 +98,7 @@ well_fov_df["output_file_path_exists"] = well_fov_df["output_file_path"].apply(
 )
 
 
-# In[ ]:
+# In[4]:
 
 
 # sort the df
@@ -106,7 +112,7 @@ well_fov_df = well_fov_df.iloc[
 well_fov_df.head()
 
 
-# In[ ]:
+# In[5]:
 
 
 # find the number of well fov timepoints still needed
@@ -117,16 +123,7 @@ print(f"Number of well fov timepoints completed: {len(completed)}")
 print(f"Progress: {len(completed) / len(well_fov_df) * 100:.2f}%")
 
 
-# In[ ]:
+# In[6]:
 
 
 well_fov_df["well_fov"].unique()
-
-
-# In[ ]:
-
-
-len(well_fov_df["well_fov"].unique()) / 4
-
-
-# In[ ]:

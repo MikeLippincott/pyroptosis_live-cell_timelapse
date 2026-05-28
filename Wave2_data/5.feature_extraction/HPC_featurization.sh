@@ -5,6 +5,8 @@
 #SBATCH --time=10:00:00
 #SBATCH --output=timelapse_cellprofiling-%j.out
 
+# shellcheck disable=SC1090
+source ~/.bashrc
 # activate the preprocessing environment
 conda activate pyroptosis_timelapse_env
 

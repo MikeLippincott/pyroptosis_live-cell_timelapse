@@ -5,7 +5,7 @@
 
 # ## Import libraries
 
-# In[1]:
+# In[ ]:
 
 
 import argparse
@@ -29,13 +29,13 @@ image_based_dir = bandicoot_check(
 )
 
 
-# In[2]:
+# In[ ]:
 
 
 if in_notebook:
     import tqdm.notebook as tqdm
 
-    max_workers = 10
+    max_workers = 2
 else:
     import tqdm
 
@@ -52,7 +52,7 @@ else:
 
 # ## Set paths and variables
 
-# In[3]:
+# In[ ]:
 
 
 path_to_pipeline = pathlib.Path(
@@ -61,7 +61,7 @@ path_to_pipeline = pathlib.Path(
 load_file_dir = pathlib.Path(f"{root_dir}/Wave2_data/5.feature_extraction/loadfiles/")
 
 
-# In[4]:
+# In[ ]:
 
 
 # find all dirs in loadfiles path that contain the well_fov name (one per timepoint)
@@ -70,7 +70,7 @@ timepoint_dirs = sorted(load_file_dir.glob(f"*/"))
 
 # ## Create dictionary with all info for each well
 
-# In[5]:
+# In[ ]:
 
 
 # get all directories with raw images
@@ -116,7 +116,7 @@ for timepoint_dir in tqdm.tqdm(timepoint_dirs):
 #
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
-# In[7]:
+# In[ ]:
 
 
 try:
@@ -131,13 +131,13 @@ except FileNotFoundError:
 
 # ## This section gets run in script only as it takes a long time to run. It is not ran in the notebook.
 
-# In[8]:
+# In[ ]:
 
 
 start = time.time()
 
 
-# In[9]:
+# In[ ]:
 
 
 run_cellprofiler_parallel(
@@ -149,7 +149,7 @@ run_cellprofiler_parallel(
 )
 
 
-# In[10]:
+# In[ ]:
 
 
 end = time.time()
@@ -161,7 +161,7 @@ print(
 )
 
 
-# In[11]:
+# In[ ]:
 
 
 # loop through the dict of runs and move the output files to the final output directory
@@ -176,6 +176,11 @@ for well_fov_timepoint in dict_of_runs.keys():
     if not tmp_output_file_path.exists():
         continue
     final_output_file_path.parent.mkdir(parents=True, exist_ok=True)
+    # check to make sure the final output is not the same as the tmp output file
+    # (this can happen if the final output dir is on a local drive
+    # and the tmp output dir is on a NAS)
+    if tmp_output_file_path.resolve() == final_output_file_path.resolve():
+        continue
     if final_output_file_path.exists():
         final_output_file_path.unlink()
     # use move (copy+remove fallback) to support cross-device paths

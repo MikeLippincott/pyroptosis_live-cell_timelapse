@@ -5,7 +5,7 @@
 # Generating this loadfile of sorts cuts down on computation time by not running the same image-sets multiple times.
 # This is a super archaeic form of preemptive caching, but it works.
 
-# In[1]:
+# In[ ]:
 
 
 import os
@@ -27,12 +27,11 @@ image_based_dir = bandicoot_check(
     bandicoot_mount_path=pathlib.Path(f"{os.path.expanduser('~')}/mnt/bandicoot/"),
     root_dir=root_dir,
 )
-image_based_dir = (
-    image_based_dir / "live_cell_timelapse_pyroptosis_project_data/processed_data"
-)
+image_based_dir = image_based_dir / "processed_data"
+print(image_based_dir)
 
 
-# In[2]:
+# In[ ]:
 
 
 # get a list of the well_fov directories for each patient
@@ -67,7 +66,7 @@ well_fov_df["timepoint"] = well_fov_df["timepoint"].apply(
 well_fov_df.drop_duplicates(subset=["well_fov", "timepoint"], inplace=True)
 
 
-# In[3]:
+# In[ ]:
 
 
 # Build expected output sqlite path per well_fov + timepoint row
@@ -93,7 +92,7 @@ well_fov_df["output_file_path_exists"] = well_fov_df["output_file_path"].apply(
 )
 
 
-# In[4]:
+# In[ ]:
 
 
 # sort the df
@@ -107,7 +106,7 @@ well_fov_df = well_fov_df.iloc[
 well_fov_df.head()
 
 
-# In[5]:
+# In[ ]:
 
 
 # find the number of well fov timepoints still needed
@@ -116,3 +115,18 @@ completed = well_fov_df.loc[well_fov_df["output_file_path_exists"] == True]
 print(f"Number of well fov timepoints still needed: {len(to_run)}")
 print(f"Number of well fov timepoints completed: {len(completed)}")
 print(f"Progress: {len(completed) / len(well_fov_df) * 100:.2f}%")
+
+
+# In[ ]:
+
+
+well_fov_df["well_fov"].unique()
+
+
+# In[ ]:
+
+
+len(well_fov_df["well_fov"].unique()) / 4
+
+
+# In[ ]:

@@ -5,7 +5,7 @@
 # This is needed when the segmentation mask images are in a separate directory from the raw images, and the file names are not exactly the same.
 #
 
-# In[ ]:
+# In[1]:
 
 
 import os

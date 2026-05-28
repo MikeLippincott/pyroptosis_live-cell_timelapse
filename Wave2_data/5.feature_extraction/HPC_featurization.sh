@@ -30,5 +30,5 @@ python run_cellprofiler_analysis.py --max_workers 32
 
 conda deactivate
 
-echo "Cell segmentation preprocessing completed successfully."
+echo "Cell featurization completed successfully."
 

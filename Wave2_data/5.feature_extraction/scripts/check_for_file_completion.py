@@ -75,14 +75,18 @@ well_fov_df["output_path"] = well_fov_df["well_fov_timepoint"].apply(
     lambda x: str(pathlib.Path(x).parents[2] / "3.extracted_features")
 )
 
-well_fov_df["output_file_path"] = well_fov_df.apply(
-    lambda row: str(
-        pathlib.Path(row["output_path"])
-        / f"{row['well_fov']}_{row['timepoint']}"
-        / f"{row['well_fov']}_{row['timepoint']}.sqlite"
-    ),
-    axis=1,
-)
+well_fov_df["output_file_path"] = [
+    str(
+        pathlib.Path(output_path)
+        / f"{well_fov}_{timepoint}"
+        / f"{well_fov}_{timepoint}.sqlite"
+    )
+    for output_path, well_fov, timepoint in zip(
+        well_fov_df["output_path"],
+        well_fov_df["well_fov"],
+        well_fov_df["timepoint"],
+    )
+]
 
 well_fov_df["output_file_path_exists"] = well_fov_df["output_file_path"].apply(
     lambda x: pathlib.Path(x).exists()

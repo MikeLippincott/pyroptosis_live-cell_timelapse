@@ -5,9 +5,6 @@
 #SBATCH --time=10:00:00
 #SBATCH --output=timelapse_cellprofiling-%j.out
 
-# activate cellprofiler environment
-module load anaconda
-conda init bash
 # activate the preprocessing environment
 conda activate pyroptosis_timelapse_env
 

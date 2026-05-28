@@ -100,7 +100,9 @@ well_fov_df["output_file_path_exists"] = well_fov_df["output_file_path"].apply(
 well_fov_df.sort_values(by=["well_fov", "timepoint"], inplace=True)
 # natural sort the df by well_fov and timepoint
 well_fov_df = well_fov_df.iloc[
-    natsort.index_natsorted(well_fov_df["well_fov"] + "_" + well_fov_df["timepoint"])
+    natsort.index_natsorted(
+        well_fov_df["well_fov"].astype(str) + "_" + well_fov_df["timepoint"].astype(str)
+    )
 ].reset_index(drop=True)
 well_fov_df.head()
 

@@ -5,13 +5,14 @@
 
 # ## Import libraries
 
-# In[ ]:
+# In[1]:
 
 
 import argparse
 import os
 import pathlib
 import shutil
+import sys
 import time
 
 from timelapse_utils.cp_utils.cp_parallel import run_cellprofiler_parallel
@@ -29,7 +30,7 @@ image_based_dir = bandicoot_check(
 )
 
 
-# In[ ]:
+# In[2]:
 
 
 if in_notebook:
@@ -52,7 +53,7 @@ else:
 
 # ## Set paths and variables
 
-# In[ ]:
+# In[3]:
 
 
 path_to_pipeline = pathlib.Path(
@@ -65,12 +66,12 @@ load_file_dir = pathlib.Path(f"{root_dir}/Wave2_data/5.feature_extraction/loadfi
 
 
 # find all dirs in loadfiles path that contain the well_fov name (one per timepoint)
-timepoint_dirs = sorted(load_file_dir.glob(f"*/"))
+timepoint_dirs = sorted(load_file_dir.glob(f"*"))
 
 
 # ## Create dictionary with all info for each well
 
-# In[ ]:
+# In[6]:
 
 
 # get all directories with raw images
@@ -112,8 +113,14 @@ for timepoint_dir in tqdm.tqdm(timepoint_dirs):
         dict_of_runs.pop(timepoint_dir.name, None)
 
 
+# In[ ]:
+
+
+print(dict_of_runs)
+
+
 # ## Run analysis pipeline on each plate in parallel
-#
+# 
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
 # In[ ]:
@@ -123,6 +130,7 @@ try:
     path_to_apptainer_image = pathlib.Path(
         f"{root_dir}/environments/cellprofiler.sif"
     ).resolve(strict=True)
+    print(path_to_apptainer_image)
     print("Using apptainer image for CellProfiler run.")
 except FileNotFoundError:
     print("No apptainer image found, running CellProfiler without apptainer.")
@@ -164,24 +172,26 @@ print(
 # In[ ]:
 
 
-# loop through the dict of runs and move the output files to the final output directory
-# thie final output file is on a NAS and cellprofiler cannot update the write file in place, so we need to move the file to the final output directory
-for well_fov_timepoint in dict_of_runs.keys():
-    tmp_output_file_path = pathlib.Path(
-        f"{dict_of_runs[well_fov_timepoint]['path_to_output']}/pyroptosis_timelapse.sqlite"
-    )
-    final_output_file_path = pathlib.Path(
-        f"{dict_of_runs[well_fov_timepoint]['path_to_final_output']}/{well_fov_timepoint}.sqlite"
-    )
-    if not tmp_output_file_path.exists():
-        continue
-    final_output_file_path.parent.mkdir(parents=True, exist_ok=True)
-    # check to make sure the final output is not the same as the tmp output file
-    # (this can happen if the final output dir is on a local drive
-    # and the tmp output dir is on a NAS)
-    if tmp_output_file_path.resolve() == final_output_file_path.resolve():
-        continue
-    if final_output_file_path.exists():
-        final_output_file_path.unlink()
-    # use move (copy+remove fallback) to support cross-device paths
-    shutil.move(str(tmp_output_file_path), str(final_output_file_path))
+if "bandicoot" in str(image_based_dir).lower():
+    # loop through the dict of runs and move the output files to the final output directory
+    # thie final output file is on a NAS and cellprofiler cannot update the write file in place, so we need to move the file to the final output directory
+    for well_fov_timepoint in dict_of_runs.keys():
+        tmp_output_file_path = pathlib.Path(
+            f"{dict_of_runs[well_fov_timepoint]['path_to_output']}/pyroptosis_timelapse.sqlite"
+        )
+        final_output_file_path = pathlib.Path(
+            f"{dict_of_runs[well_fov_timepoint]['path_to_final_output']}/{well_fov_timepoint}.sqlite"
+        )
+        if not tmp_output_file_path.exists():
+            continue
+        final_output_file_path.parent.mkdir(parents=True, exist_ok=True)
+        # check to make sure the final output is not the same as the tmp output file
+        # (this can happen if the final output dir is on a local drive
+        # and the tmp output dir is on a NAS)
+        if tmp_output_file_path.resolve() == final_output_file_path.resolve():
+            continue
+        if final_output_file_path.exists():
+            final_output_file_path.unlink()
+        # use move (copy+remove fallback) to support cross-device paths
+        shutil.move(str(tmp_output_file_path), str(final_output_file_path))
+

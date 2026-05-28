@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# This notebook generates the well, FOV, timepoint image-sets that still need to be run.
+# This notebook generates the well, FOV, timepoint image-sets that still need to be run. 
 # Generating this loadfile of sorts cuts down on computation time by not running the same image-sets multiple times.
 # This is a super archaeic form of preemptive caching, but it works.
 
 # In[1]:
 
 
+import argparse
 import os
 import pathlib
+import sys
+import time
 
 import natsort
 import pandas as pd
@@ -40,12 +43,14 @@ well_fov_dirs = [
     for x in pathlib.Path(f"{image_based_dir}/1.illumination_corrected_files").iterdir()
     if x.is_dir()
 ]
+print(well_fov_dirs)
 # get timepoints per well_fov
 well_fov_timepoint_raw_file_paths = []
 for well_fov_dir in tqdm.tqdm(well_fov_dirs):
-    timepoint_dirs = sorted(well_fov_dir.glob(f"*/"))
+    timepoint_dirs = sorted(well_fov_dir.glob("*"))
     for timepoint_dir in timepoint_dirs:
         well_fov_timepoint_raw_file_paths.append(timepoint_dir)
+print(well_fov_timepoint_raw_file_paths)
 well_fov_df = pd.DataFrame(
     {
         "well_fov_timepoint": [x for x in well_fov_timepoint_raw_file_paths],
@@ -127,3 +132,4 @@ print(f"Progress: {len(completed) / len(well_fov_df) * 100:.2f}%")
 
 
 well_fov_df["well_fov"].unique()
+

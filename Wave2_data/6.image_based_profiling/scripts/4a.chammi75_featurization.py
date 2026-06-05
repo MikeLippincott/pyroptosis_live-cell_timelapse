@@ -76,9 +76,7 @@ if not in_notebook:
 else:
     well_fov_time = "B2_1_1"
 
-well = well_fov_time.split("_")[0]
-fov = well_fov_time.split("_")[1]
-timepoint = well_fov_time.split("_")[2]
+well, fov, timepoint = well_fov_time.split("_")
 well_fov = f"{well}_{fov}"
 
 

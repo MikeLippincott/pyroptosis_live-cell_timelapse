@@ -127,7 +127,7 @@ print(
 
 
 before_shape = df.shape
-df = df.iloc[df_labeled_outliers.index[df_labeled_outliers == False], :]
+df = df.loc[~df_labeled_outliers]
 print(
     f"Prior to qc we had {before_shape[0]} rows and after removing outliers we have {df.shape[0]} rows."
 )

@@ -60,7 +60,7 @@ fs_agg_profiles_path = pathlib.Path(
 fs_consensus_profiles_path = pathlib.Path(
     f"{image_base_dir}/10.aggregate_profiles/consensus_profiles_from_feature_selected.parquet"
 ).resolve()
-fs_consensus_profiles_path.parent.mkdir(exist_ok=True)
+fs_consensus_profiles_path.parent.mkdir(exist_ok=True, parents=True)
 
 
 # This last cell does not get run due to memory constraints.

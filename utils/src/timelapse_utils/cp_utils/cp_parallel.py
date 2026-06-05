@@ -1,15 +1,24 @@
 """
 This collection of functions runs CellProfiler in parallel and can convert the results into log files
 for each process.
-
-Developed from NF1 repository script made by Jenna Tomkinson.
 """
 
-import multiprocessing
+import logging
 import pathlib
 import subprocess
 from concurrent.futures import Future, ProcessPoolExecutor
-from typing import List, Optional, Union
+from typing import List, Optional
+
+
+def _extract_plate_name_from_command(command_args: List[str]) -> str:
+    """Extract a plate-like name from a CellProfiler command argument list."""
+    # Prefer the input path, then output path; both are explicit and stable CLI arguments.
+    for flag in ("-i", "-o"):
+        if flag in command_args:
+            value_index = command_args.index(flag) + 1
+            if value_index < len(command_args):
+                return pathlib.Path(command_args[value_index]).name
+    return "unknown_plate"
 
 
 def results_to_log(
@@ -20,69 +29,68 @@ def results_to_log(
     convert into a log file for each process.
 
     Args:
-        results (List[subprocess.CompletedProcess]):
-            the outputs from a subprocess.run.
-        log_dir (pathlib.Path):
-            directory for log files.
-        run_name (str):
-            a given name for the type of CellProfiler run being done on the plates (example: whole image features).
+        results (List[subprocess.CompletedProcess]): the outputs from a subprocess.run
+        log_dir (pathlib.Path): directory for log files
+        run_name (str): a given name for the type of CellProfiler run being done on the plates (example: whole image features)
     """
-    # Access the command (args) and stderr (output) for each CompletedProcess object
+    # Set up logging format
+    log_format = "[%(asctime)s] [Process ID: %(process)d] %(message)s"
+
+    # Run through each result to make individual log files
     for result in results:
-        # assign plate name and decode the CellProfiler output to use in log file
-        plate_name = result
-        output_string = result.stderr.decode("utf-8")
+        plate_name = _extract_plate_name_from_command(result.args)
+        output_string = (
+            result.stderr.decode("utf-8")
+            if isinstance(result.stderr, bytes)
+            else str(result.stderr)
+        )
 
-        # set log file name as plate name from command
-        log_file_path = pathlib.Path(f"{log_dir}/{plate_name}_{run_name}_run.log")
-        # print output to a log file for each plate to view after the run
-        # set up logging configuration
-        log_format = "[%(asctime)s] [Process ID: %(process)d] %(message)s"
-        # logging.basicConfig(
-        #     filename=log_file_path, level=logging.INFO, format=log_format
-        # )
+        # Set up a unique logger for each plate/process
+        logger = logging.getLogger(f"logger_{plate_name}")
+        log_file_path = log_dir / f"{run_name}_run.log"
 
-        # # log plate name and output string
-        # logging.info(f"Plate Name: {plate_name}")
-        # logging.info(f"Output String: {output_string}")
+        # Create file handler for the current process's log file
+        file_handler = logging.FileHandler(log_file_path)
+        file_handler.setFormatter(logging.Formatter(log_format))
+        logger.addHandler(file_handler)
+        logger.setLevel(logging.INFO)
+
+        # Log the results
+        logger.info(f"Plate Name: {plate_name}")
+        logger.info(f"Output String: {output_string}")
+
+        # Clean up to prevent logging duplication
+        logger.removeHandler(file_handler)
+        file_handler.close()
 
 
 def run_cellprofiler_parallel(
     plate_info_dictionary: dict,
     run_name: str,
-    plugins_dir: Optional[Union[pathlib.Path, None]] = None,
+    run_with_apptainer_interactive: Optional[pathlib.Path] = None,
+    max_workers: Optional[int] = None,
     log_dir: Optional[pathlib.Path] = None,
 ) -> None:
     """
     This function utilizes multi-processing to run CellProfiler pipelines in parallel.
 
     Args:
-        plate_info_dictionary (dict):
-            dictionary with all paths for CellProfiler to run a pipeline.
-        run_name (str):
-            a given name for the type of CellProfiler run being done on the plates (example: whole image features).
-        plugins_dir (pathlib.Path, optional):
-            if you are using a CellProfiler plugin module in your pipeline, you must specify a path to the directory.
-            This is an optional parameter and defaults to None (no plugin dir provided).
+        plate_info_dictionary (dict): dictionary with all paths for CellProfiler to run a pipeline
+        run_name (str): a given name for the type of CellProfiler run being done on the plates (example: whole image features)
 
     Raises:
         FileNotFoundError: if paths to pipeline and images do not exist
     """
     # create a list of commands for each plate with their respective log file
     commands = []
-
-    # make logs directory
-    if log_dir is None:
-        log_dir = pathlib.Path("./logs")
-        pathlib.Path(log_dir).mkdir(exist_ok=True)
-    else:
-        pathlib.Path(log_dir).mkdir(exist_ok=True)
+    log_dir = log_dir if log_dir is not None else pathlib.Path.cwd() / "logs"
+    log_dir.mkdir(exist_ok=True, parents=True)
 
     # iterate through each plate in the dictionary
     for _, info in plate_info_dictionary.items():
         # set paths for CellProfiler
         path_to_pipeline = info["path_to_pipeline"]
-        path_to_images = info["path_to_images"]
+        path_to_input = info["path_to_images"]
         path_to_output = info["path_to_output"]
 
         # check to make sure paths to pipeline and directory of images are correct before running the pipeline
@@ -90,45 +98,78 @@ def run_cellprofiler_parallel(
             raise FileNotFoundError(
                 f"The file '{pathlib.Path(path_to_pipeline).name}' does not exist"
             )
-        if not pathlib.Path(path_to_images).is_dir():
+        if not pathlib.Path(path_to_input).is_dir():
             raise FileNotFoundError(
-                f"Directory '{pathlib.Path(path_to_images).name}' does not exist or is not a directory"
+                f"Directory '{pathlib.Path(path_to_input).name}' does not exist or is not a directory"
             )
         # make output directory if it is not already created
-        pathlib.Path(path_to_output).mkdir(exist_ok=True)
+        pathlib.Path(path_to_output).mkdir(exist_ok=True, parents=True)
 
-        # creates a command for each plate in the list
-        command = [
-            "cellprofiler",
-            "-c",
-            "-r",
-            "-p",
-            path_to_pipeline,
-            "-o",
-            path_to_output,
-            "-i",
-            path_to_images,
-        ]
-
-        # if plugins_dir is provided, check to confirm dir exists and add the flag to find the plugins directory with given path
-        if plugins_dir:
-            if not pathlib.Path(plugins_dir).is_dir():
-                raise FileNotFoundError(
-                    f"Plugins directory '{pathlib.Path(plugins_dir).name}' does not exist or is not a directory"
+        # check if the system uses apptainer or singularity
+        apptainer_or_singularity = None
+        try:
+            shell_command = "apptainer --version"
+            subprocess.run(
+                shell_command.split(),
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            apptainer_or_singularity = "apptainer"
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            try:
+                shell_command = "singularity --version"
+                subprocess.run(
+                    shell_command.split(),
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
                 )
-            else:
-                command.extend(["--plugins-directory", plugins_dir])
+                apptainer_or_singularity = "singularity"
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                raise EnvironmentError(
+                    "Neither apptainer nor singularity is available on this system. Please install one of these containerization tools to run CellProfiler in parallel."
+                )
 
-        # creates a list of commands
+        # Build command for each plate
+        command = (
+            [
+                f"{apptainer_or_singularity}",
+                "exec",
+                str(run_with_apptainer_interactive),
+                "cellprofiler",
+                "-c",
+                "-r",
+                "-p",
+                path_to_pipeline,
+                "-i",
+                path_to_input,
+                "-o",
+                path_to_output,
+            ]
+            if run_with_apptainer_interactive
+            else [
+                "cellprofiler",
+                "-c",
+                "-r",
+                "-p",
+                path_to_pipeline,
+                "-i",
+                path_to_input,
+                "-o",
+                path_to_output,
+            ]
+        )
+        # add extension to command if using a plugin module in pipeline (must be include in dict)
+        if "plugins_directory" in info:
+            command.extend(["--plugins-directory", info["plugins_directory"]])
         commands.append(command)
 
-    # set the number of CPUs/workers as the number of commands
-    num_processes = len(commands)
-    print(f"Number of processes: {num_processes}")
-
-    # make sure that the number of workers does not exceed the maximum number of workers for the machine
-    if num_processes > multiprocessing.cpu_count():
-        num_processes = multiprocessing.cpu_count() - 2
+    # set max workers
+    if max_workers is not None:
+        num_processes = max_workers
+    else:
+        num_processes = 1
 
     # set parallelization executer to the number of commands
     executor = ProcessPoolExecutor(max_workers=num_processes)
@@ -148,14 +189,15 @@ def run_cellprofiler_parallel(
 
     print("All processes have been completed!")
 
-    # for each process, confirm that the process completed succesfully and return a log file
+    # convert the results into log files
+    results_to_log(results=results, log_dir=log_dir, run_name=run_name)
+
+    # for each process, confirm that the process completed successfully and return a log file
     for result in results:
-        # convert the results into log files
-        results_to_log(results=results, log_dir=log_dir, run_name=run_name)
-        print(result.returncode)
-        if result.returncode == 1:
+        plate_name = _extract_plate_name_from_command(result.args)
+        if result.returncode != 0:
             print(
-                f"A return code of {result.returncode} was returned for {result}, which means there was an error in the CellProfiler run."
+                f"A return code of {result.returncode} was returned for {plate_name}, which means there was an error in the CellProfiler run."
             )
 
     # to avoid having multiple print statements due to for loop, confirmation that logs are converted is printed here

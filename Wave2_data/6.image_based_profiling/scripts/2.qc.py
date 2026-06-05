@@ -63,9 +63,7 @@ features_of_interest = [
     "Nuclei_AreaShape_FormFactor",
     "Nuclei_AreaShape_Eccentricity",
 ]
-df_merged_single_cells = df.copy()
-df_merged_single_cells = df[metadata_cols + features_of_interest]
-
+df_merged_single_cells = df[metadata_cols + features_of_interest].copy()
 
 # In[4]:
 

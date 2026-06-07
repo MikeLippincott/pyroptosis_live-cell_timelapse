@@ -18,7 +18,6 @@ from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
     init_notebook,
 )
-from timelapse_utils.profiling_utils.sc_extraction_utils import add_single_cell_count_df
 
 root_dir, in_notebook = init_notebook()
 if in_notebook:
@@ -105,7 +104,7 @@ output_dir.mkdir(exist_ok=True, parents=True)
 well_fov_timepoints = [
     x for x in tqdm.tqdm(extracted_features_dir.glob("*")) if x.is_dir()
 ]
-well_fov_timepoints = natsort.natsorted(well_fov_timepoints)[:10]
+well_fov_timepoints = natsort.natsorted(well_fov_timepoints)
 well_fov_timepoints_sqlites = [
     list(x.glob("**/*.sqlite"))[0]
     for x in tqdm.tqdm(well_fov_timepoints)
@@ -125,14 +124,17 @@ times_dict = {
     "well_fov_timepoint": [],
     "time": [],
 }
+exists = 0
+total = 0
 for well_fov_timepoint_sqlite_file_path in tqdm.tqdm(well_fov_timepoints_sqlites):
+    total += 1
     dest_path = output_dir / str(well_fov_timepoint_sqlite_file_path.stem)
     dest_path.mkdir(exist_ok=True, parents=True)
     dest_path = (
         dest_path / f"{well_fov_timepoint_sqlite_file_path.stem}.{dest_datatype}"
     )
     if dest_path.exists():
-        print(f"{dest_path} already exists, skipping...")
+        exists += 1
         continue
     # extract key metadata that CP did not capture
     # this is at the file level
@@ -142,6 +144,7 @@ for well_fov_timepoint_sqlite_file_path in tqdm.tqdm(well_fov_timepoints_sqlites
     fov = well_fov_timepoint.split("_")[1]
     timepoint = well_fov_timepoint.split("_")[2].strip("T")
     timepoint = int(timepoint)
+
     # set up the time profiling
     start_time = time.time()
     # merge single cells and output as parquet file
@@ -213,8 +216,10 @@ for well_fov_timepoint_sqlite_file_path in tqdm.tqdm(well_fov_timepoints_sqlites
     times_dict["time"].append(end_time - start_time)
     times_dict["well_fov_timepoint"].append(well_fov_timepoint)
 
+print(f"Total: {total}, Exists: {exists}")
 
-# In[7]:
+
+# In[ ]:
 
 
 df = pd.DataFrame(times_dict)

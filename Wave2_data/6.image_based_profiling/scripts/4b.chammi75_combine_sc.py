@@ -1,20 +1,15 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import os
 import pathlib
-import urllib.request
 
-import matplotlib.pyplot as plt
 import natsort
 import numpy as np
 import pandas as pd
-import psutil
-import skimage
-import tifffile
 from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
     init_notebook,
@@ -25,13 +20,8 @@ image_base_dir = bandicoot_check(
     pathlib.Path(os.path.expanduser("~/mnt/bandicoot")).resolve(), root_dir
 )
 
-if in_notebook:
-    import tqdm.notebook as tqdm
-else:
-    import tqdm
 
-
-# In[ ]:
+# In[2]:
 
 
 image_base_dir = bandicoot_check(

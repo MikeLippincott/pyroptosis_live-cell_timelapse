@@ -4,7 +4,7 @@
 # # Aggregate the single-cell profiles to the well level
 # This notebook is not run as a large amount of RAM is needed to run it. It is provided for reference only.
 
-# In[1]:
+# In[ ]:
 
 
 import os
@@ -17,16 +17,11 @@ from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
     init_notebook,
 )
-from timelapse_utils.profiling_utils.sc_extraction_utils import add_single_cell_count_df
 
 root_dir, in_notebook = init_notebook()
-if in_notebook:
-    import tqdm.notebook as tqdm
-else:
-    import tqdm
 
 
-# In[2]:
+# In[ ]:
 
 
 # load in platemap file as a pandas dataframe
@@ -79,7 +74,7 @@ consensus_strata = [
 ]
 
 
-# In[4]:
+# In[ ]:
 
 
 ###########################################################################################
@@ -107,10 +102,6 @@ norm_aggregate_df.to_parquet(norm_agg_profiles_path, index=False)
 ###############################################################################
 # Norm consensus profiles
 ###############################################################################
-# Load the normalized data
-norm_df = pd.read_parquet(normalized_profiles_path)
-metadata_cols = [cols for cols in norm_df.columns if "Metadata" in cols]
-features_cols = [cols for cols in norm_df.columns if "Metadata" not in cols]
 
 norm_consensus_df = aggregate(
     population_df=norm_df,

@@ -11,23 +11,15 @@
 import os
 import pathlib
 
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
-import seaborn as sns
 from pycytominer import annotate
 from pycytominer.cyto_utils import output
 from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
     init_notebook,
 )
-from timelapse_utils.profiling_utils.sc_extraction_utils import add_single_cell_count_df
 
 root_dir, in_notebook = init_notebook()
-if in_notebook:
-    import tqdm.notebook as tqdm
-else:
-    import tqdm
 
 
 # ## Set paths and variables
@@ -78,6 +70,28 @@ annotated_df = annotate(
 
 
 # In[4]:
+
+
+# check after annotation to verify row alignment,
+# identify duplicate columns,
+# or detect any newly introduced null values.
+if annotated_df.shape[0] != single_cell_df.shape[0]:
+    print(
+        "Warning: Number of rows in the annotated dataframe does not match the original single cell dataframe."
+    )
+if annotated_df.shape[1] <= single_cell_df.shape[1]:
+    print(
+        "Warning: No new columns were added during annotation, or some columns may have been dropped."
+    )
+if single_cell_df.isnull().any().any():
+    print(
+        "Warning: Null values detected in the original single cell dataframe before annotation."
+    )
+if annotated_df.isnull().any().any():
+    print("Warning: Null values detected in the annotated dataframe after annotation.")
+
+
+# In[5]:
 
 
 # save annotated df as parquet file

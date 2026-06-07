@@ -136,11 +136,17 @@ def featurize_2D_image_w_chammi75(
 ) -> list[numpy.ndarray]:
     """Extract CHAMMI-75 CLS-token features from a multi-channel 2D image.
 
-    The function processes each channel of the input image independently (Bag-of-Channels
-    strategy). In step 1, the function resizes the image tensor to 224×224. In step 2, the function injects random noise
-    into saturated pixels. In step 3, the function normalizes each image. In step 4, the function passes the stacked image into the
-    Vision Transformer encoder. Lastly, in step 5, the function outputs the ``x_norm_clstoken``
-    per channel.
+    The function processes each channel of the input image independently
+    (Bag-of-Channels strategy).
+    In step 1, the function injects uniform random noise into
+    saturated pixels of the first channel (value == 255) using the
+    `SaturationNoiseInjector` transformation.
+    In step 2, it normalizes each channel independently using the
+    `PerImageNormalize` transformation.
+    In step 3, it resizes each channel to 224x224 pixels using
+    bilinear interpolation.
+    Finally, it passes each processed channel through
+    the CHAMMI-75 model.
 
     Parameters
     ----------

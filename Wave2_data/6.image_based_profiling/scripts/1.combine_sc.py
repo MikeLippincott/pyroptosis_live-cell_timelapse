@@ -15,14 +15,10 @@ import matplotlib.pyplot as plt
 import natsort
 import numpy as np
 import pandas as pd
-import seaborn as sns
-from pycytominer import annotate
-from pycytominer.cyto_utils import output
 from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
     init_notebook,
 )
-from timelapse_utils.profiling_utils.sc_extraction_utils import add_single_cell_count_df
 
 root_dir, in_notebook = init_notebook()
 if in_notebook:
@@ -53,14 +49,16 @@ combined_profiles_path = pathlib.Path(
 combined_profiles_path.mkdir(exist_ok=True)
 
 
-# In[ ]:
+# In[3]:
 
 
-# well_fov_timepoints
+# well_fov_timepoints - get all the well_fov_timepoints that we have extracted features for
 converted_profiles = [
     x for x in tqdm.tqdm(converted_profiles_dir.glob("*")) if x.is_dir()
 ]
+# sort the converted profiles in natural order
 converted_profiles = natsort.natsorted(converted_profiles)
+# get all the converted profile parquet files as a list of paths to use downstream
 converted_profiles = [
     list(x.glob("**/*.parquet"))[0]
     for x in tqdm.tqdm(converted_profiles)

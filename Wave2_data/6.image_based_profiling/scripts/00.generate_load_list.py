@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import os
@@ -9,16 +9,12 @@ import pathlib
 
 import matplotlib.pyplot as plt
 import natsort
-import numpy as np
 import pandas as pd
 import seaborn as sns
-from pycytominer import annotate
-from pycytominer.cyto_utils import output
 from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
     init_notebook,
 )
-from timelapse_utils.profiling_utils.sc_extraction_utils import add_single_cell_count_df
 
 root_dir, in_notebook = init_notebook()
 if in_notebook:
@@ -44,12 +40,12 @@ ic_image_dir = pathlib.Path(
 ).resolve(strict=True)
 
 load_data_file_path = pathlib.Path(
-    f"{root_dir}/Wave2_data/7.image_based_profiling/load_data/load_file.txt"
+    f"{root_dir}/Wave2_data/6.image_based_profiling/load_data/load_file.txt"
 ).resolve()
 load_data_file_path.parent.mkdir(exist_ok=True, parents=True)
 
 
-# In[13]:
+# In[3]:
 
 
 # well_fov_timepoints
@@ -64,25 +60,25 @@ image_list = natsort.natsorted(image_list)
 print(f"Number of images: {len(image_list)}")
 
 
-# In[19]:
+# In[4]:
 
 
 # unnest the nested list of lists
-image_list = [
+new_image_list = [
     item
-    for sublist in image_list
-    for item in sublist
-    if isinstance(item, list) or not isinstance(item, pathlib.Path)
+    for image_list_item in image_list
+    for item in image_list_item
+    if isinstance(image_list_item, list) and isinstance(item, pathlib.Path)
 ]
-print(f"Number of images after unnesting: {len(image_list)}")
+print(f"Number of images after unnesting: {len(new_image_list)}")
 
 
-# In[25]:
+# In[ ]:
 
 
-df = pd.DataFrame({"image_path": image_list})
-
-df = pd.DataFrame({"image_path": image_list})
+# create a dataframe with the image paths and extract the well_fov_time from the file names
+# extract the well_fov_time from the file names and save to a text file for loading in the next notebook
+df = pd.DataFrame({"image_path": new_image_list})
 df["file_name"] = df["image_path"].apply(lambda x: x.stem)
 df["well_fov_time"] = df["file_name"].apply(lambda x: "_".join(x.split("_")[:3]))
 df["well_fov_time"] = df["well_fov_time"].str.replace("T", "")

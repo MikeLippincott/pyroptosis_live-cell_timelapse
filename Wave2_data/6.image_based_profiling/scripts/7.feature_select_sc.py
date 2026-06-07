@@ -5,7 +5,7 @@
 
 # ## Import libraries
 
-# In[1]:
+# In[ ]:
 
 
 import os
@@ -18,13 +18,8 @@ from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
     init_notebook,
 )
-from timelapse_utils.profiling_utils.sc_extraction_utils import add_single_cell_count_df
 
 root_dir, in_notebook = init_notebook()
-if in_notebook:
-    import tqdm.notebook as tqdm
-else:
-    import tqdm
 
 
 # ## Set paths and variables
@@ -74,12 +69,12 @@ feature_select_ops = [
 # This last cell does not get run due to memory constraints.
 # It is run on an HPC cluster with more memory available.
 
-# In[4]:
+# In[ ]:
 
 
 # read in the annotated file
 normalized_df = pd.read_parquet(normalized_profiles_path)
-metadata_cols = [x for x in normalized_df.columns if x.startswith("Metadata_")]
+metadata_cols = [x for x in normalized_df.columns if "metadata" in x.lower()]
 normalized_features_df = normalized_df.drop(metadata_cols, axis="columns")
 # perform feature selection with the operations specified
 feature_select_df = feature_select(

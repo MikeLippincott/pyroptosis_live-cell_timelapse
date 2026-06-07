@@ -5,7 +5,7 @@
 
 # ## Import libraries
 
-# In[1]:
+# In[ ]:
 
 
 import os
@@ -18,13 +18,8 @@ from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
     init_notebook,
 )
-from timelapse_utils.profiling_utils.sc_extraction_utils import add_single_cell_count_df
 
 root_dir, in_notebook = init_notebook()
-if in_notebook:
-    import tqdm.notebook as tqdm
-else:
-    import tqdm
 
 
 # ## Set paths and variables

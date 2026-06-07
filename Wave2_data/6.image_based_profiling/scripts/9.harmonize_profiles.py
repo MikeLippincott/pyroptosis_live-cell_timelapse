@@ -17,13 +17,8 @@ from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
     init_notebook,
 )
-from timelapse_utils.profiling_utils.sc_extraction_utils import add_single_cell_count_df
 
 root_dir, in_notebook = init_notebook()
-if in_notebook:
-    import tqdm.notebook as tqdm
-else:
-    import tqdm
 
 
 # In[2]:
@@ -64,7 +59,7 @@ print(f"Normalized CP: {norm_CP_df.shape[0]}")
 print(f"CHAMMI75: {chammi75_df.shape[0]}")
 
 
-# In[4]:
+# In[ ]:
 
 
 merged_df = pd.merge(
@@ -79,6 +74,22 @@ merged_df = pd.merge(
     ],
     how="left",
 )
+
+if norm_CP_df.shape[0] + chammi75_df.shape[0] != merged_df.shape[0]:
+    print(
+        "Warning: The number of rows in the merged dataframe does not equal the sum of the input dataframes. Please check for duplicates or missing values in the key columns."
+    )
+    print(f"Number of rows in normalized CP dataframe: {norm_CP_df.shape[0]}")
+    print(f"Number of rows in CHAMMI75 dataframe: {chammi75_df.shape[0]}")
+    print(f"Number of rows in merged dataframe: {merged_df.shape[0]}")
+
+if merged_df.isnull().any().any():
+    print(
+        "Warning: There are missing values in the merged dataframe. Please check for mismatches in the key columns between the two dataframes."
+    )
+
 merged_df.to_parquet(harmonized_profiles_path, index=False)
-print(f"Merged profiles: {merged_df.shape[0]}")
 merged_df.head()
+
+
+# In[ ]:

@@ -1,28 +1,21 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 import argparse
 import os
 import pathlib
 import sys
-import urllib.request
 
-import matplotlib.pyplot as plt
 import natsort
 import numpy as np
 import pandas as pd
-import psutil
-import skimage
 import tifffile
 import torch
 from timelapse_utils.featurization_utils.chammi75_featurization import (
-    PerImageNormalize,
-    SaturationNoiseInjector,
     call_chammi75_featurization_pipeline,
-    featurize_2D_image_w_chammi75,
     get_chammi75_model,
 )
 from timelapse_utils.featurization_utils.feature_writing_utils import (
@@ -37,11 +30,8 @@ from timelapse_utils.file_utils.notebook_init_utils import (
     init_notebook,
 )
 from timelapse_utils.image_utils.timelapse_image_utils import (
-    change_bbox_dtype_to_integer,
-    check_for_xy_squareness,
     crop_from_centroid,
     extract_x_y_centroid_from_image_based_profile,
-    square_off_xy_crop_bbox,
 )
 
 root_dir, in_notebook = init_notebook()
@@ -162,7 +152,7 @@ columns_to_read_in = [
 ]
 
 
-# In[8]:
+# In[9]:
 
 
 annotated_df = pd.read_parquet(profile_file_path, columns=columns_to_read_in)
@@ -170,7 +160,7 @@ annotated_df = pd.read_parquet(profile_file_path, columns=columns_to_read_in)
 annotated_df = annotated_df.loc[annotated_df["Metadata_Well_FOV_Time"] == well_fov_time]
 
 
-# In[9]:
+# In[10]:
 
 
 label_ids = np.unique(annotated_df["Metadata_Nuclei_Number_Object_Number"])
@@ -179,7 +169,7 @@ print(f"Found {len(label_ids)} unique label IDs")
 image_shape = channel_images["NucleoLIVE"].shape
 
 
-# In[10]:
+# In[11]:
 
 
 list_of_feature_dicts = []
@@ -241,9 +231,11 @@ for label in tqdm.tqdm(label_ids, desc="Extracting features for objects", leave=
         list_of_feature_dicts.append(df)
 
 
-# In[11]:
+# In[12]:
 
 
+if not list_of_feature_dicts:
+    sys.exit(f"No cells found for {well_fov_time}. Skipping.")
 final_df = pd.concat(list_of_feature_dicts, ignore_index=True)
 # pivot the df such that the feature names are the columns and the feature values are the values, with object label as an id variable
 final_df = final_df.pivot(
@@ -266,7 +258,7 @@ final_df.to_parquet(feature_extracted_file)
 final_df.head()
 
 
-# In[12]:
+# In[13]:
 
 
 run_stats_path = pathlib.Path(
@@ -280,7 +272,7 @@ run_stats_path = pathlib.Path(
 run_stats_path.parent.mkdir(exist_ok=True, parents=True)
 
 
-# In[13]:
+# In[14]:
 
 
 stop_profiling(

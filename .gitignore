@@ -184,3 +184,4 @@ Wave2_data/5.feature_extraction/logs/*
 Wave2_data/5.feature_extraction/extracted_features/*
 Wave2_data/6.image_based_profiling/notebooks/cytotable_runinfo/*
 Wave2_data/6.image_based_profiling/scripts/cytotable_runinfo/*
+environments/*.sif

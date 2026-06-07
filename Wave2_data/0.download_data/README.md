@@ -15,3 +15,6 @@ For a total of 4 * 5 * 56 * 81 =  images. Each image is a 16-bit TIFF file, and 
 
 Transferring from a google cloud bucket took roughly 12 hours, and the data was transferred to a local hard drive for processing.
 The data was then processed on a local workstation with 128 GB of RAM and an NVIDIA RTX 3090 GPU.
+
+Data will be downloaded to `{git_root}/live_cell_timelapse_pyroptosis_project_data/`
+Where `{git_root}` is the root directory of this repository.

@@ -6,6 +6,7 @@
 # In[1]:
 
 
+import argparse
 import os
 import pathlib
 import time
@@ -69,7 +70,22 @@ presets.config[preset][
 #
 # All paths must be string but we use pathlib to show which variables are paths
 
-# In[3]:
+# In[ ]:
+
+
+if not in_notebook:
+    argparser = argparse.ArgumentParser(description="Run feature merging")
+    argparser.add_argument(
+        "--well_fov",
+        type=str,
+        help="The well and fov to process in the format 'well_fov' (e.g., 'A01_01')",
+    )
+    args = argparser.parse_args()
+    well_fov = args.well_fov
+else:  # example input for notebook testing
+    well_fov = "B5_2"
+
+well, fov = well_fov.split("_")
 
 
 image_base_dir = bandicoot_check(
@@ -100,7 +116,7 @@ output_dir.mkdir(exist_ok=True, parents=True)
 
 # well_fov_timepoints
 well_fov_timepoints = [
-    x for x in tqdm.tqdm(extracted_features_dir.glob("*")) if x.is_dir()
+    x for x in tqdm.tqdm(extracted_features_dir.glob(f"*{well_fov}*")) if x.is_dir()
 ]
 well_fov_timepoints = natsort.natsorted(well_fov_timepoints)
 well_fov_timepoints_sqlites = [

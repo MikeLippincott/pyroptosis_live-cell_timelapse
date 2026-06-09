@@ -51,7 +51,7 @@ else:
 start_time, start_memory = start_profiling()
 
 
-# In[3]:
+# In[ ]:
 
 
 if not in_notebook:
@@ -64,9 +64,10 @@ if not in_notebook:
     args = argparser.parse_args()
     well_fov_time = args.well_fov_time
 else:
-    well_fov_time = "B2_1_1"
+    well_fov_time = "B2_1_T0001"
 
 well, fov, timepoint = well_fov_time.split("_")
+timepoint = timepoint.replace("T", "").astype(int)
 well_fov = f"{well}_{fov}"
 
 

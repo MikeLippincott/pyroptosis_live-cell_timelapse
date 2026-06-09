@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+source ~/.bashrc
 conda activate timelapse_ibp_env
 
 cd scripts || exit

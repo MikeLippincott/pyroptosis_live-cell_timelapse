@@ -2,8 +2,8 @@
 #SBATCH --job-name=merge_sc_parallel
 #SBATCH --output=merge_sc_parallel_%A_%a.out
 #SBATCH --nodes=1
-#SBATCH --ntasks=64
-#SBATCH --time=1-00:00:00
+#SBATCH --ntasks=1
+#SBATCH --time=1:00
 #SBATCH --partition=math-alderaan
 
 # establish the git root and load the list of well_fov_times to process
@@ -19,16 +19,16 @@ conda activate timelapse_ibp_env
 # Optional: regenerate scripts from notebooks
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
-
+cd scripts/ || exit
 python 00.generate_load_list.py
-cd ../ || exit
+
 
 counter=0
 total=${#well_fovs[@]}
 for well_fov in "${well_fovs[@]}"; do
     echo "Processing $well_fov ($((counter+1))/$total)..."
     ((counter++))
-    python 0b.merge_sc_parallel.py --well_fov "$well_fov" --max_workers 64
+    python 0b.merge_sc_parallel.py --well_fov "$well_fov" --max_workers 1
 done
 
 conda deactivate

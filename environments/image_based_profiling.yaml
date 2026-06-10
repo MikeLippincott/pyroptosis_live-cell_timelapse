@@ -22,4 +22,5 @@ dependencies:
     - cosmicqc
     - tabulate
     - natsort
+    - -e ../utils/
 

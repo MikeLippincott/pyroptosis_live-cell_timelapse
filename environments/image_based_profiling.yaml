@@ -15,6 +15,7 @@ dependencies:
 - conda-forge::matplotlib
 - conda-forge::seaborn
 - conda-forge::pandas
+- pip
 - pip:
     - cytotable
     - pycytominer

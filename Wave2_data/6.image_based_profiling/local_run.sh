@@ -2,10 +2,9 @@
 # establish the git root and load the list of well_fov_times to process
 git_root=$(git rev-parse --show-toplevel)
 # establish the load data and load it into an array
-load_data_file_path="${git_root}/Wave2_data/6.image_based_profiling/load_data/load_file.txt"
+load_data_file_path="${git_root}/Wave2_data/6.image_based_profiling/load_data/load_file_well_fov_time.txt"
 
 readarray -t well_fov_times < "$load_data_file_path"
-
 
 conda activate timelapse_ibp_env
 

@@ -22,5 +22,4 @@ dependencies:
     - cosmicqc
     - tabulate
     - natsort
-    - pip in
 

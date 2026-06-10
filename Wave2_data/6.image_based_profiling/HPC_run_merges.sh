@@ -2,8 +2,8 @@
 #SBATCH --job-name=merge_sc_parallel
 #SBATCH --output=merge_sc_parallel_%A_%a.out
 #SBATCH --nodes=1
-#SBATCH --ntasks=16
-#SBATCH --time=1:00
+#SBATCH --ntasks=64
+#SBATCH --time=1-00:00:00 # D-HH:MM:SS
 #SBATCH --partition=math-alderaan
 
 # establish the git root and load the list of well_fov_times to process
@@ -28,7 +28,7 @@ total=${#well_fovs[@]}
 for well_fov in "${well_fovs[@]}"; do
     echo "Processing $well_fov ($((counter+1))/$total)..."
     ((counter++))
-    python 0b.merge_sc_parallel.py --well_fov "$well_fov" --max_workers 16
+    python 0b.merge_sc_parallel.py --well_fov "$well_fov" --max_workers 64
 done
 
 conda deactivate

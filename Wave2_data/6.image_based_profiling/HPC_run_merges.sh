@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=64
 #SBATCH --time=1-00:00:00
-#SBATCH --account=math-alderaan
+#SBATCH --partition=math-alderaan
 
 # establish the git root and load the list of well_fov_times to process
 git_root=$(git rev-parse --show-toplevel)

@@ -28,7 +28,7 @@ total=${#well_fovs[@]}
 for well_fov in "${well_fovs[@]}"; do
     echo "Processing $well_fov ($((counter+1))/$total)..."
     ((counter++))
-    python 0b.merge_sc_parallel.py --well_fov "$well_fov" --max_workers 64
+    python 0b.merge_sc_parallel.py --well_fov "$well_fov" --max_workers 8
 done
 
 conda deactivate

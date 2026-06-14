@@ -8,7 +8,6 @@
 
 import os
 import pathlib
-import time
 import uuid
 
 import natsort
@@ -119,13 +118,9 @@ well_fov_timepoints_sqlites = natsort.natsorted(well_fov_timepoints_sqlites)
 #
 # This was not run to completion as we use the nbconverted python file for full run.
 
-# In[ ]:
+# In[6]:
 
 
-times_dict = {
-    "well_fov_timepoint": [],
-    "time": [],
-}
 exists = 0
 total = 0
 errors_counter = 0
@@ -140,11 +135,12 @@ for well_fov_timepoint_sqlite_file_path in tqdm.tqdm(well_fov_timepoints_sqlites
     if dest_path.exists():
         exists += 1
         continue
-    print(f"Processing {well_fov_timepoint_sqlite_file_path}...")
     # extract key metadata that CP did not capture
     # this is at the file level
     # well, fov, timepoint are all captured in the file name so we can extract them from there
     well_fov_timepoint = well_fov_timepoint_sqlite_file_path.stem
+    if well_fov_timepoint == "pyroptosis_timelapse":
+        continue
     well = well_fov_timepoint.split("_")[0]
     fov = well_fov_timepoint.split("_")[1]
     timepoint = well_fov_timepoint.split("_")[2].strip("T")
@@ -152,7 +148,6 @@ for well_fov_timepoint_sqlite_file_path in tqdm.tqdm(well_fov_timepoints_sqlites
 
     try:
         # set up the time profiling
-        start_time = time.time()
         # merge single cells and output as parquet file
         convert(
             source_path=well_fov_timepoint_sqlite_file_path,
@@ -223,9 +218,7 @@ for well_fov_timepoint_sqlite_file_path in tqdm.tqdm(well_fov_timepoints_sqlites
     )
     df["Metadata_single_cell_count"] = df.shape[0]
     df.to_parquet(dest_path)
-    end_time = time.time()
-    times_dict["time"].append(end_time - start_time)
-    times_dict["well_fov_timepoint"].append(well_fov_timepoint)
+
 
 print(f"Total: {total}, Exists: {exists}, Errors: {errors_counter}")
 for well_fov_timepoint, error in errors:
@@ -235,11 +228,19 @@ for well_fov_timepoint, error in errors:
 # In[ ]:
 
 
-errors
+errors_df = pd.DataFrame(errors, columns=["well_fov_timepoint", "error"])
+errors_df.insert(0, "Filename", errors_df["well_fov_timepoint"].apply(lambda x: x.name))
+errors_df.insert(
+    0, "stem", errors_df["well_fov_timepoint"].apply(lambda x: pathlib.Path(x).stem)
+)
+print(errors_df["stem"].unique())
 
+# uncomment if you want to delete the files that caused errors (be careful with this!)
+# typically I would delete these because the sqlite is corrupted
+# or the CP instance never finished and the file is incomplete
+# double check that this is the case prior to deleting these files
+# potentially the error could be the cytotable config instead
 
-# In[ ]:
-
-
-df = pd.DataFrame(times_dict)
-df.head()
+# for filename in errors_df['well_fov_timepoint'].to_list():
+#     if filename.exists():
+#         filename.unlink()

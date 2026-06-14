@@ -14,14 +14,14 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 cd scripts || exit
 
 python 00.generate_load_list.py
-python 0.merge_sc.py
-python 1.combine_sc.py
-python 2.qc.py
-python 3.annotate_sc.py
+# python 0.merge_sc.py
+# python 1.combine_sc.py
+# python 2.qc.py
+# python 3.annotate_sc.py
 # python 5.single_cell_track_merging_placeholder.py
-python 6.normalize_sc.py
-python 7.feature_select_sc.py
-python 8.aggregate_profiles.py
+# python 6.normalize_sc.py
+# python 7.feature_select_sc.py
+# python 8.aggregate_profiles.py
 
 conda deactivate ; conda activate timelapse_deeplearning_env
 for well_fov_time in "${well_fov_times[@]}"; do

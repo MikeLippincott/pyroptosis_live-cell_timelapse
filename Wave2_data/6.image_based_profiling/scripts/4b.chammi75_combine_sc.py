@@ -21,7 +21,7 @@ image_base_dir = bandicoot_check(
 )
 
 
-# In[2]:
+# In[ ]:
 
 
 image_base_dir = bandicoot_check(
@@ -31,15 +31,11 @@ image_base_dir = bandicoot_check(
 
 
 feature_extracted_dir = pathlib.Path(
-    image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
-    / "processed_data"
-    / "7a.CHAMMI75_extracted_features"
+    image_base_dir / "processed_data" / "7a.CHAMMI75_extracted_features"
 ).resolve(strict=True)
 
 chammi_profiles_file_path = pathlib.Path(
     image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
     / "processed_data"
     / "7a.CHAMMI75_extracted_features"
     / "chammi75_combined_sc_profiles.parquet"

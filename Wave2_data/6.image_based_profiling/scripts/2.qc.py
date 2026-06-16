@@ -26,16 +26,14 @@ root_dir, in_notebook = init_notebook()
 
 # ## Set paths and variables
 
-# In[2]:
+# In[ ]:
 
 
 image_base_dir = bandicoot_check(
     bandicoot_mount_path=pathlib.Path(f"{os.path.expanduser('~')}/mnt/bandicoot/"),
     root_dir=root_dir,
 )
-image_base_dir = pathlib.Path(
-    f"{image_base_dir}/live_cell_timelapse_pyroptosis_project_data/processed_data/"
-).resolve(strict=True)
+image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
 combined_profiles_path = (
     image_base_dir / "5.combined_profiles" / "combined_profiles.parquet"
 )

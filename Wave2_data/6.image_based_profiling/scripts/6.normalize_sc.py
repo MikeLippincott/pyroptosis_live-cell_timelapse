@@ -24,7 +24,7 @@ root_dir, in_notebook = init_notebook()
 
 # ## Set paths and variables
 
-# In[4]:
+# In[ ]:
 
 
 # load in platemap file as a pandas dataframe
@@ -36,15 +36,13 @@ image_base_dir = bandicoot_check(
     bandicoot_mount_path=pathlib.Path(f"{os.path.expanduser('~')}/mnt/bandicoot/"),
     root_dir=root_dir,
 )
-image_base_dir = pathlib.Path(
-    f"{image_base_dir}/live_cell_timelapse_pyroptosis_project_data/processed_data/"
-).resolve(strict=True)
-annotated_profiles_path = pathlib.Path(
-    f"{image_base_dir}/7.annotated_profiles/annotated_profiles.parquet"
+image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
+sc_tracks_path = pathlib.Path(
+    f"{image_base_dir}/8.single_Cell_tracks_merged/sc_tracks_profiles.parquet"
 ).resolve(strict=True)
 
 normalized_profiles_path = pathlib.Path(
-    f"{image_base_dir}/8.normalized_profiles/normalized_profiles.parquet"
+    f"{image_base_dir}/9.normalized_profiles/normalized_profiles.parquet"
 ).resolve()
 normalized_profiles_path.parent.mkdir(exist_ok=True)
 
@@ -65,11 +63,11 @@ normalized_profiles_path.parent.mkdir(exist_ok=True)
 samples = "Metadata_Inducer == 'DMSO' & Metadata_Inducer_dose == '0.15%' & Metadata_Inhibitor == 'DMSO' & Metadata_Inhibitor_dose == '0.15%' & Metadata_Time == '1'"
 
 
-# In[6]:
+# In[ ]:
 
 
 # read in the annotated file
-annotated_df = pd.read_parquet(annotated_profiles_path)
+annotated_df = pd.read_parquet(sc_tracks_path)
 # get the features (not the metadata) to use for normalization
 features = [col for col in annotated_df.columns if "metadata" not in col.lower()]
 # apply normalization to the annotated df using the specified samples as the reference for normalization

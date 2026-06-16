@@ -33,9 +33,7 @@ image_base_dir = bandicoot_check(
     bandicoot_mount_path=pathlib.Path(f"{os.path.expanduser('~')}/mnt/bandicoot/"),
     root_dir=root_dir,
 )
-image_base_dir = pathlib.Path(
-    f"{image_base_dir}/live_cell_timelapse_pyroptosis_project_data/processed_data/"
-).resolve(strict=True)
+image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
 normalized_profiles_path = pathlib.Path(
     f"{image_base_dir}/8.normalized_profiles/normalized_profiles.parquet"
 ).resolve(strict=True)

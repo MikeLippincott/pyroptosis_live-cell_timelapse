@@ -25,7 +25,7 @@ root_dir, in_notebook = init_notebook()
 # ## Set paths and variables
 # ### Relate the CellProfiler output to the platemap file
 
-# In[2]:
+# In[ ]:
 
 
 # load in platemap file as a pandas dataframe
@@ -37,9 +37,7 @@ image_base_dir = bandicoot_check(
     bandicoot_mount_path=pathlib.Path(f"{os.path.expanduser('~')}/mnt/bandicoot/"),
     root_dir=root_dir,
 )
-image_base_dir = pathlib.Path(
-    f"{image_base_dir}/live_cell_timelapse_pyroptosis_project_data/processed_data/"
-).resolve(strict=True)
+image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
 qc_profiles_path = pathlib.Path(
     f"{image_base_dir}/6.qc_profiles/qc_profiles.parquet"
 ).resolve(strict=True)

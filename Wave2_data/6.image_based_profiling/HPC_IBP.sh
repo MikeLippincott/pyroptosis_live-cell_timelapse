@@ -2,7 +2,7 @@
 #SBATCH --job-name=ibp_pipe
 #SBATCH --output=ibp_pipe%A_%a.out
 #SBATCH --nodes=1
-#SBATCH --mem=200G
+#SBATCH --mem=500G
 #SBATCH --time=6:00:00 # D-HH:MM:SS
 #SBATCH --partition=math-alderaan
 

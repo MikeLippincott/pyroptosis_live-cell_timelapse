@@ -20,7 +20,7 @@ conda activate timelapse_ibp_env
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
 cd scripts/ || exit
-python 00.generate_load_list.py
+# python 00.generate_load_list.py
 
 echo "Combining sc"
 python 1.combine_sc.py
@@ -29,14 +29,14 @@ python 2.qc.py
 echo "QC done. Starting annotation."
 python 3.annotate_sc.py
 echo "Annotation done. Starting single cell track merging placeholder."
-python 5.single_cell_track_merging_placeholder.py
-echo "Single cell track merging placeholder done. Starting normalization."
-python 6.normalize_sc.py
-echo "Normalization done. Starting feature selection."
-python 7.feature_select_sc.py
-echo "Feature selection done. Starting profile aggregation."
-python 8.aggregate_profiles.py
-echo "Profile aggregation done. Starting featurization."
+# python 5.single_cell_track_merging_placeholder.py
+# echo "Single cell track merging placeholder done. Starting normalization."
+# python 6.normalize_sc.py
+# echo "Normalization done. Starting feature selection."
+# python 7.feature_select_sc.py
+# echo "Feature selection done. Starting profile aggregation."
+# python 8.aggregate_profiles.py
+# echo "Profile aggregation done. Starting featurization."
 
 # conda deactivate ; conda activate timelapse_deeplearning_env
 # for well_fov_time in "${well_fov_times[@]}"; do

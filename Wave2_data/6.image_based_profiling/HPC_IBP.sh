@@ -2,9 +2,10 @@
 #SBATCH --job-name=ibp_pipe
 #SBATCH --output=ibp_pipe%A_%a.out
 #SBATCH --nodes=1
-#SBATCH --mem=500G
-#SBATCH --time=6:00:00 # D-HH:MM:SS
-#SBATCH --partition=math-alderaan
+#SBATCH --mem=600G
+#SBATCH --time=2:00:00 # D-HH:MM:SS
+#SBATCH --partition=highmem
+#SBATCH --account=bio260064
 
 # establish the git root and load the list of well_fov_times to process
 git_root=$(git rev-parse --show-toplevel)
@@ -13,14 +14,14 @@ load_data_well_fov_file_path="${git_root}/Wave2_data/6.image_based_profiling/loa
 
 readarray -t well_fovs < "$load_data_well_fov_file_path"
 
-source ~/.bashrc
+module load anaconda
 conda activate timelapse_ibp_env
 
 # Optional: regenerate scripts from notebooks
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
 cd scripts/ || exit
-# python 00.generate_load_list.py
+python 00.generate_load_list.py
 
 echo "Combining sc"
 python 1.combine_sc.py

@@ -2,7 +2,7 @@
 #SBATCH --job-name=ibp_pipe
 #SBATCH --output=ibp_pipe%A_%a.out
 #SBATCH --nodes=1
-#SBATCH --mem=600G
+#SBATCH --mem=650G
 #SBATCH --time=2:00:00 # D-HH:MM:SS
 #SBATCH --partition=highmem
 #SBATCH --account=bio260064
@@ -30,14 +30,14 @@ python 2.qc.py
 echo "QC done. Starting annotation."
 python 3.annotate_sc.py
 echo "Annotation done. Starting single cell track merging placeholder."
-# python 5.single_cell_track_merging_placeholder.py
-# echo "Single cell track merging placeholder done. Starting normalization."
-# python 6.normalize_sc.py
-# echo "Normalization done. Starting feature selection."
-# python 7.feature_select_sc.py
-# echo "Feature selection done. Starting profile aggregation."
-# python 8.aggregate_profiles.py
-# echo "Profile aggregation done. Starting featurization."
+python 5.single_cell_track_merging_placeholder.py
+echo "Single cell track merging placeholder done. Starting normalization."
+python 6.normalize_sc.py
+echo "Normalization done. Starting feature selection."
+python 7.feature_select_sc.py
+echo "Feature selection done. Starting profile aggregation."
+python 8.aggregate_profiles.py
+echo "Profile aggregation done. Starting featurization."
 
 # conda deactivate ; conda activate timelapse_deeplearning_env
 # for well_fov_time in "${well_fov_times[@]}"; do

@@ -225,7 +225,7 @@ for well_fov_timepoint, error in errors:
     print(f"Error processing {well_fov_timepoint}: {error}")
 
 
-# In[ ]:
+# In[7]:
 
 
 errors_df = pd.DataFrame(errors, columns=["well_fov_timepoint", "error"])

@@ -51,7 +51,7 @@ else:
 start_time, start_memory = start_profiling()
 
 
-# In[ ]:
+# In[11]:
 
 
 if not in_notebook:
@@ -67,7 +67,7 @@ else:
     well_fov_time = "B2_1_T0001"
 
 well, fov, timepoint = well_fov_time.split("_")
-timepoint = timepoint.replace("T", "").astype(int)
+timepoint = int(timepoint.replace("T", ""))
 well_fov = f"{well}_{fov}"
 
 
@@ -78,23 +78,17 @@ image_base_dir = bandicoot_check(
 
 profile_file_path = pathlib.Path(
     image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
     / "processed_data"
     / "7.annotated_profiles"
     / "annotated_profiles.parquet"
 ).resolve(strict=True)
 
 channel_image_dir = pathlib.Path(
-    image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
-    / "processed_data"
-    / "1.illumination_corrected_files"
-    / well_fov
+    image_base_dir / "processed_data" / "1.illumination_corrected_files" / well_fov
 ).resolve(strict=True)
 
 feature_extracted_file = pathlib.Path(
     image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
     / "processed_data"
     / "7a.CHAMMI75_extracted_features"
     / well_fov_time
@@ -109,7 +103,7 @@ if feature_extracted_file.exists():
     )
 
 
-# In[4]:
+# In[12]:
 
 
 channel_mapping = {
@@ -121,7 +115,7 @@ channel_mapping = {
 }
 
 
-# In[5]:
+# In[13]:
 
 
 # get a list of each channel to featurize
@@ -134,14 +128,14 @@ channel_images = {
 }
 
 
-# In[6]:
+# In[14]:
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 chammi75_model = get_chammi75_model(device)
 
 
-# In[7]:
+# In[15]:
 
 
 columns_to_read_in = [
@@ -153,7 +147,7 @@ columns_to_read_in = [
 ]
 
 
-# In[9]:
+# In[16]:
 
 
 annotated_df = pd.read_parquet(profile_file_path, columns=columns_to_read_in)
@@ -161,7 +155,7 @@ annotated_df = pd.read_parquet(profile_file_path, columns=columns_to_read_in)
 annotated_df = annotated_df.loc[annotated_df["Metadata_Well_FOV_Time"] == well_fov_time]
 
 
-# In[10]:
+# In[17]:
 
 
 label_ids = np.unique(annotated_df["Metadata_Nuclei_Number_Object_Number"])
@@ -170,7 +164,7 @@ print(f"Found {len(label_ids)} unique label IDs")
 image_shape = channel_images["NucleoLIVE"].shape
 
 
-# In[11]:
+# In[18]:
 
 
 list_of_feature_dicts = []
@@ -232,7 +226,7 @@ for label in tqdm.tqdm(label_ids, desc="Extracting features for objects", leave=
         list_of_feature_dicts.append(df)
 
 
-# In[12]:
+# In[19]:
 
 
 if not list_of_feature_dicts:

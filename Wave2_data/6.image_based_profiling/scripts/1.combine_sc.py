@@ -5,7 +5,7 @@
 
 # ## Import libraries
 
-# In[ ]:
+# In[1]:
 
 
 import os
@@ -28,7 +28,7 @@ else:
 
 # ## Set paths and variables
 
-# In[ ]:
+# In[2]:
 
 
 image_base_dir = bandicoot_check(
@@ -47,7 +47,7 @@ combined_profiles_path = pathlib.Path(
 combined_profiles_path.mkdir(exist_ok=True)
 
 
-# In[ ]:
+# In[3]:
 
 
 # well_fov_timepoints - get all the well_fov_timepoints that we have extracted features for
@@ -70,7 +70,7 @@ converted_profiles = natsort.natsorted(converted_profiles)
 print(f"Number of converted profiles: {len(converted_profiles)}")
 
 
-# In[ ]:
+# In[4]:
 
 
 # check if any of the parquet files have buffer 0
@@ -90,7 +90,7 @@ for parquet_file in tqdm.tqdm(converted_profiles):
 print(f"Total files: {total}, Empty files: {zero_size_files}")
 
 
-# In[ ]:
+# In[5]:
 
 
 converted_profiles_df = pd.DataFrame({"converted_profile_path": converted_profiles})
@@ -103,7 +103,7 @@ converted_profiles_df["well_fov"] = converted_profiles_df[
 converted_profiles_df
 
 
-# In[ ]:
+# In[6]:
 
 
 # loop through unique well fovs then combine all timepoints for each well fov and save as a single parquet file
@@ -140,7 +140,24 @@ for well_fov, group in tqdm.tqdm(
 combined_well_fov_paths = list(
     (combined_profiles_path / "well_fovs_combined").glob("*.parquet")
 )
+for file in combined_well_fov_paths:
+    if file.stat().st_size == 0:
+        print(f"Empty file found: {file}")
 combined_well_fov_paths = natsort.natsorted(combined_well_fov_paths)
-combined_df = pd.concat(
-    [pd.read_parquet(x) for x in combined_well_fov_paths], ignore_index=True
-)
+dfs = []
+for file in tqdm.tqdm(
+    combined_well_fov_paths, desc="Reading combined well fov parquet files"
+):
+    if file.stat().st_size == 0:
+        print(f"Empty file found: {file}")
+
+    try:
+        df = pd.read_parquet(file)
+        dfs.append(df)
+    except Exception as e:
+        print(f"Error reading {file}: {e}")
+if dfs:
+    all_combined_df = pd.concat(dfs, ignore_index=True)
+    all_combined_df.to_parquet(combined_profiles_path / "combined_profiles.parquet")
+else:
+    print("No dataframes to concatenate. Please check for empty files.")

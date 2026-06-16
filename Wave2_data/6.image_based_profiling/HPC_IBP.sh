@@ -29,7 +29,7 @@ python 2.qc.py
 echo "QC done. Starting annotation."
 python 3.annotate_sc.py
 echo "Annotation done. Starting single cell track merging placeholder."
-# python 5.single_cell_track_merging_placeholder.py
+python 5.single_cell_track_merging_placeholder.py
 echo "Single cell track merging placeholder done. Starting normalization."
 python 6.normalize_sc.py
 echo "Normalization done. Starting feature selection."

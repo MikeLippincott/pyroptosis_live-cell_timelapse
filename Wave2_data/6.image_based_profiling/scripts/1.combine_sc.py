@@ -144,20 +144,7 @@ for file in combined_well_fov_paths:
     if file.stat().st_size == 0:
         print(f"Empty file found: {file}")
 combined_well_fov_paths = natsort.natsorted(combined_well_fov_paths)
-dfs = []
-for file in tqdm.tqdm(
-    combined_well_fov_paths, desc="Reading combined well fov parquet files"
-):
-    if file.stat().st_size == 0:
-        print(f"Empty file found: {file}")
-
-    try:
-        df = pd.read_parquet(file)
-        dfs.append(df)
-    except Exception as e:
-        print(f"Error reading {file}: {e}")
-if dfs:
-    all_combined_df = pd.concat(dfs, ignore_index=True)
-    all_combined_df.to_parquet(combined_profiles_path / "combined_profiles.parquet")
-else:
-    print("No dataframes to concatenate. Please check for empty files.")
+combined_df = pd.concat(
+    [pd.read_parquet(x) for x in combined_well_fov_paths], ignore_index=True
+)
+combined_df.to_parquet(combined_profiles_path / "combined_profiles.parquet")

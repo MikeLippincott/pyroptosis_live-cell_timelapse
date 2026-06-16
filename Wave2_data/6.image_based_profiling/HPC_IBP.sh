@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=ibp_pipe
-#SBATCH --output=ibp_pipe%A_%a.out
+#SBATCH --output=ibp_pipe_%j.out
 #SBATCH --nodes=1
-#SBATCH --mem=650G
+#SBATCH --mem=1000GB
 #SBATCH --time=2:00:00 # D-HH:MM:SS
-#SBATCH --partition=highmem
-#SBATCH --account=bio260064
+#SBATCH --partition=mem-normal
+#SBATCH --qos=normal
 
 # establish the git root and load the list of well_fov_times to process
 git_root=$(git rev-parse --show-toplevel)

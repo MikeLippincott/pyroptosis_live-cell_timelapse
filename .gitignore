@@ -188,3 +188,4 @@ environments/*.sif
 Wave2_data/5.feature_extraction/extracted_features/*
 Wave2_data/6.image_based_profiling/notebooks/cytotable_runinfo/*
 environments/cellprofiler.sif
+Wave2_data/figures/montages/videos/*

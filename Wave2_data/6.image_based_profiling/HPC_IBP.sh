@@ -4,8 +4,8 @@
 #SBATCH --nodes=1
 #SBATCH --mem=1000GB
 #SBATCH --time=2:00:00 # D-HH:MM:SS
-#SBATCH --partition=mem-normal
-#SBATCH --qos=normal
+#SBATCH --partition=amem
+#SBATCH --qos=mem-normal
 
 # establish the git root and load the list of well_fov_times to process
 git_root=$(git rev-parse --show-toplevel)

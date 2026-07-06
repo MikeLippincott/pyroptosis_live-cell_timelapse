@@ -60,7 +60,7 @@ if not in_notebook:
 
 
 else:
-    well_fov = "B2_2"
+    well_fov = "C2_3"
     clip_limit = 0.6
 
 
@@ -70,19 +70,11 @@ image_base_dir = bandicoot_check(
 )
 
 input_dir = pathlib.Path(
-    image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
-    / "processed_data"
-    / "1.illumination_corrected_files"
-    / well_fov
+    image_base_dir / "processed_data" / "1.illumination_corrected_files" / well_fov
 ).resolve(strict=True)
 
 segmentation_mask_output_dir = pathlib.Path(
-    image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
-    / "processed_data"
-    / "2.cell_segmentation_masks"
-    / well_fov
+    image_base_dir / "processed_data" / "2.cell_segmentation_masks" / well_fov
 ).resolve()
 segmentation_mask_output_dir.mkdir(exist_ok=True, parents=True)
 
@@ -100,45 +92,14 @@ image_extensions = {".tif", ".tiff"}
 files = sorted(input_dir.glob("*"))
 files = [str(x) for x in files if x.suffix in image_extensions]
 files = natsort.natsorted(files)
-
-
-# In[4]:
-
-
-image_dict = {
-    "nuclei_file_paths": [],
-    "nuclei": [],
-}
-
-
-# In[5]:
-
-
-# split files by channel
-for file in files:
-    if "C4" in file.split("/")[-1]:
-        image_dict["nuclei_file_paths"].append(file)
-        image_dict["nuclei"].append(tifffile.imread(file).astype(np.float32))
-nuclei_image_list = [np.array(nuclei) for nuclei in image_dict["nuclei"]]
-
-nuclei = np.array(nuclei_image_list).astype(np.int16)
-
-nuclei = skimage.exposure.equalize_adapthist(nuclei, clip_limit=clip_limit)
-
-print(nuclei.shape)
-
-
-# In[6]:
-
-
-original_nuclei_image = nuclei.copy()
+files = [x for x in files if "_C4" in x]
 
 
 # ## Cellpose
 
 # ### Runnning segmentation
 
-# In[7]:
+# In[4]:
 
 
 use_GPU = torch.cuda.is_available()
@@ -149,40 +110,49 @@ masks_all_dict = {"masks": [], "imgs": []}
 
 # get masks for all the images
 # save to a dict for later use
-for img in tqdm.tqdm(nuclei, desc="Segmenting nuclei"):
+for frame, img in tqdm.tqdm(
+    enumerate(files), desc="Segmenting nuclei", total=len(files)
+):
+    save_file_path = (
+        f"{segmentation_mask_output_dir}/{well_fov}_T{frame+1}_nuclei_mask.tiff"
+    )
+    if pathlib.Path(save_file_path).exists():
+        continue
+    img = tifffile.imread(img)
+    img = skimage.exposure.equalize_adapthist(img, clip_limit=clip_limit)
     img = normalize(img)
     masks, flows, styles = model.eval(img)
+    tifffile.imwrite(save_file_path, masks)
+    if in_notebook:
 
-    masks_all_dict["masks"].append(masks)
-    masks_all_dict["imgs"].append(img)
-masks_all = masks_all_dict["masks"]
-imgs = masks_all_dict["imgs"]
-
-masks_all = np.array(masks_all)
-imgs = np.array(imgs)
+        masks_all_dict["masks"].append(masks)
+        masks_all_dict["imgs"].append(img)
 
 
-# In[8]:
+# In[5]:
 
 
-for frame_index, frame in enumerate(image_dict["nuclei_file_paths"]):
-    # saving the masks
-    save_file_path = f"{segmentation_mask_output_dir}/{str(frame).split('/')[-1].split('_C4')[0]}_nuclei_mask.tiff"
-    tifffile.imwrite(save_file_path, masks_all[frame_index, :, :])
+# for frame_index, frame in enumerate(image_dict["nuclei_file_paths"]):
+#     # saving the masks
+#     save_file_path = f"{segmentation_mask_output_dir}/{str(frame).split('/')[-1].split('_C4')[0]}_nuclei_mask.tiff"
+#     tifffile.imwrite(save_file_path, masks_all[frame_index, :, :])
 if in_notebook:
-    # show the first 5 and the last 5 masks
-    for z in [0, 1, 2, 3, 4, -5, -4, -3, -2, -1]:
-        plt.figure(figsize=(20, 10))
+    if len(masks_all_dict["masks"]) > 0:
+        masks_all_dict["masks"] = np.array(masks_all_dict["masks"])
+        masks_all_dict["imgs"] = np.array(masks_all_dict["imgs"])
+        # show the first 5 and the last 5 masks
+        for t in [0, 1, 2, 3, 4, -5, -4, -3, -2, -1]:
+            plt.figure(figsize=(20, 10))
 
-        plt.title(f"z: {z}")
-        plt.axis("off")
-        plt.subplot(1, 2, 1)
-        plt.imshow(nuclei[z], cmap="inferno")
-        plt.title("Nuclei")
-        plt.axis("off")
+            plt.title(f"z: {t}")
+            plt.axis("off")
+            plt.subplot(1, 2, 1)
+            plt.imshow(masks_all_dict["imgs"][t], cmap="inferno")
+            plt.title("Nuclei")
+            plt.axis("off")
 
-        plt.subplot(122)
-        plt.imshow(masks_all[z], cmap="nipy_spectral")
-        plt.title("Cell masks")
-        plt.axis("off")
-        plt.show()
+            plt.subplot(122)
+            plt.imshow(masks_all_dict["masks"][t], cmap="nipy_spectral")
+            plt.title("Cell masks")
+            plt.axis("off")
+            plt.show()

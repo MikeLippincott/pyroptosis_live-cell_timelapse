@@ -33,17 +33,11 @@ image_base_dir = bandicoot_check(
 )
 
 input_dir = pathlib.Path(
-    image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
-    / "processed_data"
-    / "1.illumination_corrected_files"
+    image_base_dir / "processed_data" / "1.illumination_corrected_files"
 ).resolve(strict=True)
 
 segmentation_mask_output_dir = pathlib.Path(
-    image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
-    / "processed_data"
-    / "2.cell_segmentation_masks"
+    image_base_dir / "processed_data" / "2.cell_segmentation_masks"
 ).resolve()
 
 loadfile_dir = pathlib.Path("../loadfiles/loadfile.txt").resolve()

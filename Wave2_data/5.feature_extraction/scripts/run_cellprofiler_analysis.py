@@ -11,6 +11,7 @@
 import argparse
 import os
 import pathlib
+import pprint
 import shutil
 import time
 
@@ -29,13 +30,13 @@ image_based_dir = bandicoot_check(
 )
 
 
-# In[2]:
+# In[ ]:
 
 
 if in_notebook:
     import tqdm.notebook as tqdm
 
-    max_workers = 2
+    max_workers = 1
 else:
     import tqdm
 
@@ -110,13 +111,16 @@ for timepoint_dir in tqdm.tqdm(timepoint_dirs):
     ):
         # remove this record from the run dict
         dict_of_runs.pop(timepoint_dir.name, None)
+print(f"Found {len(dict_of_runs.keys())} timepoints to run CellProfiler on.")
+if len(dict_of_runs.keys()) < 50:
+    pprint.pprint(dict_of_runs)
 
 
 # ## Run analysis pipeline on each plate in parallel
 #
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
-# In[ ]:
+# In[6]:
 
 
 try:
@@ -132,13 +136,13 @@ except FileNotFoundError:
 
 # ## This section gets run in script only as it takes a long time to run. It is not ran in the notebook.
 
-# In[ ]:
+# In[7]:
 
 
 start = time.time()
 
 
-# In[ ]:
+# In[8]:
 
 
 run_cellprofiler_parallel(

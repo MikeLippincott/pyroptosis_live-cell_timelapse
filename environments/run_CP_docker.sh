@@ -22,7 +22,7 @@ alias cellprofiler="apptainer exec '$image_path' cellprofiler"
 echo "alias cellprofiler='apptainer exec '$image_path' cellprofiler'" >> ~/.bashrc
 echo "alias cellprofiler='apptainer exec '$image_path' cellprofiler'" >> ~/.zshrc
 
-export NF_OUTPUT_BASE_DIR="${SLURM_TMPDIR:-${SCRATCH:-$HOME}}/NF1_2D_outputs"
+export NF_OUTPUT_BASE_DIR="${SLURM_TMPDIR:-${SCRATCH:-$HOME}}/pyroptosis"
 mkdir -p "$NF_OUTPUT_BASE_DIR"
 
 # Bind paths into container namespace

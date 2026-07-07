@@ -59,7 +59,7 @@ if not in_notebook:
     well_fov = args.well_fov
 
 else:
-    well_fov = "C2_1"
+    well_fov = "C2_3"
     clip_limit = 0.3
 
 
@@ -69,19 +69,11 @@ image_base_dir = bandicoot_check(
 )
 
 input_dir = pathlib.Path(
-    image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
-    / "processed_data"
-    / "1.illumination_corrected_files"
-    / well_fov
+    image_base_dir / "processed_data" / "1.illumination_corrected_files" / well_fov
 ).resolve(strict=True)
 
 segmentation_mask_output_dir = pathlib.Path(
-    image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
-    / "processed_data"
-    / "2.cell_segmentation_masks"
-    / well_fov
+    image_base_dir / "processed_data" / "2.cell_segmentation_masks" / well_fov
 ).resolve()
 segmentation_mask_output_dir.mkdir(exist_ok=True, parents=True)
 
@@ -177,6 +169,22 @@ for i, (
 
     # Save the segmented mask as a tiff file
     tifffile.imwrite(output_path, cell_mask.astype(np.uint16))
+
+    # verify that the nuclei mask and cell mask have the same number of unique labels
+    nuclei_labels = np.unique(single_nuclei_mask)
+    cell_labels = np.unique(cell_mask)
+    set_difference = set(nuclei_labels) - set(cell_labels)
+    #############################################################
+    # NOTE This should never print ever
+    # This is a HUGE red flag that something is wrong with the segmentation.
+    # If this prints, it means that there are nuclei that were not assigned to any cell in the cell mask.
+    # This could be due to a bug in the code, or it could be due to a problem with the input images (e.g., if the nuclei are not well-separated from each other or from the background).
+    # If this happens, you should investigate the input images and the segmentation results to determine the cause of the problem.
+    #############################################################
+    if len(set_difference) > 0:
+        print(
+            f"Warning: The nuclei mask and cell mask have different unique labels for {well_fov} at {time_point}. The following labels are in the nuclei mask but not in the cell mask: {set_difference}"
+        )
 
 
 # In[6]:

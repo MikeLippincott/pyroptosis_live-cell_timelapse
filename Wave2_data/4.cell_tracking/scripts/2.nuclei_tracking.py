@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import argparse
@@ -25,44 +25,30 @@ logging.getLogger("ultrack.utils.edge").setLevel(logging.ERROR)
 
 import json
 
-import dask.array as da
 import matplotlib.pyplot as plt
-import napari
 import natsort
 import numpy as np
 import optuna
 import pandas as pd
-import scipy.ndimage as ndi
 import seaborn as sns
 import tifffile
 import torch
-from napari.utils.notebook_display import nbscreenshot
 from PIL import Image
 from rich.pretty import pprint
-from tifffile import imread
 from ultrack import (
     MainConfig,
-    add_flow,
     link,
     segment,
     solve,
-    to_ctc,
     to_tracks_layer,
     track,
     tracks_to_zarr,
 )
 from ultrack.config import MainConfig
 from ultrack.imgproc import detect_foreground, robust_invert
-from ultrack.imgproc.flow import (
-    advenct_from_quasi_random,
-    timelapse_flow,
-    trajectories_to_tracks,
-)
 from ultrack.tracks import close_tracks_gaps
-from ultrack.tracks.stats import tracks_df_movement
 from ultrack.utils import estimate_parameters_from_labels, labels_to_contours
 from ultrack.utils.array import array_apply, create_zarr
-from ultrack.utils.cuda import on_gpu
 
 os.environ["OMP_NUM_THREADS"] = "8"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
@@ -70,8 +56,6 @@ import logging
 
 logging.getLogger("ultrack").setLevel(logging.INFO)
 
-import napari
-from napari.utils.notebook_display import nbscreenshot
 from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
     init_notebook,
@@ -200,12 +184,12 @@ print(f"Found {len(mask_files)} segmentation mask files in the input directory")
 print(f"Found {len(nuclei_files)} nuclei files in the input directory")
 
 
-# In[5]:
+# In[ ]:
 
 
 # read in the masks and create labels
 masks = []
-for tiff_file in mask_files:  # only read in the first 5 files to save time and memory
+for tiff_file in mask_files:
     img = tifffile.imread(tiff_file)
     masks.append(img)
 
@@ -218,13 +202,10 @@ for tiff_file in nuclei_files:
 nuclei = np.array(nuclei)
 
 
-# In[6]:
+# In[ ]:
 
 
 image_dims = nuclei[0].shape
-timelapse_raw = np.zeros(
-    (nuclei.shape[0], image_dims[0], image_dims[1]), dtype=np.uint16
-)
 
 
 # In[7]:
@@ -322,15 +303,12 @@ if in_notebook:
     plt.show()
 
 
-# In[13]:
+# In[ ]:
 
 
 if generate_gif:
     tracks_df.reset_index(drop=True, inplace=True)
-    tracks = np.zeros((len(masks), image_dims[0], image_dims[1]), dtype=np.uint16)
     cum_tracks_df = tracks_df.copy()
-    timepoints = tracks_df["t"].unique()
-
     # zero out the track_df for plotting
     cum_tracks_df = cum_tracks_df.loc[cum_tracks_df["t"] == -1]
     for frame_index, _ in enumerate(nuclei):

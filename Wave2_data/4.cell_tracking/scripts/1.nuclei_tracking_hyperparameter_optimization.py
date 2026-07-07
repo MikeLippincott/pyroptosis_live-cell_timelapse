@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import argparse
@@ -23,10 +23,9 @@ logging.getLogger("ultrack.utils").setLevel(logging.ERROR)
 logging.getLogger("ultrack.utils.cuda").setLevel(logging.ERROR)
 logging.getLogger("ultrack.utils.edge").setLevel(logging.ERROR)
 
+import json
 
-import dask.array as da
 import matplotlib.pyplot as plt
-import napari
 import natsort
 import numpy as np
 import optuna
@@ -35,13 +34,11 @@ import scipy.ndimage as ndi
 import seaborn as sns
 import tifffile
 import torch
-from napari.utils.notebook_display import nbscreenshot
 from PIL import Image
 from rich.pretty import pprint
 from tifffile import imread
 from ultrack import (
     MainConfig,
-    add_flow,
     link,
     segment,
     solve,
@@ -52,25 +49,14 @@ from ultrack import (
 )
 from ultrack.config import MainConfig
 from ultrack.imgproc import detect_foreground, robust_invert
-from ultrack.imgproc.flow import (
-    advenct_from_quasi_random,
-    timelapse_flow,
-    trajectories_to_tracks,
-)
 from ultrack.tracks import close_tracks_gaps
-from ultrack.tracks.stats import tracks_df_movement
 from ultrack.utils import estimate_parameters_from_labels, labels_to_contours
 from ultrack.utils.array import array_apply, create_zarr
-from ultrack.utils.cuda import on_gpu
 
 os.environ["OMP_NUM_THREADS"] = "8"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 import logging
 
-logging.getLogger("ultrack").setLevel(logging.INFO)
-
-import napari
-from napari.utils.notebook_display import nbscreenshot
 from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
     init_notebook,
@@ -213,13 +199,10 @@ for tiff_file in nuclei_files[:5]:
 nuclei = np.array(nuclei)
 
 
-# In[6]:
+# In[ ]:
 
 
 image_dims = nuclei[0].shape
-timelapse_raw = np.zeros(
-    (nuclei.shape[0], image_dims[0], image_dims[1]), dtype=np.uint16
-)
 
 
 # In[7]:
@@ -246,7 +229,7 @@ if in_notebook:
 
 # ## Optimize the tracking using optuna and ultrack
 
-# In[9]:
+# In[ ]:
 
 
 # Optuna setup for ultrack hyperparameter search
@@ -289,7 +272,7 @@ def build_ultrack_config(trial):
         "disappear_weight", -0.05, -0.001
     )
     cfg.tracking_config.division_weight = trial.suggest_float(
-        "division_weight", 0.0, 1.0
+        "division_weight", 0.0, 0.1
     )
     cfg.tracking_config.solution_gap = trial.suggest_float(
         "solution_gap", 1e-4, 1e-2, log=True
@@ -374,7 +357,7 @@ print("\nBest ultrack config:")
 pprint(best_config)
 
 
-# In[11]:
+# In[ ]:
 
 
 # show trial results and hyperparameters via plots
@@ -384,8 +367,8 @@ sns.set_style("whitegrid")
 plt.figure(figsize=(12, 6))
 sns.scatterplot(data=results_df, x="number", y="value", s=100)
 plt.title("Optuna Trial Scores with Errors Highlighted")
-plt.xlabel("Objective Score")
-plt.ylabel("Trial Number")
+plt.xlabel("Trial Number")
+plt.ylabel("Objective")
 plt.legend(title="Error Occurred", loc="best")
 plt.tight_layout()
 plt.savefig(figures_output_dir / "optuna_trial_scores.png", dpi=300)
@@ -410,7 +393,7 @@ plt.savefig(figures_output_dir / "optuna_trial_errors.png", dpi=300)
 plt.show()
 
 
-# In[14]:
+# In[ ]:
 
 
 # setup tracking config from the best Optuna trial
@@ -422,8 +405,6 @@ else:
     raise RuntimeError(
         "No Optuna study results found. Run the Optuna optimization cell first."
     )
-
-import json
 
 # write the config
 config_output_path = "../results/ultrack_config.json"

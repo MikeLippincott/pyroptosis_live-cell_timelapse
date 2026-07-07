@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import os
@@ -10,7 +10,6 @@ import pathlib
 import natsort
 
 # Import dependencies
-import numpy as np
 import pandas as pd
 from timelapse_utils.file_utils.notebook_init_utils import (
     bandicoot_check,
@@ -24,7 +23,7 @@ else:
     import tqdm
 
 
-# In[2]:
+# In[ ]:
 
 
 image_base_dir = bandicoot_check(
@@ -49,8 +48,6 @@ segmentation_mask_output_dir = pathlib.Path(
 loadfile_dir = pathlib.Path("../loadfiles/loadfile.txt").resolve()
 loadfile_dir.parent.mkdir(parents=True, exist_ok=True)
 
-EXPECTED_MASK_FILE_COUNT = 102
-
 
 # ## Set up images, paths and functions
 
@@ -62,13 +59,12 @@ raw_image_files = sorted(input_dir.glob("*"))
 well_fov_dirs = [x.name for x in raw_image_files if x.is_dir()]
 
 
-# In[4]:
+# In[ ]:
 
 
 raw_images_present = {}
 nuclei_df_list = []
 
-raw_image_files = sorted(input_dir.glob("*"))
 for well_fov_name in tqdm.tqdm(
     well_fov_dirs, desc="Checking for raw images in input directory"
 ):

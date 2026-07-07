@@ -1,0 +1,28 @@
+name: timelapse_ibp_env
+
+channels:
+- conda-forge
+- anaconda
+- pytorch
+
+dependencies:
+- conda-forge::python=3.12
+- conda-forge::ipykernel
+- conda-forge::nbconvert
+- conda-forge::pip
+- conda-forge::numpy>=2.0.0
+- conda-forge::pyyaml
+- conda-forge::matplotlib
+- conda-forge::seaborn
+- conda-forge::pandas
+- conda-forge::polars
+- conda-forge::duckdb
+- pip
+- pip:
+    - cytotable
+    - pycytominer
+    - cosmicqc
+    - tabulate
+    - natsort
+    - -e ../utils/
+

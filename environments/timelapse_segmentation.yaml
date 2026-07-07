@@ -31,6 +31,7 @@ dependencies:
   - pip:
     - torch
     - cellpose
+    - centrosome
     - tifffile
     - ultrack
     - -e ../utils

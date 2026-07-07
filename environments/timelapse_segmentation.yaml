@@ -31,6 +31,6 @@ dependencies:
   - pip:
     - torch
     - cellpose
-    - stardist[tf2]
+    - centrosome
     - tifffile
     - ultrack

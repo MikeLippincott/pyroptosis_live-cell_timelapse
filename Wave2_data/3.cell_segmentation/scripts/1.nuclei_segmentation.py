@@ -129,13 +129,9 @@ for frame, img in tqdm.tqdm(
         masks_all_dict["imgs"].append(img)
 
 
-# In[5]:
+# In[ ]:
 
 
-# for frame_index, frame in enumerate(image_dict["nuclei_file_paths"]):
-#     # saving the masks
-#     save_file_path = f"{segmentation_mask_output_dir}/{str(frame).split('/')[-1].split('_C4')[0]}_nuclei_mask.tiff"
-#     tifffile.imwrite(save_file_path, masks_all[frame_index, :, :])
 if in_notebook:
     if len(masks_all_dict["masks"]) > 0:
         masks_all_dict["masks"] = np.array(masks_all_dict["masks"])

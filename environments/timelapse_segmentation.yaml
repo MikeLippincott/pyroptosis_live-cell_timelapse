@@ -34,4 +34,5 @@ dependencies:
     - centrosome
     - tifffile
     - ultrack
+    - csbdeep
     - -e ../utils

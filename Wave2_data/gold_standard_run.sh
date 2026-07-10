@@ -9,13 +9,13 @@ plate="plate_2"
 echo "Running gold standard pipeline for $plate"
 
 # preprocess the data
-# cd 1.preprocess_data/scripts || exit 0
-# jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
+cd 1.preprocess_data/scripts || exit 0
+jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
-# conda activate pyroptosis_timelapse_env
-# python 0.preprocess_raw_data.py --plate_name "$plate"
-# conda deactivate
-# cd ./../ || exit 0
+conda activate pyroptosis_timelapse_env
+python 0.preprocess_raw_data.py --plate_name "$plate"
+conda deactivate
+cd ./../ || exit 0
 
 # run illumination correction
 cd 2.illumination_correction || exit 0

@@ -3,9 +3,10 @@
 
 # This notebook pre-processes the data to be available in the repo path.
 
-# In[1]:
+# In[ ]:
 
 
+import argparse
 import glob
 import json
 import os
@@ -37,17 +38,45 @@ bandicoot_mount_path = pathlib.Path(os.path.expanduser("~/mnt/bandicoot/"))
 image_base_dir = bandicoot_check(bandicoot_mount_path, root_dir)
 
 
-# In[3]:
+# In[ ]:
+
+
+if not in_notebook:
+    args = argparse.ArgumentParser()
+    args.add_argument(
+        "--plate_name",
+        type=str,
+        required=True,
+        help="Name of the plate to process (e.g. '2023-08-01_plate1')",
+    )
+    plate_name = args.parse_args().plate_name
+else:
+    plate_name = "plate_2"
+
+
+# In[4]:
+
+
+# hardcoded timepoints expeected for each plate
+if plate_name == "plate_1":
+    expected_timepoints = 102
+    expected_channels = 5
+elif plate_name == "plate_2":
+    expected_timepoints = 288
+    expected_channels = 4
+
+
+# In[5]:
 
 
 # absolute path to the raw data directory (only works on this machine)
-path_to_raw_data = pathlib.Path(
-    f"{image_base_dir}/live_cell_timelapse_pyroptosis_project_data/raw_data/"
-).resolve(strict=True)
+path_to_raw_data = pathlib.Path(f"{image_base_dir}/raw_data/{plate_name}/").resolve(
+    strict=True
+)
 
 # repository data directory to access the data faster
 path_to_processed_data = pathlib.Path(
-    f"{image_base_dir}/live_cell_timelapse_pyroptosis_project_data/processed_data/"
+    f"{image_base_dir}/processed_data/0.renamed_files/{plate_name}/"
 ).resolve()
 path_to_processed_data.mkdir(exist_ok=True, parents=True)
 
@@ -59,7 +88,7 @@ print(f"Found {len(list_of_files)} files")
 
 # ## Set up a metadata frame
 
-# In[4]:
+# In[6]:
 
 
 # make a df out of the file names
@@ -81,7 +110,7 @@ df.FOV = df.FOV.astype(int)
 df.Well = df.Well.astype(int)
 
 
-# In[5]:
+# In[7]:
 
 
 # well dictionary for mapping
@@ -106,13 +135,20 @@ df.sort_values(by=["Well", "FOV", "Time", "Channel"], inplace=True)
 df.head(10)
 
 
-# In[6]:
+# In[8]:
+
+
+df.groupby(["Well", "FOV", "Channel"]).size().reset_index(name="num_files")
+df["Well"].unique()
+
+
+# In[ ]:
 
 
 # rename the processed files to match the new naming convention
 for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
     # skip time 103 as not all wells have this "final time point"
-    if row["Time"] == 103:
+    if row["Time"] == 103 and plate_name == "plate_1":
         continue
     file_path = pathlib.Path(row["file_path"])
     new_file_name = pathlib.Path(
@@ -122,6 +158,7 @@ for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
     new_file_path = path_to_processed_data / well_fov / new_file_name
     new_file_path.parent.mkdir(exist_ok=True, parents=True)
     if not new_file_path.exists():
+        # print(f"Copying {file_path} to {new_file_path}")
         shutil.copy(file_path, new_file_path)
 
 
@@ -156,9 +193,10 @@ for dir in tqdm.tqdm(dirs):
         plate_dict["well_fov"].append(pathlib.Path(dir).name)
         plate_dict["file_name"].append(file)
 plate_df = pd.DataFrame(plate_dict)
+plate_df.head()
 
 
-# In[8]:
+# In[ ]:
 
 
 plate_df["file_name"] = plate_df["file_name"].apply(lambda x: pathlib.Path(x).stem)
@@ -189,22 +227,22 @@ else:
     print("All well_fov and channel combinations have 102 time points")
 
 
-# In[10]:
+# In[ ]:
 
 
 well_time_grouped = (
     plate_df.groupby(["well_fov", "Time"]).size().reset_index(name="num_files")
 )
 # find cases where num_files is not equal to 5 (number of channels)
-if len(well_time_grouped[well_time_grouped["num_files"] != 5]) > 0:
-    print(well_time_grouped[well_time_grouped["num_files"] != 5])
+if len(well_time_grouped[well_time_grouped["num_files"] != expected_channels]) > 0:
+    print(well_time_grouped[well_time_grouped["num_files"] != expected_channels])
 else:
-    print("All well_fov and time combinations have 5 channels")
+    print(f"All well_fov and time combinations have {expected_channels} channels")
 
 
 # ## File corruption checks
 
-# In[11]:
+# In[ ]:
 
 
 plate_dict = {

@@ -8,6 +8,7 @@
 # In[1]:
 
 
+import argparse
 import os
 import pathlib
 import re
@@ -31,9 +32,25 @@ image_based_dir = bandicoot_check(
 )
 
 
+# In[2]:
+
+
+if not in_notebook:
+    args = argparse.ArgumentParser()
+    args.add_argument(
+        "--plate_name",
+        type=str,
+        required=True,
+        help="Name of the plate to process (e.g. '2023-08-01_plate1')",
+    )
+    plate_name = args.parse_args().plate_name
+else:
+    plate_name = "plate_1"
+
+
 # ## Set paths and variables
 
-# In[2]:
+# In[3]:
 
 
 fieldnames = [
@@ -57,7 +74,7 @@ fieldnames = [
 ]
 
 
-# In[3]:
+# In[4]:
 
 
 # Define paths and regex patterns
@@ -70,7 +87,7 @@ mask_pattern = re.compile(
 
 # Get unique well_fov combinations
 base_path = image_based_dir / "processed_data"
-raw_dir = base_path / "1.illumination_corrected_files"
+raw_dir = base_path / "1.illumination_corrected_files" / plate_name
 
 well_fovs = set()
 if raw_dir.exists():
@@ -89,7 +106,7 @@ missing_mask_counts = {"nuclei": 0, "cell": 0}
 # Process each well_fov
 for well_fov in tqdm.tqdm(well_fovs):
     raw_image_dir = raw_dir / well_fov
-    mask_image_dir = base_path / "2.cell_segmentation_masks" / well_fov
+    mask_image_dir = base_path / "2.cell_segmentation_masks" / plate_name / well_fov
 
     # Organize images by timepoint
     timepoint_data = {}
@@ -192,7 +209,7 @@ for (well_fov, time), group_df in load_df.groupby(
     ["Metadata_WellFOV", "Metadata_Time"]
 ):
     load_data_path = pathlib.Path(
-        f"{root_dir}/Wave2_data/5.feature_extraction/loadfiles/{well_fov}_T{int(time):04d}/load_file.csv"
+        f"{root_dir}/Wave2_data/5.feature_extraction/loadfiles/{plate_name}/{well_fov}_T{int(time):04d}/load_file.csv"
     )
     load_data_path.parent.mkdir(parents=True, exist_ok=True)
     group_df.to_csv(load_data_path, index=False)

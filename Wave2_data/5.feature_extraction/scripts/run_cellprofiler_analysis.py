@@ -48,11 +48,13 @@ else:
         default=None,
         help="The maximum number of workers to use for parallel processing. If not specified, the number of workers will be set to the number of CPU cores minus 2.",
     )
-    argparser.add_argument(
-        "--plate_name",
-        type=str,
-        help="Name of the plate to analyze",
-    )
+argparser.add_argument(
+    "--plate_name",
+    type=str,
+    required=True,
+    choices=["plate_1", "plate_2"],
+    help="Name of the plate to analyze",
+)
     args = argparser.parse_args()
     max_workers = args.max_workers
     plate_name = args.plate_name

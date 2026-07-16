@@ -1,4 +1,4 @@
-# Plate Map for Wave 2 Data plate 1
+# Plate Map for Wave 2 Data plate 2
 The following treatments were applied to the cells, a plate map is provided below:
 | Well Ref | Inducer1 | Inducer1 dose | Inducer1 dose unit | Inducer2 | Inducer2 dose | Inducer2 dose unit | Inhibitor | Inhibitor dose | Inhibitor dose unit |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |

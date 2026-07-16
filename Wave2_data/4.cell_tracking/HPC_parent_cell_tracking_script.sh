@@ -11,21 +11,17 @@ conda activate cell_tracking_env
 
 
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
-
+plate_name=$1
 cd scripts/ || exit
 
-well_fov_path="../../2.cellprofiler_ic_processing/illum_directory/timelapse"
-well_fovs=$(ls $well_fov_path)
-echo "${well_fovs[@]}"
+python 0.generate_load_file.py --plate_name "$plate_name"
+load_file_path="../loadfiles/loadfile.txt"
 
-
-for dir in "$well_fov_path"/*; do
+while IFS= read -r well_fov; do
     dirname=$(basename "$dir")
     well_fov="${dirname#*MaxIP_}"
     echo "Well FOV: $well_fov"
-    cd ../ || exit
-    sbatch HPC_child_cell_tracking_script.sh "$well_fov"
-    cd scripts/ || exit
+    sbatch HPC_child_cell_tracking_script.sh "$well_fov" "$plate_name"
 done
 
 cd ../ || exit

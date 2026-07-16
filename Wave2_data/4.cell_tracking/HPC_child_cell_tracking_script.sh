@@ -3,6 +3,7 @@
 #SBATCH --ntasks=1
 #SBATCH --time=30:00
 #SBATCH --partition=aa100
+#SBATCH --qos=gpu-normal
 #SBATCH --gres=gpu:1
 #SBATCH --output=cell_tracking-%j.out
 
@@ -16,8 +17,9 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 cd scripts/ || exit
 
-well_fov=$1
-python 0.nuclei_tracking.py --well_fov "$well_fov"
+plate_name=$1
+well_fov=$2
+python 1c.nuclei_tracking_HOCT.py --well_fov "$well_fov" --plate_name "$plate_name"
 
 cd ../ || exit
 

@@ -51,7 +51,7 @@ else:
 start_time, start_memory = start_profiling()
 
 
-# In[11]:
+# In[ ]:
 
 
 if not in_notebook:
@@ -61,8 +61,14 @@ if not in_notebook:
         type=str,
         help="The well, fov, and timepoint to featurize in the format 'well_fov_timepoint', e.g. 'A1_1_1'",
     )
+    argparser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to analyze",
+    )
     args = argparser.parse_args()
     well_fov_time = args.well_fov_time
+    plate_name = args.plate_name
 else:
     well_fov_time = "B2_1_T0001"
 
@@ -79,7 +85,8 @@ image_base_dir = bandicoot_check(
 profile_file_path = pathlib.Path(
     image_base_dir
     / "processed_data"
-    / "7.annotated_profiles"
+    / "8.annotated_profiles"
+    / plate_name
     / "annotated_profiles.parquet"
 ).resolve(strict=True)
 
@@ -90,7 +97,8 @@ channel_image_dir = pathlib.Path(
 feature_extracted_file = pathlib.Path(
     image_base_dir
     / "processed_data"
-    / "7a.CHAMMI75_extracted_features"
+    / "9a.CHAMMI75_extracted_features"
+    / plate_name
     / well_fov_time
     / "chammi75_features.parquet"
 ).resolve()

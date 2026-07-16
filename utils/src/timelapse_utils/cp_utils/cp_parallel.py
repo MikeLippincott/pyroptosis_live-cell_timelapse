@@ -90,7 +90,7 @@ def run_cellprofiler_parallel(
     for _, info in plate_info_dictionary.items():
         # set paths for CellProfiler
         path_to_pipeline = info["path_to_pipeline"]
-        path_to_input = info["path_to_images"]
+        data_file = info["data_file"]
         path_to_output = info["path_to_output"]
 
         # check to make sure paths to pipeline and directory of images are correct before running the pipeline
@@ -98,9 +98,9 @@ def run_cellprofiler_parallel(
             raise FileNotFoundError(
                 f"The file '{pathlib.Path(path_to_pipeline).name}' does not exist"
             )
-        if not pathlib.Path(path_to_input).is_dir():
+        if not pathlib.Path(data_file).is_file():
             raise FileNotFoundError(
-                f"Directory '{pathlib.Path(path_to_input).name}' does not exist or is not a directory"
+                f"File '{pathlib.Path(data_file).name}' does not exist or is not a file"
             )
         # make output directory if it is not already created
         pathlib.Path(path_to_output).mkdir(exist_ok=True, parents=True)
@@ -142,8 +142,8 @@ def run_cellprofiler_parallel(
                 "-r",
                 "-p",
                 path_to_pipeline,
-                "-i",
-                path_to_input,
+                "--data-file",
+                data_file,
                 "-o",
                 path_to_output,
             ]
@@ -154,8 +154,8 @@ def run_cellprofiler_parallel(
                 "-r",
                 "-p",
                 path_to_pipeline,
-                "-i",
-                path_to_input,
+                "--data-file",
+                data_file,
                 "-o",
                 path_to_output,
             ]

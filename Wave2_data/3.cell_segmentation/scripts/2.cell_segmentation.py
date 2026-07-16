@@ -54,13 +54,21 @@ if not in_notebook:
         help="Clip limit for the adaptive histogram equalization",
     )
 
+    parser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to process",
+    )
+
     args = parser.parse_args()
     clip_limit = args.clip_limit
     well_fov = args.well_fov
+    plate_name = args.plate_name
 
 else:
-    well_fov = "C2_3"
+    well_fov = "H4_2"
     clip_limit = 0.3
+    plate_name = "plate_2"
 
 
 image_base_dir = bandicoot_check(
@@ -69,11 +77,15 @@ image_base_dir = bandicoot_check(
 )
 
 input_dir = pathlib.Path(
-    image_base_dir / "processed_data" / "1.illumination_corrected_files" / well_fov
+    image_base_dir / "processed_data" / "0.renamed_files" / plate_name / well_fov
 ).resolve(strict=True)
 
 segmentation_mask_output_dir = pathlib.Path(
-    image_base_dir / "processed_data" / "2.cell_segmentation_masks" / well_fov
+    image_base_dir
+    / "processed_data"
+    / "2.cell_segmentation_masks"
+    / plate_name
+    / well_fov
 ).resolve()
 segmentation_mask_output_dir.mkdir(exist_ok=True, parents=True)
 
@@ -146,9 +158,13 @@ for i, (
     )
     if output_path.exists():
         continue
-
+    # print(single_cyto_image_path )
     single_cyto_image = tifffile.imread(single_cyto_image_path)
     single_nuclei_mask = tifffile.imread(single_nuclei_mask_path)
+    # clip limit the cytoplasm image to enhance the contrast of the cytoplasm regions
+    single_cyto_image = skimage.exposure.equalize_adapthist(
+        single_cyto_image, clip_limit=clip_limit
+    )
     # set the thresholds for multi-otsu segmentation
     thresholds = skimage.filters.threshold_multiotsu(
         image=single_cyto_image,
@@ -162,7 +178,9 @@ for i, (
         image=single_cyto_image,
         labels=single_nuclei_mask,
         mask=foreground,  # only propagate within the foreground regions defined by Otsu
-        weight=0.0,
+        weight=0.5  # weight parameter to control the influence of the image intensity on the propagation.
+        # A higher weight means that the propagation will be more influenced by the image intensity,
+        # while a lower weight means that the propagation will be more influenced by the labels.
     )
     # fill any holes in the cell mask that are within the foreground regions defined by propagation
     cell_mask = fill_labeled_holes(cell_mask, mask=cell_mask == 0)
@@ -201,21 +219,36 @@ if in_notebook:
     # set the largest label to 0 (background)
     largest_label = np.max(cell_mask)
     cell_mask[cell_mask == largest_label] = 0
-    # get mask outlines
-    outlines = skimage.segmentation.find_boundaries(cell_mask, mode="outer")
 
     plt.figure(figsize=(20, 5))
     plt.subplot(141)
     plt.imshow(cell_mask, cmap="nipy_spectral")
     plt.title("Cell Mask")
     plt.axis("off")
-    # show the mask outlines
+    # overlay the nuclei mask on the cyto image
+
     plt.subplot(142)
-    plt.imshow(outlines, cmap="gray")
     plt.title("Cell Mask Overlay")
+    plt.imshow(
+        single_nuclei_mask,
+        cmap="BuPu",
+    )
+    plt.imshow(
+        single_cyto_image,
+        cmap="gray",
+        vmin=0,
+        vmax=np.percentile(single_cyto_image, 98),
+        alpha=0.7,
+    )
+
     plt.axis("off")
     plt.subplot(143)
-    plt.imshow(single_cyto_image, cmap="gray")
+    plt.imshow(
+        single_cyto_image,
+        cmap="gray",
+        vmin=0,
+        vmax=np.percentile(single_cyto_image, 99),
+    )
     plt.title("Cytoplasm Image")
     plt.axis("off")
     plt.subplot(144)

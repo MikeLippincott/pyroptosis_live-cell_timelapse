@@ -8,6 +8,7 @@
 # In[1]:
 
 
+import argparse
 import os
 import pathlib
 import re
@@ -31,33 +32,78 @@ image_based_dir = bandicoot_check(
 )
 
 
-# ## Set paths and variables
-
 # In[2]:
 
 
-fieldnames = [
-    "Metadata_Well",
-    "Metadata_Time",
-    "Metadata_WellFOV",
-    "Image_FileName_CL640",
-    "Image_PathName_CL640",
-    "Image_FileName_CL488",
-    "Image_PathName_CL488",
-    "Image_FileName_SYTOXGreen",
-    "Image_PathName_SYTOXGreen",
-    "Image_FileName_NucleoLive",
-    "Image_PathName_NucleoLive",
-    "Image_FileName_BF",
-    "Image_PathName_BF",
-    "Image_ObjectsFileName_Nuclei",
-    "Image_ObjectsPathName_Nuclei",
-    "Image_ObjectsFileName_Cells",
-    "Image_ObjectsPathName_Cells",
-]
+if not in_notebook:
+    args = argparse.ArgumentParser()
+    args.add_argument(
+        "--plate_name",
+        type=str,
+        required=True,
+        help="Name of the plate to process (e.g. '2023-08-01_plate1')",
+    )
+    plate_name = args.parse_args().plate_name
+else:
+    plate_name = "plate_2"
 
 
 # In[3]:
+
+
+if plate_name == "plate_1":
+    num_channels = 5
+elif plate_name == "plate_2":
+    num_channels = 4
+
+
+# ## Set paths and variables
+
+# In[4]:
+
+
+if plate_name == "plate_1":
+
+    fieldnames = [
+        "Metadata_Well",
+        "Metadata_Time",
+        "Metadata_WellFOV",
+        "Image_FileName_CL640",
+        "Image_PathName_CL640",
+        "Image_FileName_CL488",
+        "Image_PathName_CL488",
+        "Image_FileName_SYTOXGreen",
+        "Image_PathName_SYTOXGreen",
+        "Image_FileName_NucleoLive",
+        "Image_PathName_NucleoLive",
+        "Image_FileName_BF",
+        "Image_PathName_BF",
+        "Image_ObjectsFileName_Nuclei",
+        "Image_ObjectsPathName_Nuclei",
+        "Image_ObjectsFileName_Cells",
+        "Image_ObjectsPathName_Cells",
+    ]
+elif plate_name == "plate_2":
+    fieldnames = [
+        "Metadata_Well",
+        "Metadata_Time",
+        "Metadata_WellFOV",
+        "Image_FileName_CL640",
+        "Image_PathName_CL640",
+        "Image_FileName_CL488",
+        "Image_PathName_CL488",
+        "Image_FileName_SYTOXGreen",
+        "Image_PathName_SYTOXGreen",
+        "Image_FileName_NucleoLive",
+        "Image_PathName_NucleoLive",
+        "Image_ObjectsFileName_Nuclei",
+        "Image_ObjectsPathName_Nuclei",
+        "Image_ObjectsFileName_Cells",
+        "Image_ObjectsPathName_Cells",
+    ]
+
+
+# In[5]:
 
 
 # Define paths and regex patterns
@@ -70,7 +116,7 @@ mask_pattern = re.compile(
 
 # Get unique well_fov combinations
 base_path = image_based_dir / "processed_data"
-raw_dir = base_path / "1.illumination_corrected_files"
+raw_dir = base_path / "1.illumination_corrected_files" / plate_name
 
 well_fovs = set()
 if raw_dir.exists():
@@ -83,13 +129,13 @@ well_fovs = sorted(list(well_fovs))
 all_rows = []
 incomplete_records = []
 total_incomplete_rows = 0
-missing_raw_channel_counts = {str(i): 0 for i in range(1, 6)}
+missing_raw_channel_counts = {str(i): 0 for i in range(1, num_channels + 1)}
 missing_mask_counts = {"nuclei": 0, "cell": 0}
 
 # Process each well_fov
 for well_fov in tqdm.tqdm(well_fovs):
     raw_image_dir = raw_dir / well_fov
-    mask_image_dir = base_path / "2.cell_segmentation_masks" / well_fov
+    mask_image_dir = base_path / "2.cell_segmentation_masks" / plate_name / well_fov
 
     # Organize images by timepoint
     timepoint_data = {}
@@ -127,9 +173,11 @@ for well_fov in tqdm.tqdm(well_fovs):
     for time in sorted(timepoint_data.keys()):
         data = timepoint_data[time]
 
-        # Require all 5 channels + both masks
+        # Require all n channels + both masks
         missing_raw_channels = [
-            str(i) for i in range(1, 6) if str(i) not in data["raw_images"]
+            str(i)
+            for i in range(1, num_channels + 1)
+            if str(i) not in data["raw_images"]
         ]
         missing_masks = [
             mask_name
@@ -161,28 +209,48 @@ for well_fov in tqdm.tqdm(well_fovs):
                 }
             )
             continue
-
-        all_rows.append(
-            {
-                "Metadata_Well": data["well"],
-                "Metadata_Time": time,
-                "Metadata_WellFOV": well_fov,
-                "Image_FileName_CL640": data["raw_images"]["1"].name,
-                "Image_PathName_CL640": str(data["raw_images"]["1"].parent),
-                "Image_FileName_CL488": data["raw_images"]["2"].name,
-                "Image_PathName_CL488": str(data["raw_images"]["2"].parent),
-                "Image_FileName_SYTOXGreen": data["raw_images"]["3"].name,
-                "Image_PathName_SYTOXGreen": str(data["raw_images"]["3"].parent),
-                "Image_FileName_NucleoLive": data["raw_images"]["4"].name,
-                "Image_PathName_NucleoLive": str(data["raw_images"]["4"].parent),
-                "Image_FileName_BF": data["raw_images"]["5"].name,
-                "Image_PathName_BF": str(data["raw_images"]["5"].parent),
-                "Image_ObjectsFileName_Nuclei": data["masks"]["nuclei"].name,
-                "Image_ObjectsPathName_Nuclei": str(data["masks"]["nuclei"].parent),
-                "Image_ObjectsFileName_Cells": data["masks"]["cell"].name,
-                "Image_ObjectsPathName_Cells": str(data["masks"]["cell"].parent),
-            }
-        )
+        if num_channels == 5:
+            all_rows.append(
+                {
+                    "Metadata_Well": data["well"],
+                    "Metadata_Time": time,
+                    "Metadata_WellFOV": well_fov,
+                    "Image_FileName_CL640": data["raw_images"]["1"].name,
+                    "Image_PathName_CL640": str(data["raw_images"]["1"].parent),
+                    "Image_FileName_CL488": data["raw_images"]["2"].name,
+                    "Image_PathName_CL488": str(data["raw_images"]["2"].parent),
+                    "Image_FileName_SYTOXGreen": data["raw_images"]["3"].name,
+                    "Image_PathName_SYTOXGreen": str(data["raw_images"]["3"].parent),
+                    "Image_FileName_NucleoLive": data["raw_images"]["4"].name,
+                    "Image_PathName_NucleoLive": str(data["raw_images"]["4"].parent),
+                    "Image_FileName_BF": data["raw_images"]["5"].name,
+                    "Image_PathName_BF": str(data["raw_images"]["5"].parent),
+                    "Image_ObjectsFileName_Nuclei": data["masks"]["nuclei"].name,
+                    "Image_ObjectsPathName_Nuclei": str(data["masks"]["nuclei"].parent),
+                    "Image_ObjectsFileName_Cells": data["masks"]["cell"].name,
+                    "Image_ObjectsPathName_Cells": str(data["masks"]["cell"].parent),
+                }
+            )
+        elif num_channels == 4:
+            all_rows.append(
+                {
+                    "Metadata_Well": data["well"],
+                    "Metadata_Time": time,
+                    "Metadata_WellFOV": well_fov,
+                    "Image_FileName_CL640": data["raw_images"]["1"].name,
+                    "Image_PathName_CL640": str(data["raw_images"]["1"].parent),
+                    "Image_FileName_CL488": data["raw_images"]["2"].name,
+                    "Image_PathName_CL488": str(data["raw_images"]["2"].parent),
+                    "Image_FileName_SYTOXGreen": data["raw_images"]["3"].name,
+                    "Image_PathName_SYTOXGreen": str(data["raw_images"]["3"].parent),
+                    "Image_FileName_NucleoLive": data["raw_images"]["4"].name,
+                    "Image_PathName_NucleoLive": str(data["raw_images"]["4"].parent),
+                    "Image_ObjectsFileName_Nuclei": data["masks"]["nuclei"].name,
+                    "Image_ObjectsPathName_Nuclei": str(data["masks"]["nuclei"].parent),
+                    "Image_ObjectsFileName_Cells": data["masks"]["cell"].name,
+                    "Image_ObjectsPathName_Cells": str(data["masks"]["cell"].parent),
+                }
+            )
 
 # Create a single DataFrame containing all complete rows
 load_df = pd.DataFrame(all_rows, columns=fieldnames)
@@ -192,7 +260,7 @@ for (well_fov, time), group_df in load_df.groupby(
     ["Metadata_WellFOV", "Metadata_Time"]
 ):
     load_data_path = pathlib.Path(
-        f"{root_dir}/Wave2_data/5.feature_extraction/loadfiles/{well_fov}_T{int(time):04d}/load_file.csv"
+        f"{root_dir}/Wave2_data/5.feature_extraction/loadfiles/{plate_name}/{well_fov}_T{int(time):04d}/load_file.csv"
     )
     load_data_path.parent.mkdir(parents=True, exist_ok=True)
     group_df.to_csv(load_data_path, index=False)

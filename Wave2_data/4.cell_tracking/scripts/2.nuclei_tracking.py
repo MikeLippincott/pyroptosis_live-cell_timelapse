@@ -113,9 +113,16 @@ if not in_notebook:
         help="Whether to generate a gif of the tracks",
     )
 
+    parser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to process (e.g., 'Wave2')",
+    )
+
     args = parser.parse_args()
     well_fov = args.well_fov
     generate_gif = args.generate_gif
+    plate_name = args.plate_name
     if generate_gif:
         print("GIF generation is enabled, this may take a while...")
 
@@ -123,6 +130,7 @@ else:
     print("Running in a notebook")
     well_fov = "B2_1"  # example well_fov
     generate_gif = False
+    plate_name = "plate_1"  # example plate name
 
 image_base_dir = bandicoot_check(
     root_dir=root_dir,
@@ -131,17 +139,17 @@ image_base_dir = bandicoot_check(
 
 raw_image_input_dir = pathlib.Path(
     image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
     / "processed_data"
     / "1.illumination_corrected_files"
+    / plate_name
     / well_fov
 ).resolve(strict=True)
 
 segmentation_mask_input_dir = pathlib.Path(
     image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
     / "processed_data"
     / "2.cell_segmentation_masks"
+    / plate_name
     / well_fov
 ).resolve()
 

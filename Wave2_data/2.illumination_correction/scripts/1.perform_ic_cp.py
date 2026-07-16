@@ -39,12 +39,19 @@ if not in_notebook:
         type=str,
         help="Path to the input directory containing the tiff images",
     )
+    parser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to process",
+    )
 
     args = parser.parse_args()
     well_fov = args.well_fov
+    plate_name = args.plate_name
 else:
     print("Running in a notebook")
     well_fov = "B2_1"
+    plate_name = "plate_2"
 
 image_base_dir = bandicoot_check(
     bandicoot_mount_path=pathlib.Path(
@@ -54,19 +61,17 @@ image_base_dir = bandicoot_check(
     ).resolve(),
     root_dir=root_dir,
 )
-image_base_dir = pathlib.Path(
-    f"{image_base_dir}/live_cell_timelapse_pyroptosis_project_data/processed_data"
-).resolve(strict=True)
+image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
 run_name = "illumination_correction"
 # path to folder for IC images
 illum_directory = pathlib.Path(
-    f"{image_base_dir}/1.illumination_corrected_files"
+    f"{image_base_dir}/1.illumination_corrected_files/{plate_name}/"
 ).resolve()
 # make sure the directory exists
 illum_directory.mkdir(exist_ok=True, parents=True)
-input_dir = pathlib.Path(f"{image_base_dir}/0.renamed_files/{well_fov}").resolve(
-    strict=True
-)
+input_dir = pathlib.Path(
+    f"{image_base_dir}/0.renamed_files/{plate_name}/{well_fov}"
+).resolve(strict=True)
 
 
 # ## Define the input paths
@@ -76,8 +81,14 @@ input_dir = pathlib.Path(f"{image_base_dir}/0.renamed_files/{well_fov}").resolve
 # In[3]:
 
 
-path_to_pipeline = pathlib.Path("../pipelines/illum_5ch.cppipe").resolve(strict=True)
-# get all directories with raw images
+if plate_name == "plate_1":
+    path_to_pipeline = pathlib.Path("../pipelines/illum_5ch.cppipe").resolve(
+        strict=True
+    )
+elif plate_name == "plate_2":
+    path_to_pipeline = pathlib.Path("../pipelines/illum_4ch.cppipe").resolve(
+        strict=True
+    )
 
 
 dict_of_runs = {}
@@ -90,26 +101,41 @@ print(f"Added {len(dict_of_runs.keys())} to the list of runs")
 print(f"Running {input_dir.stem}")
 
 
+# In[4]:
+
+
+try:
+    path_to_apptainer_image = pathlib.Path(
+        f"{root_dir}/environments/cellprofiler.sif"
+    ).resolve(strict=True)
+    print(path_to_apptainer_image)
+    print("Using apptainer image for CellProfiler run.")
+except FileNotFoundError:
+    print("No apptainer image found, running CellProfiler without apptainer.")
+    path_to_apptainer_image = None
+
+
 # ## Run `illum.cppipe` pipeline and calculate + save IC images
 # This last cell does not get run as we run this pipeline in the command line.
 
-# In[4]:
+# In[ ]:
 
 
 start = time.time()
 
 
-# In[5]:
+# In[ ]:
 
 
 run_cellprofiler(
     path_to_pipeline=dict_of_runs[input_dir.stem]["path_to_pipeline"],
     path_to_input=dict_of_runs[input_dir.stem]["path_to_images"],
     path_to_output=dict_of_runs[input_dir.stem]["path_to_output"],
+    run_with_apptainer_interactive=path_to_apptainer_image,
 )
 
 
-# In[6]:
+# In[ ]:
 
 
 end = time.time()

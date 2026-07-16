@@ -1,0 +1,39 @@
+name: timelapse_tracking_env
+
+channels:
+- conda-forge
+- defaults
+
+dependencies:
+  - conda-forge::python=3.12
+  - conda-forge::ipykernel
+  - conda-forge::jupyter
+  - conda-forge::nbconvert
+  - conda-forge::nb_conda_kernels
+  - conda-forge::pip
+  - conda-forge::numpy<2.0
+  - conda-forge::matplotlib
+  - conda-forge::pandas
+  - conda-forge::scipy
+  - conda-forge::scikit-learn
+  - conda-forge::scikit-image
+  - conda-forge::pytorch
+  - conda-forge::torchvision
+  - conda-forge::cudatoolkit
+  - conda-forge::cudnn
+  - conda-forge::coincbc # alternative to gurobi for commercial use
+  - conda-forge::pyarrow
+
+  - conda-forge::napari
+  - gurobi::gurobi # must be a University license no commercial use
+  - pip:
+    - --extra-index-url https://download.pytorch.org/whl/cu121
+    - torch
+    - torchvision
+    - torchaudio
+    - tifffile
+    - ultrack
+    - optuna
+    - natsort
+    - gurobi
+    - -e ../utils

@@ -4,6 +4,7 @@
 # In[1]:
 
 
+import argparse
 import os
 import pathlib
 
@@ -27,28 +28,49 @@ else:
 # In[2]:
 
 
+if not in_notebook:
+    args = argparse.ArgumentParser()
+    args.add_argument(
+        "--plate_name",
+        type=str,
+        required=True,
+        help="Name of the plate to process (e.g. '2023-08-01_plate1')",
+    )
+    plate_name = args.parse_args().plate_name
+else:
+    plate_name = "plate_2"
+
+
+# In[3]:
+
+
 image_base_dir = bandicoot_check(
     root_dir=root_dir,
     bandicoot_mount_path=pathlib.Path(os.path.expanduser("~/mnt/bandicoot")).resolve(),
 )
 
 input_dir = pathlib.Path(
-    image_base_dir / "processed_data" / "1.illumination_corrected_files"
+    image_base_dir / "processed_data" / "0.renamed_files" / plate_name
 ).resolve(strict=True)
 
 segmentation_mask_output_dir = pathlib.Path(
-    image_base_dir / "processed_data" / "2.cell_segmentation_masks"
+    image_base_dir / "processed_data" / "2.cell_segmentation_masks" / plate_name
 ).resolve()
 
 loadfile_dir = pathlib.Path("../loadfiles/loadfile.txt").resolve()
 loadfile_dir.parent.mkdir(parents=True, exist_ok=True)
 
-EXPECTED_MASK_FILE_COUNT = 102
+if plate_name == "plate_1":
+    EXPECTED_MASK_FILE_COUNT = 102
+    NUM_CHANNELS = 5
+elif plate_name == "plate_2":
+    EXPECTED_MASK_FILE_COUNT = 288
+    NUM_CHANNELS = 4
 
 
 # ## Set up images, paths and functions
 
-# In[3]:
+# In[4]:
 
 
 image_extensions = {".tif", ".tiff"}
@@ -56,7 +78,7 @@ raw_image_files = sorted(input_dir.glob("*"))
 well_fov_dirs = [x.name for x in raw_image_files if x.is_dir()]
 
 
-# In[4]:
+# In[5]:
 
 
 raw_images_present = {}
@@ -99,7 +121,7 @@ cell_df = pd.concat(cell_df_list, ignore_index=True)
 nuclei_df.head()
 
 
-# In[5]:
+# In[6]:
 
 
 # find the well_fovs with less than the expected number of files
@@ -137,7 +159,7 @@ else:
     )
 
 
-# In[6]:
+# In[7]:
 
 
 # write the loadfile

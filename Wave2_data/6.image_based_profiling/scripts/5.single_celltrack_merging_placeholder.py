@@ -23,15 +23,36 @@ image_base_dir = bandicoot_check(
 image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
 
 
-# In[12]:
+# In[ ]:
+
+
+if in_notebook:
+    import tqdm.notebook as tqdm
+
+    plate_name = "plate_2"
+else:
+    import tqdm
+
+    argparser = argparse.ArgumentParser()
+
+    argparser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to analyze",
+    )
+    args = argparser.parse_args()
+    plate_name = args.plate_name
+
+
+# In[ ]:
 
 
 annotated_profiles_path = pathlib.Path(
-    f"{image_base_dir}/7.annotated_profiles/annotated_profiles.parquet"
+    f"{image_base_dir}/8.annotated_profiles/annotated_profiles.parquet"
 ).resolve()
 annotated_profiles_path.parent.mkdir(exist_ok=True)
 sc_tracks_path = pathlib.Path(
-    f"{image_base_dir}/8.single_Cell_tracks_merged/sc_tracks_profiles.parquet"
+    f"{image_base_dir}/9.single_Cell_tracks_merged/{plate_name}/sc_tracks_profiles.parquet"
 ).resolve()
 
 

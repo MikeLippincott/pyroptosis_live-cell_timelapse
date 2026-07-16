@@ -4,6 +4,7 @@
 # In[ ]:
 
 
+import argparse
 import os
 import pathlib
 
@@ -26,23 +27,33 @@ else:
 # In[ ]:
 
 
+if not in_notebook:
+    args = argparse.ArgumentParser()
+    args.add_argument(
+        "--plate_name",
+        type=str,
+        required=True,
+        help="Name of the plate to process (e.g. '2023-08-01_plate1')",
+    )
+    plate_name = args.parse_args().plate_name
+else:
+    plate_name = "plate_1"
+
+
+# In[ ]:
+
+
 image_base_dir = bandicoot_check(
     root_dir=root_dir,
     bandicoot_mount_path=pathlib.Path(os.path.expanduser("~/mnt/bandicoot")).resolve(),
 )
 
 input_dir = pathlib.Path(
-    image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
-    / "processed_data"
-    / "1.illumination_corrected_files"
+    image_base_dir / "processed_data" / "1.illumination_corrected_files" / plate_name
 ).resolve(strict=True)
 
 segmentation_mask_output_dir = pathlib.Path(
-    image_base_dir
-    / "live_cell_timelapse_pyroptosis_project_data"
-    / "processed_data"
-    / "2.cell_segmentation_masks"
+    image_base_dir / "processed_data" / "2.cell_segmentation_masks" / plate_name
 ).resolve()
 
 loadfile_dir = pathlib.Path("../loadfiles/loadfile.txt").resolve()

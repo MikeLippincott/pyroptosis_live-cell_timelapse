@@ -53,15 +53,22 @@ if not in_notebook:
         type=float,
         help="Clip limit for the adaptive histogram equalization",
     )
+    parser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to process",
+    )
 
     args = parser.parse_args()
     clip_limit = args.clip_limit
     well_fov = args.well_fov
+    plate_name = args.plate_name
 
 
 else:
-    well_fov = "C2_3"
+    well_fov = "H4_2"
     clip_limit = 0.6
+    plate_name = "plate_2"
 
 
 image_base_dir = bandicoot_check(
@@ -70,11 +77,15 @@ image_base_dir = bandicoot_check(
 )
 
 input_dir = pathlib.Path(
-    image_base_dir / "processed_data" / "1.illumination_corrected_files" / well_fov
+    image_base_dir / "processed_data" / "0.renamed_files" / plate_name / well_fov
 ).resolve(strict=True)
 
 segmentation_mask_output_dir = pathlib.Path(
-    image_base_dir / "processed_data" / "2.cell_segmentation_masks" / well_fov
+    image_base_dir
+    / "processed_data"
+    / "2.cell_segmentation_masks"
+    / plate_name
+    / well_fov
 ).resolve()
 segmentation_mask_output_dir.mkdir(exist_ok=True, parents=True)
 
@@ -129,7 +140,7 @@ for frame, img in tqdm.tqdm(
         masks_all_dict["imgs"].append(img)
 
 
-# In[ ]:
+# In[5]:
 
 
 if in_notebook:

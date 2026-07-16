@@ -27,6 +27,27 @@ root_dir, in_notebook = init_notebook()
 # In[ ]:
 
 
+if in_notebook:
+    import tqdm.notebook as tqdm
+
+    plate_name = "plate_2"
+else:
+    import tqdm
+
+    argparser = argparse.ArgumentParser()
+
+    argparser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to analyze",
+    )
+    args = argparser.parse_args()
+    plate_name = args.plate_name
+
+
+# In[ ]:
+
+
 # load in platemap file as a pandas dataframe
 platemap_path = pathlib.Path(
     f"{root_dir}/Wave2_data/0.download_data/platemap/platemap.csv"
@@ -38,11 +59,11 @@ image_base_dir = bandicoot_check(
 )
 image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
 normalized_profiles_path = pathlib.Path(
-    f"{image_base_dir}/8.normalized_profiles/normalized_profiles.parquet"
+    f"{image_base_dir}/10.normalized_profiles/{plate_name}/normalized_profiles.parquet"
 ).resolve(strict=True)
 
 feature_selected_profiles_path = pathlib.Path(
-    f"{image_base_dir}/9.feature_selected_profiles/feature_selected_profiles.parquet"
+    f"{image_base_dir}/11.feature_selected_profiles/{plate_name}/feature_selected_profiles.parquet"
 ).resolve()
 feature_selected_profiles_path.parent.mkdir(exist_ok=True)
 

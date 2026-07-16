@@ -5,7 +5,7 @@
 # The end goals is to segment cell and extract morphology features from cellprofiler.
 # These masks must be imported into cellprofiler to extract features.
 
-# In[ ]:
+# In[1]:
 
 
 import argparse
@@ -35,7 +35,7 @@ else:
     import tqdm
 
 
-# In[ ]:
+# In[2]:
 
 
 if not in_notebook:
@@ -66,7 +66,7 @@ if not in_notebook:
 
 
 else:
-    well_fov = "B2_1"
+    well_fov = "H4_2"
     clip_limit = 0.6
     plate_name = "plate_2"
 
@@ -96,7 +96,7 @@ figures_dir.mkdir(exist_ok=True, parents=True)
 
 # ## Set up images, paths and functions
 
-# In[ ]:
+# In[3]:
 
 
 image_extensions = {".tif", ".tiff"}
@@ -110,7 +110,7 @@ files = [x for x in files if "_C4" in x]
 
 # ### Runnning segmentation
 
-# In[ ]:
+# In[4]:
 
 
 use_GPU = torch.cuda.is_available()
@@ -140,7 +140,7 @@ for frame, img in tqdm.tqdm(
         masks_all_dict["imgs"].append(img)
 
 
-# In[ ]:
+# In[5]:
 
 
 if in_notebook:

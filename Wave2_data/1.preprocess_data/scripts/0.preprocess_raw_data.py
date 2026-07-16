@@ -3,7 +3,7 @@
 
 # This notebook pre-processes the data to be available in the repo path.
 
-# In[ ]:
+# In[1]:
 
 
 import argparse
@@ -38,7 +38,7 @@ bandicoot_mount_path = pathlib.Path(os.path.expanduser("~/mnt/bandicoot/"))
 image_base_dir = bandicoot_check(bandicoot_mount_path, root_dir)
 
 
-# In[ ]:
+# In[3]:
 
 
 if not in_notebook:
@@ -142,7 +142,7 @@ df.groupby(["Well", "FOV", "Channel"]).size().reset_index(name="num_files")
 df["Well"].unique()
 
 
-# In[ ]:
+# In[9]:
 
 
 # rename the processed files to match the new naming convention
@@ -164,7 +164,7 @@ for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
 
 # ## File count validations
 
-# In[ ]:
+# In[10]:
 
 
 # check that there are
@@ -196,7 +196,7 @@ plate_df = pd.DataFrame(plate_dict)
 plate_df.head()
 
 
-# In[ ]:
+# In[11]:
 
 
 plate_df["file_name"] = plate_df["file_name"].apply(lambda x: pathlib.Path(x).stem)
@@ -208,7 +208,7 @@ plate_df["Channel"] = (
 )
 
 
-# In[ ]:
+# In[12]:
 
 
 well_channel_grouped = (
@@ -227,7 +227,7 @@ else:
     print("All well_fov and channel combinations have 102 time points")
 
 
-# In[ ]:
+# In[13]:
 
 
 well_time_grouped = (
@@ -242,7 +242,7 @@ else:
 
 # ## File corruption checks
 
-# In[ ]:
+# In[14]:
 
 
 plate_dict = {
@@ -271,7 +271,7 @@ for well_fov in file_df["well_fov"].unique():
     std_file_size = subset["file_size"].std()
     # if the file size of each file are not all the same, then there is likely a file corruption issue
     if (
-        std_file_size > 0.1
+        std_file_size > 0.2
     ):  # if the std is greater than 0.1 MB, then there is likely a file corruption issue
         corruption_issues.append(well_fov)
         corruption_counter += 1

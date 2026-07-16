@@ -250,9 +250,15 @@ if not in_notebook:
         default=4,
         help="The maximum number of workers to use for parallel processing",
     )
+    argparser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to analyze",
+    )
     args = argparser.parse_args()
     well_fov = args.well_fov
     max_workers = args.max_workers
+    plate_name = args.plate_name
 else:  # example input for notebook testing
     well_fov = "O2_2"
     max_workers = 4
@@ -266,18 +272,20 @@ image_base_dir = bandicoot_check(
 )
 image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
 extracted_features_dir = pathlib.Path(
-    f"{image_base_dir}/3.extracted_features/"
+    f"{image_base_dir}/4.extracted_features/{plate_name}"
 ).resolve(strict=True)
 
 
-# In[21]:
+# In[ ]:
 
 
 # type of file output from CytoTable (currently only parquet)
 dest_datatype = "parquet"
 
 # directory where parquet files are saved to
-output_dir = pathlib.Path(f"{image_base_dir}/4.converted_profiles/").resolve()
+output_dir = pathlib.Path(
+    f"{image_base_dir}/5.converted_profiles/{plate_name}"
+).resolve()
 output_dir.mkdir(exist_ok=True, parents=True)
 
 

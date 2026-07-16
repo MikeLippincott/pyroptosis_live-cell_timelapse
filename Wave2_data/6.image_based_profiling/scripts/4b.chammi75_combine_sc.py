@@ -24,6 +24,27 @@ image_base_dir = bandicoot_check(
 # In[ ]:
 
 
+if in_notebook:
+    import tqdm.notebook as tqdm
+
+    plate_name = "plate_2"
+else:
+    import tqdm
+
+    argparser = argparse.ArgumentParser()
+
+    argparser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to analyze",
+    )
+    args = argparser.parse_args()
+    plate_name = args.plate_name
+
+
+# In[ ]:
+
+
 image_base_dir = bandicoot_check(
     root_dir=root_dir,
     bandicoot_mount_path=pathlib.Path(os.path.expanduser("~/mnt/bandicoot")).resolve(),
@@ -31,13 +52,13 @@ image_base_dir = bandicoot_check(
 
 
 feature_extracted_dir = pathlib.Path(
-    image_base_dir / "processed_data" / "7a.CHAMMI75_extracted_features"
+    image_base_dir / "processed_data" / plate_name / "9a.CHAMMI75_extracted_features"
 ).resolve(strict=True)
 
 chammi_profiles_file_path = pathlib.Path(
     image_base_dir
     / "processed_data"
-    / "7a.CHAMMI75_extracted_features"
+    / "9b.CHAMMI75_extracted_features"
     / "chammi75_combined_sc_profiles.parquet"
 ).resolve()
 

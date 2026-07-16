@@ -6,6 +6,7 @@
 # In[1]:
 
 
+import argparse
 import os
 import pathlib
 import uuid
@@ -68,7 +69,28 @@ presets.config[preset][
 #
 # All paths must be string but we use pathlib to show which variables are paths
 
-# In[3]:
+# In[ ]:
+
+
+if in_notebook:
+    import tqdm.notebook as tqdm
+
+    plate_name = "plate_2"
+else:
+    import tqdm
+
+    argparser = argparse.ArgumentParser()
+
+    argparser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to analyze",
+    )
+    args = argparser.parse_args()
+    plate_name = args.plate_name
+
+
+# In[ ]:
 
 
 image_base_dir = bandicoot_check(
@@ -77,18 +99,20 @@ image_base_dir = bandicoot_check(
 )
 image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
 extracted_features_dir = pathlib.Path(
-    f"{image_base_dir}/3.extracted_features/"
+    f"{image_base_dir}/4.extracted_features/{plate_name}"
 ).resolve(strict=True)
 
 
-# In[4]:
+# In[ ]:
 
 
 # type of file output from CytoTable (currently only parquet)
 dest_datatype = "parquet"
 
 # directory where parquet files are saved to
-output_dir = pathlib.Path(f"{image_base_dir}/4.converted_profiles/").resolve()
+output_dir = pathlib.Path(
+    f"{image_base_dir}/5.converted_profiles/{plate_name}"
+).resolve()
 output_dir.mkdir(exist_ok=True, parents=True)
 
 
@@ -124,6 +148,8 @@ well_fov_timepoints_sqlites = natsort.natsorted(well_fov_timepoints_sqlites)
 exists = 0
 total = 0
 errors_counter = 0
+rerun_counter = 0
+rerun_list = []
 errors = []
 for well_fov_timepoint_sqlite_file_path in tqdm.tqdm(well_fov_timepoints_sqlites):
     total += 1
@@ -133,7 +159,20 @@ for well_fov_timepoint_sqlite_file_path in tqdm.tqdm(well_fov_timepoints_sqlites
         dest_path / f"{well_fov_timepoint_sqlite_file_path.stem}.{dest_datatype}"
     )
     if dest_path.exists():
-        exists += 1
+        df = pd.read_parquet(dest_path)
+        # check if NAs in the metadata columns, if so, add to rerun list
+        if (
+            df[[col for col in df.columns if col.startswith("Metadata_")]]
+            .isna()
+            .sum()
+            .sum()
+            > 10
+        ):
+            rerun_counter += 1
+            rerun_list.append(well_fov_timepoint_sqlite_file_path.stem)
+        else:
+            exists += 1
+
         continue
     # extract key metadata that CP did not capture
     # this is at the file level
@@ -220,12 +259,69 @@ for well_fov_timepoint_sqlite_file_path in tqdm.tqdm(well_fov_timepoints_sqlites
     df.to_parquet(dest_path)
 
 
-print(f"Total: {total}, Exists: {exists}, Errors: {errors_counter}")
+print(
+    f"Total: {total}, Exists: {exists}, Errors: {errors_counter}, Rerun: {rerun_counter}"
+)
 for well_fov_timepoint, error in errors:
     print(f"Error processing {well_fov_timepoint}: {error}")
 
 
 # In[7]:
+
+
+errors
+
+
+# In[8]:
+
+
+rerun_list
+
+
+# In[ ]:
+
+
+profile_path = pathlib.Path(
+    os.path.expanduser(
+        "~/mnt/bandicoot/live_cell_timelapse_pyroptosis_project_data/processed_data/4.converted_profiles/"
+    )
+)
+sqlite_path = pathlib.Path(
+    os.path.expanduser(
+        "~/mnt/bandicoot/live_cell_timelapse_pyroptosis_project_data/processed_data/3.extracted_features/"
+    )
+)
+seg_path = pathlib.Path(
+    os.path.expanduser(
+        f"~/mnt/bandicoot/live_cell_timelapse_pyroptosis_project_data/processed_data/2.cell_segmentation_masks/"
+    )
+)
+for rerun in rerun_list:
+
+    output_file_path = profile_path / rerun / f"{rerun}.parquet"
+    sqlite_file_path = sqlite_path / rerun / f"{rerun}.sqlite"
+    rerun = rerun.replace("T000", "T").replace("T00", "T").replace("T0", "T")
+    well_fov = "_".join(rerun.split("_")[0:2])
+    nuc_seg_file_path = seg_path / well_fov / f"{rerun}_nuclei_mask.tiff"
+    cell_seg_file_path = seg_path / well_fov / f"{rerun}_cell_mask.tiff"
+    if not nuc_seg_file_path.exists() and not cell_seg_file_path.exists():
+        print(f"Segmentation files for {well_fov} do not exist. Skipping deletion.")
+        continue
+    # try:
+    #     shutil.rmtree(output_file_path.parent)
+    # except FileNotFoundError:
+    #     pass
+    # try:
+    #     os.remove(sqlite_file_path)
+    # except FileNotFoundError:
+    #     pass
+    # try:
+    #     shutil.rmtree(seg_path)
+    # except Exception as e:
+    #     print(f"Error removing segmentation path {seg_path}: {e}")
+
+
+# In[10]:
 
 
 errors_df = pd.DataFrame(errors, columns=["well_fov_timepoint", "error"])
@@ -241,6 +337,7 @@ print(errors_df["stem"].unique())
 # double check that this is the case prior to deleting these files
 # potentially the error could be the cytotable config instead
 
-# for filename in errors_df['well_fov_timepoint'].to_list():
-#     if filename.exists():
-#         filename.unlink()
+for filename in errors_df["well_fov_timepoint"].to_list():
+    if filename.exists():
+        # filename.unlink()
+        print(f"Deleted {filename}")

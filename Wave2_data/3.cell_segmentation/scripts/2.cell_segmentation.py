@@ -35,7 +35,7 @@ else:
     import tqdm
 
 
-# In[ ]:
+# In[2]:
 
 
 if not in_notebook:
@@ -66,7 +66,7 @@ if not in_notebook:
     plate_name = args.plate_name
 
 else:
-    well_fov = "B2_1"
+    well_fov = "H4_2"
     clip_limit = 0.3
     plate_name = "plate_2"
 
@@ -134,7 +134,7 @@ input_dict["nuclei_mask_path"] = [
 input_dict["well_fov"] = [well_fov] * len(input_dict["nuclei_mask_path"])
 
 
-# In[8]:
+# In[5]:
 
 
 for i, (
@@ -156,9 +156,9 @@ for i, (
     output_path = (
         segmentation_mask_output_dir / f"{well_fov}_{time_point}_cell_mask.tiff"
     )
-    # if output_path.exists():
-    #     continue
-
+    if output_path.exists():
+        continue
+    # print(single_cyto_image_path )
     single_cyto_image = tifffile.imread(single_cyto_image_path)
     single_nuclei_mask = tifffile.imread(single_nuclei_mask_path)
     # clip limit the cytoplasm image to enhance the contrast of the cytoplasm regions
@@ -205,7 +205,7 @@ for i, (
         )
 
 
-# In[9]:
+# In[6]:
 
 
 if in_notebook:
@@ -219,8 +219,6 @@ if in_notebook:
     # set the largest label to 0 (background)
     largest_label = np.max(cell_mask)
     cell_mask[cell_mask == largest_label] = 0
-    # get mask outlines
-    # outlines = skimage.segmentation.find_boundaries(cell_mask, mode="outer")
 
     plt.figure(figsize=(20, 5))
     plt.subplot(141)

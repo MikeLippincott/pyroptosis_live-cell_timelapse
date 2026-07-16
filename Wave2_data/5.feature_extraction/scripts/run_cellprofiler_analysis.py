@@ -5,7 +5,7 @@
 
 # ## Import libraries
 
-# In[ ]:
+# In[9]:
 
 
 import argparse
@@ -30,14 +30,14 @@ image_based_dir = bandicoot_check(
 )
 
 
-# In[ ]:
+# In[10]:
 
 
 if in_notebook:
     import tqdm.notebook as tqdm
 
     max_workers = 2
-    plate_name = "plate_1"
+    plate_name = "plate_2"
 else:
     import tqdm
 
@@ -62,16 +62,24 @@ argparser.add_argument(
 
 # ## Set paths and variables
 
-# In[ ]:
+# In[11]:
 
 
-path_to_pipeline = pathlib.Path(
-    f"{root_dir}/Wave2_data/5.feature_extraction/pipelines/analysis_5ch.cppipe"
-).resolve(strict=True)
-load_file_dir = pathlib.Path(f"{root_dir}/Wave2_data/5.feature_extraction/loadfiles/")
+if plate_name == "plate_1":
+    path_to_pipeline = pathlib.Path(
+        f"{root_dir}/Wave2_data/5.feature_extraction/pipelines/analysis_5ch.cppipe"
+    ).resolve(strict=True)
+elif plate_name == "plate_2":
+    path_to_pipeline = pathlib.Path(
+        f"{root_dir}/Wave2_data/5.feature_extraction/pipelines/analysis_4ch.cppipe"
+    ).resolve(strict=True)
+
+load_file_dir = pathlib.Path(
+    f"{root_dir}/Wave2_data/5.feature_extraction/loadfiles/{plate_name}"
+)
 
 
-# In[ ]:
+# In[12]:
 
 
 # find all dirs in loadfiles path that contain the well_fov name (one per timepoint)
@@ -86,24 +94,24 @@ timepoint_dirs = sorted(load_file_dir.glob(f"*/*"))
 # get all directories with raw images
 dict_of_runs = {}
 for timepoint_dir in tqdm.tqdm(timepoint_dirs):
-    dict_of_runs[timepoint_dir.name] = {
-        "path_to_images": str(timepoint_dir),
+    dict_of_runs[timepoint_dir.parent.name] = {
+        "data_file": str(timepoint_dir),
         "path_to_output": str(
             pathlib.Path(
-                f"{root_dir}/Wave2_data/5.feature_extraction/extracted_features/{plate_name}/{timepoint_dir.name}"
+                f"{root_dir}/Wave2_data/5.feature_extraction/extracted_features/{plate_name}/{timepoint_dir.parent.name}"
             ).resolve()
         ),
         "path_to_final_output": str(
             pathlib.Path(
-                f"{image_based_dir}/processed_data/3.extracted_features/{plate_name}/{timepoint_dir.name}"
+                f"{image_based_dir}/processed_data/4.extracted_features/{plate_name}/{timepoint_dir.parent.name}"
             ).resolve()
         ),
-        "path_to_pipeline": path_to_pipeline,
+        "path_to_pipeline": str(path_to_pipeline),
     }
-    pathlib.Path(dict_of_runs[timepoint_dir.name]["path_to_output"]).mkdir(
+    pathlib.Path(dict_of_runs[timepoint_dir.parent.name]["path_to_output"]).mkdir(
         exist_ok=True, parents=True
     )
-    pathlib.Path(dict_of_runs[timepoint_dir.name]["path_to_final_output"]).mkdir(
+    pathlib.Path(dict_of_runs[timepoint_dir.parent.name]["path_to_final_output"]).mkdir(
         exist_ok=True, parents=True
     )
     # check if there is a file in the final output dir
@@ -112,7 +120,7 @@ for timepoint_dir in tqdm.tqdm(timepoint_dirs):
         len(
             list(
                 pathlib.Path(
-                    dict_of_runs[timepoint_dir.name]["path_to_final_output"]
+                    dict_of_runs[timepoint_dir.parent.name]["path_to_final_output"]
                 ).glob("*")
             )
         )
@@ -129,7 +137,7 @@ if len(dict_of_runs.keys()) < 100:
 #
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
-# In[ ]:
+# In[7]:
 
 
 try:
@@ -145,7 +153,7 @@ except FileNotFoundError:
 
 # ## This section gets run in script only as it takes a long time to run. It is not ran in the notebook.
 
-# In[ ]:
+# In[8]:
 
 
 # run CellProfiler in batches so local storage can be cleared between runs

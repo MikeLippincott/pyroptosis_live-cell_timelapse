@@ -26,14 +26,35 @@ else:
 # In[2]:
 
 
+if in_notebook:
+    import tqdm.notebook as tqdm
+
+    plate_name = "plate_2"
+else:
+    import tqdm
+
+    argparser = argparse.ArgumentParser()
+
+    argparser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to analyze",
+    )
+    args = argparser.parse_args()
+    plate_name = args.plate_name
+
+
+# In[4]:
+
+
 image_base_dir = bandicoot_check(
     bandicoot_mount_path=pathlib.Path(f"{os.path.expanduser('~')}/mnt/bandicoot/"),
     root_dir=root_dir,
 )
 image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
-ic_image_dir = pathlib.Path(
-    f"{image_base_dir}/1.illumination_corrected_files/"
-).resolve(strict=True)
+image_dir = pathlib.Path(f"{image_base_dir}/0.renamed_files/{plate_name}").resolve(
+    strict=True
+)
 
 load_data_well_fov_time_path = pathlib.Path(
     f"{root_dir}/Wave2_data/6.image_based_profiling/load_data/load_file_well_fov_time.txt"
@@ -44,11 +65,11 @@ load_data_well_fov_path = pathlib.Path(
 load_data_well_fov_time_path.parent.mkdir(exist_ok=True, parents=True)
 
 
-# In[3]:
+# In[5]:
 
 
 # well_fov_timepoints
-image_list = [x for x in tqdm.tqdm(ic_image_dir.glob("*")) if x.is_dir()]
+image_list = [x for x in tqdm.tqdm(image_dir.glob("*")) if x.is_dir()]
 image_list = natsort.natsorted(image_list)
 image_list = [
     list(x.glob("**/*.tiff"))

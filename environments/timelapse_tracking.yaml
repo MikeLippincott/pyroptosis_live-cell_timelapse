@@ -2,8 +2,6 @@ name: timelapse_tracking_env
 
 channels:
 - conda-forge
-- pytorch
-- nvidia
 - defaults
 
 dependencies:

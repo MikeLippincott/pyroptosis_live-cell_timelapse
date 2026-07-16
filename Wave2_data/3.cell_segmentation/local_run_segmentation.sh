@@ -13,7 +13,7 @@ fi
 
 # param set if running the list top down and bottom up in parallel,
 # to avoid overlap of the same well_fov
-HALF_AND_HALF=1
+HALF_AND_HALF=0
 
 cd scripts || exit
 python 0.generate_load_file.py --plate_name "$plate"
@@ -37,8 +37,8 @@ while IFS= read -r well_fov; do
         python 2.cell_segmentation.py --well_fov "$well_fov" --clip_limit 0.3 --plate_name "$plate"
     } >> "$log_file"
 
-# done < "$loadfile_path"
-done < <(tac "$loadfile_path")
+done < "$loadfile_path"
+# done < <(tac "$loadfile_path")
 
 cd .. || exit
 

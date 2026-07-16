@@ -141,3 +141,9 @@ print(
     f"Time estimation for total files: {time_estimation_for_total_files} {time_unit}s"
 )
 print(f"Percentage complete: {percentage_complete}%")
+
+
+# In[8]:
+
+
+last_seg_file_count

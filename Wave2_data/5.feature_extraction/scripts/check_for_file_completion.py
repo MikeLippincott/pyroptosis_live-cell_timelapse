@@ -87,12 +87,6 @@ well_fov_df["timepoint"] = well_fov_df["timepoint"].apply(
 well_fov_df.drop_duplicates(subset=["well_fov", "timepoint"], inplace=True)
 
 
-# In[4]:
-
-
-print(well_fov_df)
-
-
 # In[5]:
 
 

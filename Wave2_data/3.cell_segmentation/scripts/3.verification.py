@@ -98,17 +98,17 @@ df.insert(
 )
 df["both_masks_present"] = df["nuclei_mask_present"] & df["cell_mask_present"]
 # read the masks in and verify that the object labels match between the two masks
-# df['mask_ids_match'] = None
-# for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0], desc="Verifying masks"):
-#     try:
-#         nuclei_mask = tifffile.imread(row['nuclei_mask_file_path'])
-#         cell_mask = tifffile.imread(row['cell_mask_file_path'])
-#         if np.max(nuclei_mask) != np.max(cell_mask):
-#             df.at[index, 'both_masks_present'] = False
-#         else:
-#             df.at[index, 'mask_ids_match'] = True
-#     except Exception as e:
-#         print(f"Error reading masks for {row['well_fov']}: {e}")
+df["mask_ids_match"] = None
+for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0], desc="Verifying masks"):
+    try:
+        nuclei_mask = tifffile.imread(row["nuclei_mask_file_path"])
+        cell_mask = tifffile.imread(row["cell_mask_file_path"])
+        if np.max(nuclei_mask) != np.max(cell_mask):
+            df.at[index, "both_masks_present"] = False
+        else:
+            df.at[index, "mask_ids_match"] = True
+    except Exception as e:
+        print(f"Error reading masks for {row['well_fov']}: {e}")
 
 
 # In[5]:

@@ -35,7 +35,7 @@ else:
     import tqdm
 
 
-# In[2]:
+# In[ ]:
 
 
 if not in_notebook:
@@ -77,11 +77,7 @@ image_base_dir = bandicoot_check(
 )
 
 input_dir = pathlib.Path(
-    image_base_dir
-    / "processed_data"
-    / "1.illumination_corrected_files"
-    / plate_name
-    / well_fov
+    image_base_dir / "processed_data" / "0.renamed_files" / plate_name / well_fov
 ).resolve(strict=True)
 
 segmentation_mask_output_dir = pathlib.Path(

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-conda activate cellprofiler_timelapse_env
+conda activate pyroptosis_timelapse_env
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
 plate=$1
@@ -29,6 +29,9 @@ while IFS=$'\t' read -r well_fov; do
     echo "Processed ${counter} of ${total_lines} images"
 
 done < "${loadfile_path}"
+# done < <(tac "$loadfile_path")
+
+conda deactivate
 
 cd ../ || exit
 echo "Finished running IC for all images."

@@ -1,4 +1,4 @@
-name: timelapse_segmentation_env
+name: timelapse_tracking_env
 
 channels:
 - conda-forge
@@ -7,7 +7,7 @@ channels:
 - defaults
 
 dependencies:
-  - conda-forge::python=3.10
+  - conda-forge::python=3.12
   - conda-forge::ipykernel
   - conda-forge::jupyter
   - conda-forge::nbconvert
@@ -19,21 +19,23 @@ dependencies:
   - conda-forge::scipy
   - conda-forge::scikit-learn
   - conda-forge::scikit-image
-  - conda-forge::papermill
-  - conda-forge::opencv
   - conda-forge::pytorch
   - conda-forge::torchvision
   - conda-forge::cudatoolkit
   - conda-forge::cudnn
   - conda-forge::coincbc # alternative to gurobi for commercial use
   - conda-forge::pyarrow
+
+  - conda-forge::napari
   - gurobi::gurobi # must be a University license no commercial use
   - pip:
+    - --extra-index-url https://download.pytorch.org/whl/cu121
     - torch
-    - cellpose
-    - centrosome
+    - torchvision
+    - torchaudio
     - tifffile
     - ultrack
-    - csbdeep
     - optuna
+    - natsort
+    - gurobi
     - -e ../utils

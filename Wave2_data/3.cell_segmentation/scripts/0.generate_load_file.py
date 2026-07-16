@@ -50,7 +50,7 @@ image_base_dir = bandicoot_check(
 )
 
 input_dir = pathlib.Path(
-    image_base_dir / "processed_data" / "1.illumination_corrected_files" / plate_name
+    image_base_dir / "processed_data" / "0.renamed_files" / plate_name
 ).resolve(strict=True)
 
 segmentation_mask_output_dir = pathlib.Path(
@@ -60,7 +60,12 @@ segmentation_mask_output_dir = pathlib.Path(
 loadfile_dir = pathlib.Path("../loadfiles/loadfile.txt").resolve()
 loadfile_dir.parent.mkdir(parents=True, exist_ok=True)
 
-EXPECTED_MASK_FILE_COUNT = 102
+if plate_name == "plate_1":
+    EXPECTED_MASK_FILE_COUNT = 102
+    NUM_CHANNELS = 5
+elif plate_name == "plate_2":
+    EXPECTED_MASK_FILE_COUNT = 288
+    NUM_CHANNELS = 4
 
 
 # ## Set up images, paths and functions

@@ -101,26 +101,41 @@ print(f"Added {len(dict_of_runs.keys())} to the list of runs")
 print(f"Running {input_dir.stem}")
 
 
+# In[4]:
+
+
+try:
+    path_to_apptainer_image = pathlib.Path(
+        f"{root_dir}/environments/cellprofiler.sif"
+    ).resolve(strict=True)
+    print(path_to_apptainer_image)
+    print("Using apptainer image for CellProfiler run.")
+except FileNotFoundError:
+    print("No apptainer image found, running CellProfiler without apptainer.")
+    path_to_apptainer_image = None
+
+
 # ## Run `illum.cppipe` pipeline and calculate + save IC images
 # This last cell does not get run as we run this pipeline in the command line.
 
-# In[4]:
+# In[ ]:
 
 
 start = time.time()
 
 
-# In[5]:
+# In[ ]:
 
 
 run_cellprofiler(
     path_to_pipeline=dict_of_runs[input_dir.stem]["path_to_pipeline"],
     path_to_input=dict_of_runs[input_dir.stem]["path_to_images"],
     path_to_output=dict_of_runs[input_dir.stem]["path_to_output"],
+    run_with_apptainer_interactive=path_to_apptainer_image,
 )
 
 
-# In[6]:
+# In[ ]:
 
 
 end = time.time()

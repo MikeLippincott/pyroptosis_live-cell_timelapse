@@ -1,13 +1,13 @@
 #!/bin/bash
 
-conda activate timelapse_segmentation_env
+conda activate timelapse_tracking_env
 
 
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 plate_name=$1
 
 cd scripts/ || exit
-python 0.generate_load_file.py --plate_name "$plate_name"
+# python 0.generate_load_file.py --plate_name "$plate_name"
 load_file_path="../loadfiles/loadfile.txt"
 
 while IFS= read -r well_fov; do

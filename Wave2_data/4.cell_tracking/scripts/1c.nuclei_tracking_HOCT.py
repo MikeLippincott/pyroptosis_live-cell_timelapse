@@ -22,7 +22,6 @@ logging.getLogger("ultrack.utils").setLevel(logging.ERROR)
 logging.getLogger("ultrack.utils.cuda").setLevel(logging.ERROR)
 logging.getLogger("ultrack.utils.edge").setLevel(logging.ERROR)
 
-
 import matplotlib.pyplot as plt
 import natsort
 import numpy as np
@@ -33,20 +32,6 @@ import tifffile
 import torch
 from PIL import Image
 from rich.pretty import pprint
-from ultrack import (
-    MainConfig,
-    link,
-    segment,
-    solve,
-    to_tracks_layer,
-    track,
-    tracks_to_zarr,
-)
-from ultrack.config import MainConfig
-from ultrack.imgproc import detect_foreground, robust_invert
-from ultrack.tracks import close_tracks_gaps
-from ultrack.utils import estimate_parameters_from_labels, labels_to_contours
-from ultrack.utils.array import array_apply, create_zarr
 
 os.environ["OMP_NUM_THREADS"] = "8"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
@@ -63,26 +48,21 @@ root_dir, in_notebook = init_notebook()
 if in_notebook:
     import tqdm.notebook as tqdm
 else:
+    import napari
     import tqdm
 
-    import napari
+# begin time, CPU memory peak usage and GPU memory peak usage tracking
+import time
+import tracemalloc
 
 import napari
+import pynvml
 import torch
 import tracksdata as td
 from dask.array.image import imread
 from hoct import load_model, predict
 from hoct.features import normalize_image
 from hoct.tracking import ILPSolverConfig
-
-# In[2]:
-
-
-start_time = time.time()
-
-
-# In[3]:
-
 
 # def clear_gpu_memory():
 #     """
@@ -94,11 +74,6 @@ start_time = time.time()
 
 # clear_gpu_memory()
 
-# begin time, CPU memory peak usage and GPU memory peak usage tracking
-import time
-import tracemalloc
-
-import pynvml
 
 pynvml.nvmlInit()
 
@@ -107,7 +82,13 @@ tracemalloc.start()
 handle = pynvml.nvmlDeviceGetHandleByIndex(0)  # Assuming you want to track GPU 0
 
 
-# In[6]:
+# In[2]:
+
+
+start_time = time.time()
+
+
+# In[3]:
 
 
 if not in_notebook:
@@ -170,7 +151,7 @@ track_save_path = pathlib.Path(
 temporary_output_dir = pathlib.Path("../tmp_output").resolve()
 figures_output_dir = pathlib.Path("../figures").resolve()
 results_output_dir = pathlib.Path("../results").resolve()
-track_save_path.parent.mkdir(exist_ok=True, parents=True)
+track_save_path.mkdir(exist_ok=True, parents=True)
 temporary_output_dir.mkdir(exist_ok=True, parents=True)
 figures_output_dir.mkdir(exist_ok=True, parents=True)
 results_output_dir.mkdir(exist_ok=True, parents=True)
@@ -201,7 +182,7 @@ print(f"Found {len(mask_files)} segmentation mask files in the input directory")
 print(f"Found {len(nuclei_files)} nuclei files in the input directory")
 
 
-# In[ ]:
+# In[5]:
 
 
 # read in the masks and create labels
@@ -219,7 +200,7 @@ for tiff_file in nuclei_files:
 images = np.array(images)
 
 
-# In[ ]:
+# In[6]:
 
 
 # Load the default pre-trained model (downloaded and cached on first use).
@@ -255,7 +236,7 @@ graph = predict(
 )
 
 
-# In[ ]:
+# In[7]:
 
 
 # Visualize
@@ -264,19 +245,19 @@ tracks_df, track_graph, track_labels = td.functional.to_napari_format(
 )
 
 
-# In[ ]:
+# In[8]:
 
 
-viewer = napari.Viewer()
-viewer.add_image(images, name="images")
-viewer.add_labels(track_labels, name="track_labels")
-viewer.add_tracks(tracks_df, graph=track_graph, name="tracks")
-viewer.add_labels(labels, name="labels")
+# viewer = napari.Viewer()
+# viewer.add_image(images, name="images")
+# viewer.add_labels(track_labels, name="track_labels")
+# viewer.add_tracks(tracks_df, graph=track_graph, name="tracks")
+# viewer.add_labels(labels, name="labels")
 
-napari.run()
+# napari.run()
 
 
-# In[ ]:
+# In[9]:
 
 
 # convert the DataFrame object to a pandas DataFrame and retain the column names
@@ -286,7 +267,7 @@ tracks_df.to_parquet(pathlib.Path(track_save_path / "cell_tracks.parquet"), inde
 tracks_df.head()
 
 
-# In[ ]:
+# In[10]:
 
 
 if generate_gif:
@@ -336,12 +317,12 @@ if generate_gif:
     )
 
 
-# In[ ]:
+# In[20]:
 
 
 end_time = time.time()
 end_mem = tracemalloc.get_traced_memory()[1]
-end_gpu_mem = pynvml.nvmlDeviceGetHandleByIndex(0)
+end_gpu_mem = pynvml.nvmlDeviceGetMemoryInfo(handle).used
 print(f"Total time: {end_time - start_time:.2f} seconds")
 print(f"Peak CPU memory usage: {end_mem / 1024 / 1024:.2f} MB")
 print(f"Peak GPU memory usage: {end_gpu_mem / 1024 / 1024:.2f} MB")

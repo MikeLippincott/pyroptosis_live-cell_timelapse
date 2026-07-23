@@ -157,7 +157,7 @@ figures_output_dir.mkdir(exist_ok=True, parents=True)
 results_output_dir.mkdir(exist_ok=True, parents=True)
 
 
-# In[ ]:
+# In[4]:
 
 
 file_extensions = {".tif", ".tiff"}
@@ -317,7 +317,7 @@ if generate_gif:
     )
 
 
-# In[20]:
+# In[11]:
 
 
 end_time = time.time()

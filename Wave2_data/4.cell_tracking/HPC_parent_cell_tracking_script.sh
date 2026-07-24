@@ -5,13 +5,9 @@
 #SBATCH --partition=amilan
 #SBATCH --output=cell_tracking-%j.out
 
-module load miniforge
-conda init bash
-conda activate cell_tracking_env
-
 
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
-plate_name=$1
+
 
 # check if the plate_name argument is provided
 if [ -z "$plate_name" ]; then

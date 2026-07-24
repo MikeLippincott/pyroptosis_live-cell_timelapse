@@ -1,19 +1,17 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --time=30:00
+#SBATCH --ntasks=5
+#SBATCH --time=2:00:00
 #SBATCH --partition=aa100
 #SBATCH --qos=gpu-normal
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:a100-40gb:1
 #SBATCH --output=cell_tracking-%j.out
 
 module load miniforge
-module load cuda/11.8
+module load cuda/13.0
 conda init bash
 conda activate cell_tracking_env
 
-
-jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
 cd scripts/ || exit
 

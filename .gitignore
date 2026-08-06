@@ -196,3 +196,4 @@ Wave2_data/6.image_based_profiling/notebooks/cytotable_runinfo/*
 Wave2_data/6.image_based_profiling/scripts/cytotable_runinfo/*
 Wave2_data/figures/montages/videos/*
 Wave2_data/4.cell_tracking/tmp_output/*
+Wave2_data/5.feature_extraction/results/*

@@ -5,7 +5,7 @@
 
 # ## Import libraries
 
-# In[9]:
+# In[1]:
 
 
 import argparse
@@ -30,7 +30,7 @@ image_based_dir = bandicoot_check(
 )
 
 
-# In[10]:
+# In[2]:
 
 
 if in_notebook:
@@ -48,13 +48,11 @@ else:
         default=None,
         help="The maximum number of workers to use for parallel processing. If not specified, the number of workers will be set to the number of CPU cores minus 2.",
     )
-argparser.add_argument(
-    "--plate_name",
-    type=str,
-    required=True,
-    choices=["plate_1", "plate_2"],
-    help="Name of the plate to analyze",
-)
+    argparser.add_argument(
+        "--plate_name",
+        type=str,
+        help="Name of the plate to analyze",
+    )
     args = argparser.parse_args()
     max_workers = args.max_workers
     plate_name = args.plate_name
@@ -62,7 +60,7 @@ argparser.add_argument(
 
 # ## Set paths and variables
 
-# In[11]:
+# In[3]:
 
 
 if plate_name == "plate_1":
@@ -79,7 +77,7 @@ load_file_dir = pathlib.Path(
 )
 
 
-# In[12]:
+# In[4]:
 
 
 # find all dirs in loadfiles path that contain the well_fov name (one per timepoint)
@@ -88,7 +86,7 @@ timepoint_dirs = sorted(load_file_dir.glob(f"*/*"))
 
 # ## Create dictionary with all info for each well
 
-# In[ ]:
+# In[5]:
 
 
 # get all directories with raw images
@@ -127,7 +125,7 @@ for timepoint_dir in tqdm.tqdm(timepoint_dirs):
         > 0
     ):
         # remove this record from the run dict
-        dict_of_runs.pop(timepoint_dir.name, None)
+        dict_of_runs.pop(timepoint_dir.parent.name, None)
 print(f"Found {len(dict_of_runs.keys())} timepoints to run CellProfiler on.")
 if len(dict_of_runs.keys()) < 100:
     pprint.pprint(dict_of_runs)
@@ -137,7 +135,7 @@ if len(dict_of_runs.keys()) < 100:
 #
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
-# In[7]:
+# In[6]:
 
 
 try:
@@ -153,7 +151,7 @@ except FileNotFoundError:
 
 # ## This section gets run in script only as it takes a long time to run. It is not ran in the notebook.
 
-# In[8]:
+# In[7]:
 
 
 # run CellProfiler in batches so local storage can be cleared between runs

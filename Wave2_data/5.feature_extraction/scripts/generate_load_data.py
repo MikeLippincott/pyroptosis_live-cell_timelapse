@@ -5,7 +5,7 @@
 # This is needed when the segmentation mask images are in a separate directory from the raw images, and the file names are not exactly the same.
 #
 
-# In[1]:
+# In[ ]:
 
 
 import argparse
@@ -32,7 +32,7 @@ image_based_dir = bandicoot_check(
 )
 
 
-# In[2]:
+# In[ ]:
 
 
 if not in_notebook:
@@ -48,7 +48,7 @@ else:
     plate_name = "plate_2"
 
 
-# In[3]:
+# In[ ]:
 
 
 if plate_name == "plate_1":
@@ -59,7 +59,7 @@ elif plate_name == "plate_2":
 
 # ## Set paths and variables
 
-# In[4]:
+# In[ ]:
 
 
 if plate_name == "plate_1":
@@ -103,12 +103,12 @@ elif plate_name == "plate_2":
     ]
 
 
-# In[5]:
+# In[ ]:
 
 
 # Define paths and regex patterns
 raw_pattern = re.compile(
-    r"^(?P<Well>[A-Z]\d+_\d+)_T(?P<Time>\d+)_C(?P<Channel>[1-5])_illumcorrect\.tif{1,2}$"
+    r"^(?P<Well>[A-Z]\d+_\d+)_T(?P<Time>\d+)_C(?P<Channel>[1-4])\.tif{1,2}$"
 )
 mask_pattern = re.compile(
     r"^(?P<Well>[A-Z]\d+_\d+)_T(?P<Time>\d+)_(?P<MaskChannel>cell|nuclei)_mask\.tif{1,2}$"
@@ -116,7 +116,7 @@ mask_pattern = re.compile(
 
 # Get unique well_fov combinations
 base_path = image_based_dir / "processed_data"
-raw_dir = base_path / "1.illumination_corrected_files" / plate_name
+raw_dir = base_path / "0.renamed_files" / plate_name
 
 well_fovs = set()
 if raw_dir.exists():

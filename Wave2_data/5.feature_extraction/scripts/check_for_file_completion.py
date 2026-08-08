@@ -45,7 +45,7 @@ if not in_notebook:
     )
     plate_name = args.parse_args().plate_name
 else:
-    plate_name = "plate_1"
+    plate_name = "plate_2"
 
 
 # In[3]:
@@ -54,9 +54,7 @@ else:
 # get a list of the well_fov directories for each patient
 well_fov_dirs = [
     x
-    for x in pathlib.Path(
-        f"{image_based_dir}/1.illumination_corrected_files/{plate_name}"
-    ).iterdir()
+    for x in pathlib.Path(f"{image_based_dir}/0.renamed_files/{plate_name}").iterdir()
     if x.is_dir()
 ]
 print(well_fov_dirs)
@@ -87,12 +85,12 @@ well_fov_df["timepoint"] = well_fov_df["timepoint"].apply(
 well_fov_df.drop_duplicates(subset=["well_fov", "timepoint"], inplace=True)
 
 
-# In[5]:
+# In[4]:
 
 
 # Build expected output sqlite path per well_fov + timepoint row
 well_fov_df["output_path"] = well_fov_df["well_fov_timepoint"].apply(
-    lambda x: str(pathlib.Path(x).parents[2] / "3.extracted_features" / plate_name)
+    lambda x: str(pathlib.Path(x).parents[3] / "4.extracted_features" / plate_name)
 )
 
 well_fov_df["output_file_path"] = [
@@ -113,7 +111,7 @@ well_fov_df["output_file_path_exists"] = well_fov_df["output_file_path"].apply(
 )
 
 
-# In[6]:
+# In[5]:
 
 
 # sort the df
@@ -127,7 +125,7 @@ well_fov_df = well_fov_df.iloc[
 well_fov_df.head()
 
 
-# In[7]:
+# In[6]:
 
 
 # find the number of well fov timepoints still needed
@@ -138,7 +136,7 @@ print(f"Number of well fov timepoints completed: {len(completed)}")
 print(f"Progress: {len(completed) / len(well_fov_df) * 100:.2f}%")
 
 
-# In[8]:
+# In[ ]:
 
 
-well_fov_df["well_fov"].unique()
+well_fov_df

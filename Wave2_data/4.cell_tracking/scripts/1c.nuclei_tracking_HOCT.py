@@ -25,7 +25,6 @@ logging.getLogger("ultrack.utils.edge").setLevel(logging.ERROR)
 import matplotlib.pyplot as plt
 import natsort
 import numpy as np
-import optuna
 import pandas as pd
 import seaborn as sns
 import tifffile
@@ -157,7 +156,7 @@ figures_output_dir.mkdir(exist_ok=True, parents=True)
 results_output_dir.mkdir(exist_ok=True, parents=True)
 
 
-# In[4]:
+# In[ ]:
 
 
 file_extensions = {".tif", ".tiff"}

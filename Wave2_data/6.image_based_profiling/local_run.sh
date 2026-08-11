@@ -13,26 +13,27 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 cd scripts || exit
 
-python 00.generate_load_list.py
+# python 00.generate_load_list.py --plate_name "plate_2"
 # python 0.merge_sc.py
-python 1.combine_sc.py
-python 2.qc.py
-python 3.annotate_sc.py
-# python 5.single_cell_track_merging_placeholder.py
-python 6.normalize_sc.py
-python 7.feature_select_sc.py
-python 8.aggregate_profiles.py
+python 0b.merge_sc_parallel.py --plate_name "plate_2" --max_workers 16
+# python 1.combine_sc.py
+# python 2.qc.py
+# python 3.annotate_sc.py
+# # python 5.single_cell_track_merging_placeholder.py
+# python 6.normalize_sc.py
+# python 7.feature_select_sc.py
+# python 8.aggregate_profiles.py
 
-conda deactivate ; conda activate timelapse_deeplearning_env
-for well_fov_time in "${well_fov_times[@]}"; do
-    echo "Featurizing for well_fov_time: $well_fov_time"
-    python 4a.chammi75_featurization.py --well_fov_time "$well_fov_time"
-done
-python 4b.chammi75_combine_sc.py
+# conda deactivate ; conda activate timelapse_deeplearning_env
+# for well_fov_time in "${well_fov_times[@]}"; do
+#     echo "Featurizing for well_fov_time: $well_fov_time"
+#     python 4a.chammi75_featurization.py --well_fov_time "$well_fov_time"
+# done
+# python 4b.chammi75_combine_sc.py
 
-conda deactivate ; conda activate timelapse_ibp_env
+# conda deactivate ; conda activate timelapse_ibp_env
 
-python 9.harmonize_profiles.py
+# python 9.harmonize_profiles.py
 
 conda deactivate
 cd ../  || exit

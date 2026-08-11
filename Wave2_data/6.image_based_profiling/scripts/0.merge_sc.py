@@ -3,7 +3,7 @@
 
 # # Merge single cells from CellProfiler outputs using CytoTable
 
-# In[1]:
+# In[ ]:
 
 
 import argparse
@@ -30,7 +30,7 @@ from parsl.executors import HighThroughputExecutor
 
 # ## set config joins for each preset
 
-# In[2]:
+# In[ ]:
 
 
 # preset configurations based on typical CellProfiler outputs
@@ -44,9 +44,8 @@ presets.config[preset][
                     Metadata_ImageNumber,
                     Image_URL_CL488,
                     Image_URL_CL640,
-                    Image_URL_NucleoLive,
-                    Image_URL_BF,
                     Image_URL_SYTOXGreen,
+                    Image_URL_NucleoLive,
                 FROM
                     read_parquet('per_image.parquet')
                 )
@@ -118,7 +117,7 @@ output_dir.mkdir(exist_ok=True, parents=True)
 
 # ## Gather all sqlite files for each well_fov_timepoint
 
-# In[5]:
+# In[ ]:
 
 
 # well_fov_timepoints
@@ -142,7 +141,7 @@ well_fov_timepoints_sqlites = natsort.natsorted(well_fov_timepoints_sqlites)
 #
 # This was not run to completion as we use the nbconverted python file for full run.
 
-# In[6]:
+# In[ ]:
 
 
 exists = 0
@@ -227,7 +226,6 @@ for well_fov_timepoint_sqlite_file_path in tqdm.tqdm(well_fov_timepoints_sqlites
     ]
     # set columns to move to Metadata_ prefix
     file_metadata = [
-        "Image_URL_BF",
         "Image_URL_CL488",
         "Image_URL_CL640",
         "Image_URL_NucleoLive",
@@ -266,13 +264,13 @@ for well_fov_timepoint, error in errors:
     print(f"Error processing {well_fov_timepoint}: {error}")
 
 
-# In[7]:
+# In[ ]:
 
 
 errors
 
 
-# In[8]:
+# In[ ]:
 
 
 rerun_list
@@ -321,7 +319,7 @@ for rerun in rerun_list:
     #     print(f"Error removing segmentation path {seg_path}: {e}")
 
 
-# In[10]:
+# In[ ]:
 
 
 errors_df = pd.DataFrame(errors, columns=["well_fov_timepoint", "error"])

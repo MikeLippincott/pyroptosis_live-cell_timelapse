@@ -29,7 +29,7 @@ else:
     import tqdm
 
 
-# In[ ]:
+# In[2]:
 
 
 if in_notebook:
@@ -50,7 +50,7 @@ else:
     plate_name = args.plate_name
 
 
-# In[2]:
+# In[3]:
 
 
 def read_and_cast(path: pathlib.Path, conflicts: list[str]) -> pl.DataFrame:
@@ -80,14 +80,14 @@ def read_and_cast(path: pathlib.Path, conflicts: list[str]) -> pl.DataFrame:
 
 # ## Set paths and variables
 
-# In[ ]:
+# In[4]:
 
 
 image_base_dir = bandicoot_check(
     bandicoot_mount_path=pathlib.Path(f"{os.path.expanduser('~')}/mnt/bandicoot/"),
     root_dir=root_dir,
 )
-image_base_dir = pathlib.Path(f"{root_dir}/data").resolve(strict=True)
+# image_base_dir = pathlib.Path(f"{root_dir}/data").resolve(strict=True)
 image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
 converted_profiles_dir = pathlib.Path(
     f"{image_base_dir}/5.converted_profiles/{plate_name}"
@@ -96,10 +96,10 @@ converted_profiles_dir = pathlib.Path(
 combined_profiles_path = pathlib.Path(
     f"{image_base_dir}/6.combined_profiles/{plate_name}"
 ).resolve()
-combined_profiles_path.mkdir(exist_ok=True)
+combined_profiles_path.mkdir(exist_ok=True, parents=True)
 
 
-# In[4]:
+# In[5]:
 
 
 # well_fov_timepoints - get all the well_fov_timepoints that we have extracted features for
@@ -122,7 +122,7 @@ converted_profiles = natsort.natsorted(converted_profiles)
 print(f"Number of converted profiles: {len(converted_profiles)}")
 
 
-# In[5]:
+# In[6]:
 
 
 # check if any of the parquet files have buffer 0
@@ -142,7 +142,7 @@ for parquet_file in tqdm.tqdm(converted_profiles):
 print(f"Total files: {total}, Empty files: {zero_size_files}")
 
 
-# In[6]:
+# In[7]:
 
 
 converted_profiles_df = pd.DataFrame({"converted_profile_path": converted_profiles})
@@ -152,27 +152,29 @@ converted_profiles_df["well_fov_time"] = converted_profiles_df[
 converted_profiles_df["well_fov"] = converted_profiles_df[
     "converted_profile_path"
 ].apply(lambda x: ("_").join(x.parent.name.split("_")[:2]))
-converted_profiles_df
-
-
-# In[7]:
-
-
-converted_profiles_df = converted_profiles_df.loc[
-    converted_profiles_df["well_fov"] == "C2_3"
-]
-converted_profiles_df
-
-
-# In[11]:
-
-
-converted_profiles_df.loc[converted_profiles_df["well_fov_time"] == "C2_3_T0001"]
 
 
 # In[8]:
 
 
+# get counts for each well_fov
+well_fov_counts = (
+    converted_profiles_df.groupby("well_fov").size().reset_index(name="counts")
+)
+well_fov_counts = well_fov_counts.sort_values(by="counts", ascending=False)
+# drop well_fovs with counts less than 288
+converted_profiles_df = converted_profiles_df[
+    converted_profiles_df["well_fov"].isin(
+        well_fov_counts[well_fov_counts["counts"] >= 288]["well_fov"]
+    )
+]
+
+
+# In[9]:
+
+
+exists_counter = 0
+concat_counter = 0
 # loop through unique well fovs then combine all timepoints for each well fov and save as a single parquet file
 for well_fov, group in tqdm.tqdm(
     converted_profiles_df.groupby("well_fov"),
@@ -182,7 +184,9 @@ for well_fov, group in tqdm.tqdm(
     well_fov_path = pathlib.Path(f"{combined_profiles_path}/{well_fov}.parquet")
     well_fov_path.parent.mkdir(parents=True, exist_ok=True)
     if well_fov_path.exists():
+        exists_counter += 1
         continue
+    concat_counter += 1
     # if not well_fov_path.exists():
     # get the converted profile paths for the current well fov time
     tmp_df = converted_profiles_df[converted_profiles_df["well_fov"] == well_fov]
@@ -213,29 +217,5 @@ for well_fov, group in tqdm.tqdm(
             combined_well_fov_paths, leave=False, desc="Reading and casting files"
         )
     ]
-    combined_df = pl.concat(
-        frames, how="diagonal"
-    )  # diagonal handles missing columns too
-    # fix mixed types in object columns before saving to parquet
-    # for col in combined_df.select_dtypes(include="object").columns:
-    #     combined_df[col] = combined_df[col].astype(str)
-    # for col in combined_df.columns:
-    #     if col == "Metadata_Cells_Number_Object_Number":
-    #         combined_df[col] = combined_df[col].astype(int)
-    # save the combined dataframe as a parquet file
+    combined_df = pl.concat(frames, how="diagonal")
     combined_df.write_parquet(well_fov_path)
-
-
-# In[9]:
-
-
-combined_df = pd.read_parquet(well_fov_path)
-
-
-# In[10]:
-
-
-combined_df
-
-
-# In[ ]:

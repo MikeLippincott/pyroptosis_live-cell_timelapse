@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
+import argparse
 import os
 import pathlib
 
@@ -44,7 +45,7 @@ else:
     plate_name = args.plate_name
 
 
-# In[4]:
+# In[3]:
 
 
 image_base_dir = bandicoot_check(
@@ -65,7 +66,7 @@ load_data_well_fov_path = pathlib.Path(
 load_data_well_fov_time_path.parent.mkdir(exist_ok=True, parents=True)
 
 
-# In[5]:
+# In[4]:
 
 
 # well_fov_timepoints
@@ -80,7 +81,7 @@ image_list = natsort.natsorted(image_list)
 print(f"Number of images: {len(image_list)}")
 
 
-# In[4]:
+# In[5]:
 
 
 # unnest the nested list of lists
@@ -93,7 +94,7 @@ new_image_list = [
 print(f"Number of images after unnesting: {len(new_image_list)}")
 
 
-# In[5]:
+# In[6]:
 
 
 # create a dataframe with the image paths and extract the well_fov_time from the file names
@@ -114,7 +115,7 @@ print(f"Number of unique well_fov_time: {len(well_fov_times)}")
 print(f"Number of unique well_fov: {len(well_fovs)}")
 
 
-# In[6]:
+# In[7]:
 
 
 with open(load_data_well_fov_time_path, "w") as f:

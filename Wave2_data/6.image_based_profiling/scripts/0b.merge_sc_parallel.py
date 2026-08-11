@@ -30,7 +30,7 @@ else:
 from parsl.config import Config
 from parsl.executors import HighThroughputExecutor
 
-# In[8]:
+# In[2]:
 
 
 def process_single_file(args):
@@ -195,7 +195,7 @@ def process_all_files(
 
 # ## set config joins for each preset
 
-# In[9]:
+# In[3]:
 
 
 # preset configurations based on typical CellProfiler outputs
@@ -210,7 +210,6 @@ presets.config[preset][
                     Image_URL_CL488,
                     Image_URL_CL640,
                     Image_URL_NucleoLive,
-                    Image_URL_BF,
                     Image_URL_SYTOXGreen,
                 FROM
                     read_parquet('per_image.parquet')
@@ -234,16 +233,11 @@ presets.config[preset][
 #
 # All paths must be string but we use pathlib to show which variables are paths
 
-# In[ ]:
+# In[4]:
 
 
 if not in_notebook:
     argparser = argparse.ArgumentParser(description="Run feature merging")
-    argparser.add_argument(
-        "--well_fov",
-        type=str,
-        help="The well and fov to process in the format 'well_fov' (e.g., 'A01_01')",
-    )
     argparser.add_argument(
         "--max_workers",
         type=int,
@@ -256,14 +250,11 @@ if not in_notebook:
         help="Name of the plate to analyze",
     )
     args = argparser.parse_args()
-    well_fov = args.well_fov
     max_workers = args.max_workers
     plate_name = args.plate_name
 else:  # example input for notebook testing
-    well_fov = "O2_2"
     max_workers = 4
-
-well, fov = well_fov.split("_")
+    plate_name = "plate_2"
 
 
 image_base_dir = bandicoot_check(
@@ -276,7 +267,7 @@ extracted_features_dir = pathlib.Path(
 ).resolve(strict=True)
 
 
-# In[ ]:
+# In[5]:
 
 
 # type of file output from CytoTable (currently only parquet)
@@ -291,13 +282,11 @@ output_dir.mkdir(exist_ok=True, parents=True)
 
 # ## Gather all sqlite files for each well_fov_timepoint
 
-# In[22]:
+# In[6]:
 
 
 # well_fov_timepoints
-well_fov_timepoints = [
-    x for x in tqdm.tqdm(extracted_features_dir.glob(f"*{well_fov}*")) if x.is_dir()
-]
+well_fov_timepoints = [x for x in extracted_features_dir.glob(f"*") if x.is_dir()]
 well_fov_timepoints = natsort.natsorted(well_fov_timepoints)
 well_fov_timepoints_sqlites = [
     list(x.glob("**/*.sqlite"))[0]
@@ -309,13 +298,14 @@ well_fov_timepoints_sqlites = [
     if len(list(x.glob("**/*.sqlite"))) > 0
 ]
 well_fov_timepoints_sqlites = natsort.natsorted(well_fov_timepoints_sqlites)
+print(len(well_fov_timepoints_sqlites))
 
 
 # ## Convert SQLite file and merge single cell objects into parquet file
 #
 # This was not run to completion as we use the nbconverted python file for full run.
 
-# In[23]:
+# In[ ]:
 
 
 process_all_files(
@@ -325,6 +315,3 @@ process_all_files(
     preset=preset,
     n_workers=max_workers,
 )
-
-
-# In[ ]:

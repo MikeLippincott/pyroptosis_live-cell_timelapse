@@ -12,6 +12,7 @@ import argparse
 import os
 import pathlib
 
+import natsort
 import pandas as pd
 from pycytominer import annotate
 from pycytominer.cyto_utils import output
@@ -26,7 +27,7 @@ root_dir, in_notebook = init_notebook()
 # ## Set paths and variables
 # ### Relate the CellProfiler output to the platemap file
 
-# In[ ]:
+# In[2]:
 
 
 if in_notebook:
@@ -47,12 +48,12 @@ else:
     plate_name = args.plate_name
 
 
-# In[ ]:
+# In[3]:
 
 
 # load in platemap file as a pandas dataframe
 platemap_path = pathlib.Path(
-    f"{root_dir}/Wave2_data/0.download_data/platemap/platemap.csv"
+    f"{root_dir}/Wave2_data/0.download_data/platemap/plate_2/platemap.csv"
 ).resolve()
 
 image_base_dir = bandicoot_check(
@@ -61,64 +62,55 @@ image_base_dir = bandicoot_check(
 )
 image_base_dir = pathlib.Path(f"{image_base_dir}/processed_data/").resolve(strict=True)
 qc_profiles_path = pathlib.Path(
-    f"{image_base_dir}/7.qc_profiles/{plate_name}/qc_profiles.parquet"
+    f"{image_base_dir}/7.qc_profiles/{plate_name}/"
 ).resolve(strict=True)
 
 annotated_profiles_path = pathlib.Path(
-    f"{image_base_dir}/8.annotated_profiles/{plate_name}/annotated_profiles.parquet"
+    f"{image_base_dir}/8.annotated_profiles/{plate_name}/"
 ).resolve()
-annotated_profiles_path.parent.mkdir(exist_ok=True)
+annotated_profiles_path.mkdir(exist_ok=True, parents=True)
 
 
 # ## Annotate merged single cells
 
-# In[3]:
-
-
-# load in converted parquet file as df to use in annotate function
-single_cell_df = pd.read_parquet(qc_profiles_path)
-
-platemap_df = pd.read_csv(platemap_path)
-
-
-# add metadata from platemap file to extracted single cell features
-annotated_df = annotate(
-    profiles=single_cell_df,
-    platemap=platemap_df,
-    join_on=["Metadata_Well", "Metadata_Well"],
-)
-
-
 # In[4]:
 
 
-# check after annotation to verify row alignment,
-# identify duplicate columns,
-# or detect any newly introduced null values.
-if annotated_df.shape[0] != single_cell_df.shape[0]:
-    print(
-        "Warning: Number of rows in the annotated dataframe does not match the original single cell dataframe."
-    )
-if annotated_df.shape[1] <= single_cell_df.shape[1]:
-    print(
-        "Warning: No new columns were added during annotation, or some columns may have been dropped."
-    )
-if single_cell_df.isnull().any().any():
-    print(
-        "Warning: Null values detected in the original single cell dataframe before annotation."
-    )
-if annotated_df.isnull().any().any():
-    print("Warning: Null values detected in the annotated dataframe after annotation.")
+qc_profiles_path_files = natsort.natsorted(
+    list(qc_profiles_path.glob("*.parquet")), key=lambda x: x.name
+)
+print(f"Found {len(qc_profiles_path_files)} QC profiles")
 
 
 # In[5]:
 
 
-# save annotated df as parquet file
-output(
-    df=annotated_df,
-    output_filename=annotated_profiles_path,
-    output_type="parquet",
-)
+platemap_df = pd.read_csv(platemap_path)
+# remove the leading zero from the well column in the platemap
+platemap_df["Metadata_Well"] = platemap_df["Metadata_Well"].str.replace("0", "")
 
-annotated_df.head()
+
+# In[ ]:
+
+
+for qc_profiles_path in tqdm.tqdm(
+    qc_profiles_path_files,
+    desc="Annotating profiles",
+    total=len(qc_profiles_path_files),
+    unit="file",
+):
+    annotated_profile_path_output = pathlib.Path(
+        f"{annotated_profiles_path}/{qc_profiles_path.stem.replace('qc', 'annotated')}.parquet"
+    ).resolve()
+    if annotated_profile_path_output.exists():
+        continue
+    single_cell_df = pd.read_parquet(qc_profiles_path)
+
+    # add metadata from platemap file to extracted single cell features
+    annotated_df = annotate(
+        profiles=single_cell_df,
+        platemap=platemap_df,
+        join_on=["Metadata_Well", "Metadata_Well"],
+        output_file=annotated_profile_path_output,
+        output_type="parquet",
+    )

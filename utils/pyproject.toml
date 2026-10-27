@@ -10,15 +10,12 @@ requires-python = ">=3.8" # need 3.8 to run CP on the HPC
 authors = [{ name = "Michael J. Lippincott" }]
 license = { text = "BSD 3-Clause License" }
 dependencies = [
-    "pandas",
-    "numpy<2.0",
+    "pandas>=2.0",
+    "numpy>=2.0",
     "scipy",
     "scikit-image",
     "tifffile",
-    "argparse",
     "tqdm",
-    "jupyter",
-    "ipykernel"
 ]
 [tool.uv]
 # Fall back to PyPI for other packages

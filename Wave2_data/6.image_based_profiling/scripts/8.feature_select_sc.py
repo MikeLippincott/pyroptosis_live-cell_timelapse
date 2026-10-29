@@ -123,7 +123,7 @@ norm_profiles_path_list = natsort.natsorted(
 print(f"Found {len(norm_profiles_path_list)} normalized profiles for {plate_name}")
 
 
-# In[7]:
+# In[ ]:
 
 
 # load in the the control well_fovs as a pandas dataframe
@@ -162,7 +162,7 @@ for sc_split in tqdm.tqdm(train_test_split_path_list):
 well_fov_profile_and_split_dict
 
 
-# In[8]:
+# In[ ]:
 
 
 train_df_list = []
@@ -191,7 +191,7 @@ print(
 )
 
 
-# In[9]:
+# In[ ]:
 
 
 # apply the feature selection to the training dataframe
@@ -213,7 +213,7 @@ with open(feature_select_cols_path, "w") as f:
     json.dump(feature_selected_cols.tolist(), f)
 
 
-# In[10]:
+# In[ ]:
 
 
 # apply the feature selection to all dataframes

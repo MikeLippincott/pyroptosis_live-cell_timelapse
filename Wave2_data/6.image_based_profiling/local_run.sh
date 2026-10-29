@@ -10,7 +10,7 @@ git_root=$(git rev-parse --show-toplevel)
 
 # shellcheck disable=SC1091
 source "${git_root}/Wave2_data/.venv/bin/activate"
-module_path="${git_root}/Wave2_data/6.image_based_profiling/"
+module_path="${git_root}/Wave2_data/6.image_based_profiling"
 scripts_path="${module_path}/scripts"
 
 # Optional: regenerate scripts from notebooks
@@ -20,10 +20,10 @@ jupyter nbconvert --to=script --FilesWriter.build_directory="$scripts_path" "$mo
 # python 0.merge_sc.py
 # python 1.combine_sc.py
 # python 2.qc.py
-python "$scripts_path"/3.annotate_sc.py --plate_name "plate_2"
-python "$scripts_path"/5.single_cell_track_merging_placeholder.py --plate_name "plate_2"
-python "$scripts_path"/6.create_splits.py --plate_name "plate_2"
-python "$scripts_path"/7.normalize_sc.py --plate_name "plate_2"
+# python "$scripts_path"/3.annotate_sc.py --plate_name "plate_2"
+# python "$scripts_path"/5.single_celltrack_merging_placeholder.py --plate_name "plate_2"
+# python "$scripts_path"/6.create_splits.py --plate_name "plate_2"
+# python "$scripts_path"/7.normalize_sc.py --plate_name "plate_2"
 python "$scripts_path"/8.feature_select_sc.py --plate_name "plate_2"
 python "$scripts_path"/9.aggregate_profiles.py --plate_name "plate_2"
 # python 10.harmonize_profiles.py --plate_name "plate_2"

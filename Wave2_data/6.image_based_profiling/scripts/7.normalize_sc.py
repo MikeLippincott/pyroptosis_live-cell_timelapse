@@ -243,7 +243,7 @@ norm_train_df = normalize(
 
 # ## Apply the normalization to all splits now
 
-# In[12]:
+# In[ ]:
 
 
 for well_fov, profile_path, train_test_split_path, norm_output_path in tqdm.tqdm(

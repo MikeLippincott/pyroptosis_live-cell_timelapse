@@ -208,6 +208,9 @@ for norm_profile_path in tqdm.tqdm(
     agg_output_dict["well_fov"].append(well_fov)
     agg_df = agg_calls(profile_path=norm_profile_path, strata=agg_strata)
     consensus_df = agg_calls(profile_path=norm_profile_path, strata=consensus_strata)
+    print(
+        f"Shape of agg_df: {agg_df.shape}, Shape of consensus_df: {consensus_df.shape}"
+    )
     agg_output_dict["agg"].append(agg_df)
     agg_output_dict["consensus"].append(consensus_df)
 agg_norm_all_df = pd.concat(agg_output_dict["agg"], ignore_index=True)
